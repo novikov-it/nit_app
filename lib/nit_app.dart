@@ -10,14 +10,23 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nit_app/src/deeplinks.dart';
+import 'package:nit_app/src/session_manager.dart';
+import 'package:nit_router/nit_router.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:serverpod_auth_client/serverpod_auth_client.dart';
 
 import 'src/firebase.dart';
 
 class NitApp extends HookConsumerWidget {
   static preInitialization({
+    bool? goRouterOptionURLReflectsImperativeAPIs,
     FirebaseOptions? firebaseOptions,
   }) async {
+    if (goRouterOptionURLReflectsImperativeAPIs != null) {
+      GoRouter.optionURLReflectsImperativeAPIs =
+          goRouterOptionURLReflectsImperativeAPIs;
+    }
+
     WidgetsFlutterBinding.ensureInitialized();
 
     if (firebaseOptions != null) {
@@ -25,15 +34,38 @@ class NitApp extends HookConsumerWidget {
     }
   }
 
+  static sessionBasedRouter({
+    required List<List<NavigationZoneEnum>> navigationZones,
+  }) =>
+      (ProviderRef ref) {
+        return NitRouter.prepareRouter(
+          navigationZones: navigationZones,
+          refreshListenable: sessionManager,
+          redirect: (context, route) => null,
+        );
+      };
+
   const NitApp({
     super.key,
-    required this.locale,
     required this.title,
     required this.routerProvider,
+    this.authCaller,
     this.deeplinkHandler,
-    required this.initializers,
-    required this.loadingScreen,
-    required this.loadingFailedScreen,
+    this.initializers,
+    this.loadingScreen = const Center(
+      child: CircularProgressIndicator(),
+    ),
+    this.loadingFailedScreen = const Center(
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Center(
+          child: Text(
+            'Не удалось подключиться к серверу',
+          ),
+        ),
+      ),
+    ),
+    this.locale = 'ru',
     this.themeData,
   });
 
@@ -41,9 +73,10 @@ class NitApp extends HookConsumerWidget {
   final String title;
   // final GoRouter Function() routerInitializer;
   final Provider<GoRouter> routerProvider;
+  final Caller? authCaller;
   final void Function(WidgetRef, String)? deeplinkHandler;
 
-  final List<Future<bool> Function()> initializers;
+  final List<Future<bool> Function()>? initializers;
   final Widget loadingScreen;
   final Widget loadingFailedScreen;
 
@@ -76,7 +109,9 @@ class NitApp extends HookConsumerWidget {
 
               return true;
             },
-            ...initializers,
+            if (authCaller != null)
+              () => initializeServerpodSessionManager(authCaller: authCaller!),
+            ...(initializers ?? []),
             () async {
               _router = ref.read(routerProvider);
               return true;
