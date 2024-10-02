@@ -14,10 +14,10 @@ dependencies:
     sdk: flutter
 
   nit_router:
-    path: ../nit_router
-    # git:
-    #   url: git@github.com:novikov-it/nit_router.git
-    #   ref: master
+    # path: ../nit_router
+    git:
+      url: git@github.com:novikov-it/nit_router.git
+      ref: master
 
   intl: ^0.19.0
   flutter_hooks: ^0.20.1
