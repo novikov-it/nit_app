@@ -1,10 +1,11 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:nit_app/src/session_manager/session_manager_state.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nit_router/nit_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/module.dart';
+import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 
-part 'nit_session_state.g.dart';
-part 'nit_session_state.freezed.dart';
+part 'session_manager_state.g.dart';
+// part 'nit_session_state.freezed.dart';
 
 // extension NitSessionStateExtension on WidgetRef {
 //   int get signedInUserId => read(signedInUserProvider)!.id!;
@@ -24,16 +25,51 @@ part 'nit_session_state.freezed.dart';
 // );
 
 @Riverpod(keepAlive: true)
-class NitSessionState extends _$NitSessionState {
+class SessionManagerState extends _$SessionManagerState {
   // late final StreamingConnectionHandler _connectionHandler;
+  late SessionManager _sessionManager;
 
   @override
-  NitSessionStateModel build() {
-    return NitSessionStateModel(
-      signedInUser: ref.watch(sessionManagerStateProvider).signedInUser,
-      websocketStatus: StreamingConnectionStatus.disconnected,
-    );
+  SessionManager build() {
+    return _sessionManager;
   }
+
+  Future<bool> initializeServerpodSessionManager({
+    required Caller authCaller,
+  }) async {
+    // The session manager keeps track of the signed-in state of the user. You
+    // can query it to see if the user is currently signed in and get information
+    // about the user.
+    _sessionManager = SessionManager(
+      caller: authCaller,
+    );
+
+    if (await _sessionManager.initialize()) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // Provider<GoRouter> prepareRouter({
+  //   required List<List<NavigationZoneEnum>> navigationZones,
+  // }) =>
+  //     Provider<GoRouter>((ProviderRef ref) {
+  //       return NitRouter.prepareRouter(
+  //         navigationZones: navigationZones,
+  //         refreshListenable: _sessionManager,
+  //         redirect: (context, route) => null,
+  //       );
+  //     });
+
+  GoRouter prepareRouter({
+    required List<List<NavigationZoneEnum>> navigationZones,
+  }) =>
+      NitRouter.prepareRouter(
+        navigationZones: navigationZones,
+        refreshListenable: _sessionManager,
+        redirect: (context, route) => null,
+      );
 
   // _updateConnectionStatus(StreamingConnectionStatus status) {
   //   _refresh(status, state.signedInUser);
@@ -96,10 +132,10 @@ class NitSessionState extends _$NitSessionState {
   // }
 }
 
-@freezed
-class NitSessionStateModel with _$NitSessionStateModel {
-  const factory NitSessionStateModel({
-    required UserInfo? signedInUser,
-    required StreamingConnectionStatus websocketStatus,
-  }) = _NitSessionStateModel;
-}
+// @freezed
+// class SessionManagerStateModel with _$NitSessionStateModel {
+//   const factory NitSessionStateModel({
+//     required UserInfo? signedInUser,
+//     required StreamingConnectionStatus websocketStatus,
+//   }) = _NitSessionStateModel;
+// }

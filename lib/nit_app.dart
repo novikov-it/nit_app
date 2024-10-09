@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nit_app/src/deeplinks.dart';
-import 'package:nit_app/src/session_manager.dart';
+import 'package:nit_app/src/session_manager/session_manager_state.dart';
 import 'package:nit_router/nit_router.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart';
@@ -34,21 +34,22 @@ class NitApp extends HookConsumerWidget {
     }
   }
 
-  static sessionBasedRouter({
-    required List<List<NavigationZoneEnum>> navigationZones,
-  }) =>
-      (ProviderRef ref) {
-        return NitRouter.prepareRouter(
-          navigationZones: navigationZones,
-          refreshListenable: sessionManager,
-          redirect: (context, route) => null,
-        );
-      };
+  // static sessionBasedRouter({
+  //   required List<List<NavigationZoneEnum>> navigationZones,
+  // }) =>
+  //     (ProviderRef ref) {
+  //       return NitRouter.prepareRouter(
+  //         navigationZones: navigationZones,
+  //         refreshListenable: sessionManager,
+  //         redirect: (context, route) => null,
+  //       );
+  //     };
 
   const NitApp({
     super.key,
     required this.title,
-    required this.routerProvider,
+    this.routerProvider,
+    this.navigationZones,
     this.authCaller,
     this.deeplinkHandler,
     this.initializers,
@@ -72,7 +73,8 @@ class NitApp extends HookConsumerWidget {
   final String locale;
   final String title;
   // final GoRouter Function() routerInitializer;
-  final Provider<GoRouter> routerProvider;
+  final List<List<NavigationZoneEnum>>? navigationZones;
+  final Provider<GoRouter>? routerProvider;
   final Caller? authCaller;
   final void Function(WidgetRef, String)? deeplinkHandler;
 
@@ -100,6 +102,10 @@ class NitApp extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    assert(
+      routerProvider != null || (navigationZones != null && authCaller != null),
+      'You need to provide router configuration. Either routerProvider should be passed, or both navigationZones and authCaller',
+    );
     final initialization = useFuture(
       useMemoized(
         () => _futuresQueue(
@@ -110,10 +116,19 @@ class NitApp extends HookConsumerWidget {
               return true;
             },
             if (authCaller != null)
-              () => initializeServerpodSessionManager(authCaller: authCaller!),
+              // () => initializeServerpodSessionManager(authCaller: authCaller!),
+              () => ref
+                  .read(sessionManagerStateProvider.notifier)
+                  .initializeServerpodSessionManager(authCaller: authCaller!),
             ...(initializers ?? []),
             () async {
-              _router = ref.read(routerProvider);
+              if (routerProvider != null) {
+                _router = ref.read(routerProvider!);
+              } else {
+                _router = ref
+                    .read(sessionManagerStateProvider.notifier)
+                    .prepareRouter(navigationZones: navigationZones!);
+              }
               return true;
             },
             if (!kIsWeb && deeplinkHandler != null)
