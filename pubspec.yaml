@@ -32,6 +32,8 @@ dependencies:
   serverpod_auth_shared_flutter: ^2.1.1
   freezed_annotation: ^2.4.4
   riverpod_annotation: ^2.3.5
+  adaptive_breakpoints: ^0.1.7
+  gap: ^3.0.1
 
 dev_dependencies:
   flutter_test:
