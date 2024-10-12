@@ -101,8 +101,8 @@ class NitApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     assert(
-      routerProvider != null || (navigationZones != null && authCaller != null),
-      'You need to provide router configuration. Either routerProvider should be passed, or both navigationZones and authCaller',
+      routerProvider != null || navigationZones != null,
+      'You need to provide router configuration. Either routerProvider or navigationZones should be passed',
     );
     final initialization = useFuture(
       useMemoized(
@@ -123,9 +123,16 @@ class NitApp extends HookConsumerWidget {
               if (routerProvider != null) {
                 _router = ref.read(routerProvider!);
               } else {
-                _router = ref
-                    .read(sessionManagerStateProvider.notifier)
-                    .prepareRouter(navigationZones: navigationZones!);
+                _router = NitRouter.prepareRouter(
+                  navigationZones: navigationZones!,
+                  refreshListenable: authCaller != null
+                      ? ref.read(sessionManagerStateProvider)
+                      : null,
+                  redirect: null,
+                );
+                // ref
+                //     .read(sessionManagerStateProvider.notifier)
+                //     .prepareRouter(navigationZones: navigationZones!);
               }
               return true;
             },

@@ -45,6 +45,7 @@ class SessionManagerState extends _$SessionManagerState {
     );
 
     if (await _sessionManager.initialize()) {
+      state = _sessionManager;
       return true;
     }
 
@@ -62,14 +63,14 @@ class SessionManagerState extends _$SessionManagerState {
   //       );
   //     });
 
-  GoRouter prepareRouter({
-    required List<List<NavigationZoneEnum>> navigationZones,
-  }) =>
-      NitRouter.prepareRouter(
-        navigationZones: navigationZones,
-        refreshListenable: _sessionManager,
-        redirect: (context, route) => null,
-      );
+  // GoRouter prepareRouter({
+  //   required List<List<NavigationZoneEnum>> navigationZones,
+  // }) =>
+  //     NitRouter.prepareRouter(
+  //       navigationZones: navigationZones,
+  //       refreshListenable: _sessionManager,
+  //       redirect: (context, route) => null,
+  //     );
 
   // _updateConnectionStatus(StreamingConnectionStatus status) {
   //   _refresh(status, state.signedInUser);
