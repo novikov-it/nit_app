@@ -13,6 +13,7 @@ import 'package:nit_router/nit_router.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart';
 
+import 'session/nit_session_state.dart';
 import 'tools/firebase.dart';
 
 class NitApp extends HookConsumerWidget {
@@ -116,7 +117,7 @@ class NitApp extends HookConsumerWidget {
             if (authCaller != null)
               // () => initializeServerpodSessionManager(authCaller: authCaller!),
               () => ref
-                  .read(sessionManagerStateProvider.notifier)
+                  .read(nitSessionStateProvider.notifier)
                   .initializeServerpodSessionManager(authCaller: authCaller!),
             ...(initializers ?? []),
             () async {
@@ -126,7 +127,9 @@ class NitApp extends HookConsumerWidget {
                 _router = NitRouter.prepareRouter(
                   navigationZones: navigationZones!,
                   refreshListenable: authCaller != null
-                      ? ref.read(sessionManagerStateProvider)
+                      ? ref
+                          .read(nitSessionStateProvider)
+                          .serverpodSessionManager
                       : null,
                   redirect: null,
                 );

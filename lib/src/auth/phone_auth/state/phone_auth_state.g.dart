@@ -1,27 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'session_manager_state.dart';
+part of 'phone_auth_state.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sessionManagerStateHash() =>
-    r'40a7a6fee4d8702d3879e4160e9ecbd8cf3f25ef';
+String _$phoneAuthStateHash() => r'b2dfcc8cc6dd9245056450f177dc27edebee17bd';
 
-/// See also [SessionManagerState].
-@ProviderFor(SessionManagerState)
-final sessionManagerStateProvider =
-    NotifierProvider<SessionManagerState, SessionManager>.internal(
-  SessionManagerState.new,
-  name: r'sessionManagerStateProvider',
+/// See also [PhoneAuthState].
+@ProviderFor(PhoneAuthState)
+final phoneAuthStateProvider =
+    AutoDisposeNotifierProvider<PhoneAuthState, PhoneAuthStateModel>.internal(
+  PhoneAuthState.new,
+  name: r'phoneAuthStateProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$sessionManagerStateHash,
+      : _$phoneAuthStateHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$SessionManagerState = Notifier<SessionManager>;
+typedef _$PhoneAuthState = AutoDisposeNotifier<PhoneAuthStateModel>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

@@ -6,7 +6,7 @@ part of 'nit_session_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$nitSessionStateHash() => r'ff00fe56aaa0f57ef43f92fafc11edff573d5116';
+String _$nitSessionStateHash() => r'9b9be97845bcfe7a838a9bb84061de8771a01f76';
 
 /// See also [NitSessionState].
 @ProviderFor(NitSessionState)

@@ -16,6 +16,8 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$NitSessionStateModel {
+  SessionManager? get serverpodSessionManager =>
+      throw _privateConstructorUsedError;
   UserInfo? get signedInUser => throw _privateConstructorUsedError;
   StreamingConnectionStatus get websocketStatus =>
       throw _privateConstructorUsedError;
@@ -32,7 +34,9 @@ abstract class $NitSessionStateModelCopyWith<$Res> {
       _$NitSessionStateModelCopyWithImpl<$Res, NitSessionStateModel>;
   @useResult
   $Res call(
-      {UserInfo? signedInUser, StreamingConnectionStatus websocketStatus});
+      {SessionManager? serverpodSessionManager,
+      UserInfo? signedInUser,
+      StreamingConnectionStatus websocketStatus});
 }
 
 /// @nodoc
@@ -49,10 +53,15 @@ class _$NitSessionStateModelCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? serverpodSessionManager = freezed,
     Object? signedInUser = freezed,
     Object? websocketStatus = null,
   }) {
     return _then(_value.copyWith(
+      serverpodSessionManager: freezed == serverpodSessionManager
+          ? _value.serverpodSessionManager
+          : serverpodSessionManager // ignore: cast_nullable_to_non_nullable
+              as SessionManager?,
       signedInUser: freezed == signedInUser
           ? _value.signedInUser
           : signedInUser // ignore: cast_nullable_to_non_nullable
@@ -74,7 +83,9 @@ abstract class _$$NitSessionStateModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {UserInfo? signedInUser, StreamingConnectionStatus websocketStatus});
+      {SessionManager? serverpodSessionManager,
+      UserInfo? signedInUser,
+      StreamingConnectionStatus websocketStatus});
 }
 
 /// @nodoc
@@ -88,10 +99,15 @@ class __$$NitSessionStateModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? serverpodSessionManager = freezed,
     Object? signedInUser = freezed,
     Object? websocketStatus = null,
   }) {
     return _then(_$NitSessionStateModelImpl(
+      serverpodSessionManager: freezed == serverpodSessionManager
+          ? _value.serverpodSessionManager
+          : serverpodSessionManager // ignore: cast_nullable_to_non_nullable
+              as SessionManager?,
       signedInUser: freezed == signedInUser
           ? _value.signedInUser
           : signedInUser // ignore: cast_nullable_to_non_nullable
@@ -108,8 +124,12 @@ class __$$NitSessionStateModelImplCopyWithImpl<$Res>
 
 class _$NitSessionStateModelImpl implements _NitSessionStateModel {
   const _$NitSessionStateModelImpl(
-      {required this.signedInUser, required this.websocketStatus});
+      {required this.serverpodSessionManager,
+      required this.signedInUser,
+      required this.websocketStatus});
 
+  @override
+  final SessionManager? serverpodSessionManager;
   @override
   final UserInfo? signedInUser;
   @override
@@ -117,7 +137,7 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
 
   @override
   String toString() {
-    return 'NitSessionStateModel(signedInUser: $signedInUser, websocketStatus: $websocketStatus)';
+    return 'NitSessionStateModel(serverpodSessionManager: $serverpodSessionManager, signedInUser: $signedInUser, websocketStatus: $websocketStatus)';
   }
 
   @override
@@ -125,6 +145,9 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$NitSessionStateModelImpl &&
+            (identical(
+                    other.serverpodSessionManager, serverpodSessionManager) ||
+                other.serverpodSessionManager == serverpodSessionManager) &&
             (identical(other.signedInUser, signedInUser) ||
                 other.signedInUser == signedInUser) &&
             (identical(other.websocketStatus, websocketStatus) ||
@@ -132,7 +155,8 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, signedInUser, websocketStatus);
+  int get hashCode => Object.hash(
+      runtimeType, serverpodSessionManager, signedInUser, websocketStatus);
 
   @JsonKey(ignore: true)
   @override
@@ -145,10 +169,13 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
 
 abstract class _NitSessionStateModel implements NitSessionStateModel {
   const factory _NitSessionStateModel(
-          {required final UserInfo? signedInUser,
+          {required final SessionManager? serverpodSessionManager,
+          required final UserInfo? signedInUser,
           required final StreamingConnectionStatus websocketStatus}) =
       _$NitSessionStateModelImpl;
 
+  @override
+  SessionManager? get serverpodSessionManager;
   @override
   UserInfo? get signedInUser;
   @override

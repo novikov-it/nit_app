@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nit_app/nit_app.dart';
+import 'package:nit_app/src/auth/phone_auth/phone_auth_widget.dart';
+import 'package:nit_app/src/session/nit_session_state.dart';
 
 extension NitAppBuildContextExtension on BuildContext {
   ThemeData get theme => Theme.of(this);
@@ -24,12 +27,28 @@ extension NitAppBuildContextExtension on BuildContext {
 
   bool get isMobile => MediaQuery.sizeOf(this).width <= maxMobileScreenWidth;
 
-  showBottomSheetOrDialog<T>(
+  requireLogin(
+    WidgetRef ref, {
+    Function()? thenAction,
+  }) async {
+    final userLoggedIn =
+        ref.read(nitSessionStateProvider).signedInUser != null ||
+            true ==
+                await showBottomSheetOrDialog<bool>(
+                  const DialogLayout(
+                    child: PhoneAuthWidget(),
+                  ),
+                );
+
+    if (userLoggedIn && thenAction != null) thenAction();
+  }
+
+  Future<T?> showBottomSheetOrDialog<T>(
     Widget child,
   ) =>
       isMobile ? showForceBottomSheetDialog(child) : showForceDialog(child);
 
-  showForceDialog<T>(
+  Future<T?> showForceDialog<T>(
     Widget child,
   ) =>
       showDialog<T>(
@@ -82,7 +101,7 @@ extension NitAppBuildContextExtension on BuildContext {
         },
       );
 
-  showForceBottomSheetDialog<T>(
+  Future<T?> showForceBottomSheetDialog<T>(
     Widget child,
   ) =>
       showModalBottomSheet<T>(

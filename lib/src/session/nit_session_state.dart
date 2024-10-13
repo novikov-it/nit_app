@@ -1,7 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:nit_app/src/session_manager/session_manager_state.dart';
+// import 'package:nit_app/src/session_manager/session_manager_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/module.dart';
+import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 
 part 'nit_session_state.g.dart';
 part 'nit_session_state.freezed.dart';
@@ -27,12 +28,36 @@ part 'nit_session_state.freezed.dart';
 class NitSessionState extends _$NitSessionState {
   // late final StreamingConnectionHandler _connectionHandler;
 
+  SessionManager? _sessionManager;
+
   @override
   NitSessionStateModel build() {
     return NitSessionStateModel(
-      signedInUser: ref.watch(sessionManagerStateProvider).signedInUser,
+      serverpodSessionManager: _sessionManager,
+      signedInUser: _sessionManager?.signedInUser,
       websocketStatus: StreamingConnectionStatus.disconnected,
     );
+  }
+
+  Future<bool> initializeServerpodSessionManager({
+    required Caller authCaller,
+  }) async {
+    // The session manager keeps track of the signed-in state of the user. You
+    // can query it to see if the user is currently signed in and get information
+    // about the user.
+    _sessionManager = SessionManager(
+      caller: authCaller,
+    );
+
+    if (await _sessionManager!.initialize()) {
+      state = state.copyWith(
+        serverpodSessionManager: _sessionManager,
+        signedInUser: _sessionManager!.signedInUser,
+      );
+      return true;
+    }
+
+    return false;
   }
 
   // _updateConnectionStatus(StreamingConnectionStatus status) {
@@ -99,6 +124,7 @@ class NitSessionState extends _$NitSessionState {
 @freezed
 class NitSessionStateModel with _$NitSessionStateModel {
   const factory NitSessionStateModel({
+    required SessionManager? serverpodSessionManager,
     required UserInfo? signedInUser,
     required StreamingConnectionStatus websocketStatus,
   }) = _NitSessionStateModel;
