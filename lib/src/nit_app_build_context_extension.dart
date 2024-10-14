@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_app/src/auth/phone_auth/phone_auth_widget.dart';
-import 'package:nit_app/src/session/nit_session_state.dart';
 
 extension NitAppBuildContextExtension on BuildContext {
   ThemeData get theme => Theme.of(this);
@@ -35,8 +34,10 @@ extension NitAppBuildContextExtension on BuildContext {
         ref.read(nitSessionStateProvider).signedInUser != null ||
             true ==
                 await showBottomSheetOrDialog<bool>(
-                  const DialogLayout(
-                    child: PhoneAuthWidget(),
+                  DialogLayout(
+                    child: PhoneAuthWidget(
+                      onSuccess: pop,
+                    ),
                   ),
                 );
 
@@ -109,7 +110,7 @@ extension NitAppBuildContextExtension on BuildContext {
         constraints: BoxConstraints.loose(
           Size(
             MediaQuery.of(this).size.width,
-            MediaQuery.of(this).size.height, // * 0.8,
+            MediaQuery.of(this).size.height * 0.8,
           ),
         ),
         shape: const RoundedRectangleBorder(
@@ -145,6 +146,7 @@ extension NitAppBuildContextExtension on BuildContext {
                   ),
                 ),
                 const Gap(16),
+                // child,
                 Flexible(
                   fit: FlexFit.loose,
                   child: child,

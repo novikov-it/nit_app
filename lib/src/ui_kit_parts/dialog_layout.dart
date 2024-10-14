@@ -17,7 +17,12 @@ class DialogLayout extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (title != null) titleText(context),
+        if (title != null)
+          Text(
+            title!,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
         const Gap(8),
         Flexible(
           fit: FlexFit.loose,
@@ -25,34 +30,22 @@ class DialogLayout extends StatelessWidget {
         ),
         if ((buttons?.isNotEmpty) ?? false) ...[
           Gap(context.isMobile ? 16 : 24),
-          _buttonsRow(),
+          Row(
+            children: buttons!.asMap().entries.map((entry) {
+              int index = entry.key;
+              Widget button = entry.value;
+              return Expanded(
+                child: Row(
+                  children: [
+                    if (index > 0) const Gap(8),
+                    Expanded(child: button),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
         ]
       ],
-    );
-  }
-
-  Text titleText(BuildContext context) {
-    return Text(
-      title!,
-      textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.headlineLarge,
-    );
-  }
-
-  Row _buttonsRow() {
-    return Row(
-      children: buttons!.asMap().entries.map((entry) {
-        int index = entry.key;
-        Widget button = entry.value;
-        return Expanded(
-          child: Row(
-            children: [
-              if (index > 0) const Gap(8),
-              Expanded(child: button),
-            ],
-          ),
-        );
-      }).toList(),
     );
   }
 }

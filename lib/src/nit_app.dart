@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nit_app/src/tools/deeplinks.dart';
-import 'package:nit_app/src/session_manager/session_manager_state.dart';
 import 'package:nit_router/nit_router.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart';

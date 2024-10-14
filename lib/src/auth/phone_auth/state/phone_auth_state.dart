@@ -34,10 +34,15 @@ class PhoneAuthState extends _$PhoneAuthState {
     });
   }
 
-  verifyOtp() async {
-    await PhoneAuthController(
+  Future<bool> verifyOtp() async {
+    // return null !=
+    final res = await PhoneAuthController(
             ref.read(nitSessionStateProvider).serverpodSessionManager!)
         .verifyOTP(state.phoneController.text, state.otpController.text);
+
+    print(res);
+
+    return res != null;
     // .then((userInfo) {
     //   if(userInfo == null) {
 

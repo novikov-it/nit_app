@@ -51,9 +51,26 @@ class NitSessionState extends _$NitSessionState {
 
     if (await _sessionManager!.initialize()) {
       state = state.copyWith(
-        serverpodSessionManager: _sessionManager,
+        serverpodSessionManager: _sessionManager!,
         signedInUser: _sessionManager!.signedInUser,
       );
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> signOut() async {
+    // final doctorUserId = sessionManager.signedInUser!.id!;
+    if (_sessionManager != null && await _sessionManager!.signOut()) {
+      state = state.copyWith(signedInUser: null);
+      // _connectionHandler.close();
+      // await client.closeStreamingConnection();
+
+      // client.str
+
+      // sessionManager.registerSignedInUser(userInfo, authenticationKeyId, authenticationKey)
+
       return true;
     }
 

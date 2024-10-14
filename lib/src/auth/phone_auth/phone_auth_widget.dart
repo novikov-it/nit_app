@@ -3,12 +3,19 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'state/phone_auth_state.dart';
 
 class PhoneAuthWidget extends HookConsumerWidget {
-  const PhoneAuthWidget({super.key});
+  const PhoneAuthWidget({
+    super.key,
+    this.onSuccess,
+  });
+
+  final Function()? onSuccess;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(phoneAuthStateProvider);
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         if (!state.otpRequested)
           TextField(
@@ -31,8 +38,13 @@ class PhoneAuthWidget extends HookConsumerWidget {
           ),
         if (state.otpRequested)
           ElevatedButton(
-            onPressed: ref.read(phoneAuthStateProvider.notifier).verifyOtp,
-            child: const Text('Запросить код подтверждения'),
+            onPressed: () async {
+              await ref
+                  .read(phoneAuthStateProvider.notifier)
+                  .verifyOtp()
+                  .then((res) => res && onSuccess != null ? onSuccess!() : {});
+            },
+            child: const Text('Проверить код'),
           )
       ],
     );
