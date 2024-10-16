@@ -1,7 +1,7 @@
 part of '../nit_app_ui_kit.dart';
 
-class DialogLayout extends StatelessWidget {
-  const DialogLayout({
+class NitDialogLayout extends StatelessWidget {
+  const NitDialogLayout({
     super.key,
     this.title,
     required this.child,

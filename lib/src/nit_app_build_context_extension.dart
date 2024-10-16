@@ -34,7 +34,7 @@ extension NitAppBuildContextExtension on BuildContext {
         ref.read(nitSessionStateProvider).signedInUser != null ||
             true ==
                 await showBottomSheetOrDialog<bool>(
-                  DialogLayout(
+                  NitDialogLayout(
                     child: PhoneAuthWidget(
                       onSuccess: pop,
                     ),
