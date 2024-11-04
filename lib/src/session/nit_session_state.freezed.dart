@@ -22,7 +22,9 @@ mixin _$NitSessionStateModel {
   StreamingConnectionStatus get websocketStatus =>
       throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of NitSessionStateModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $NitSessionStateModelCopyWith<NitSessionStateModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -50,6 +52,8 @@ class _$NitSessionStateModelCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of NitSessionStateModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -96,6 +100,8 @@ class __$$NitSessionStateModelImplCopyWithImpl<$Res>
       $Res Function(_$NitSessionStateModelImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of NitSessionStateModel
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -158,7 +164,9 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
   int get hashCode => Object.hash(
       runtimeType, serverpodSessionManager, signedInUser, websocketStatus);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of NitSessionStateModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$NitSessionStateModelImplCopyWith<_$NitSessionStateModelImpl>
@@ -180,8 +188,11 @@ abstract class _NitSessionStateModel implements NitSessionStateModel {
   UserInfo? get signedInUser;
   @override
   StreamingConnectionStatus get websocketStatus;
+
+  /// Create a copy of NitSessionStateModel
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$NitSessionStateModelImplCopyWith<_$NitSessionStateModelImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

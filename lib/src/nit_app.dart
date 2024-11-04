@@ -7,11 +7,16 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:nit_app/src/chats/state/chat_controller_state.dart';
+import 'package:nit_app/src/repository/object_wrapper.dart';
 import 'package:nit_app/src/tools/deeplinks.dart';
 import 'package:nit_router/nit_router.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:serverpod_auth_client/serverpod_auth_client.dart';
-
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as auth;
+import 'package:serverpod_chat_client/serverpod_chat_client.dart' as chats;
+import 'package:serverpod_client/serverpod_client.dart';
+import 'repository/endpoint_crud.dart';
+import 'repository/entity_manager_state.dart';
 import 'session/nit_session_state.dart';
 import 'tools/firebase.dart';
 
@@ -48,7 +53,11 @@ class NitApp extends HookConsumerWidget {
     required this.title,
     this.routerProvider,
     this.navigationZones,
+    this.endpointCaller,
+    this.serializationManager,
     this.authCaller,
+    this.chatsCaller,
+    // this.serializationManager,
     this.deeplinkHandler,
     this.initializers,
     this.loadingScreen = const Center(
@@ -73,7 +82,11 @@ class NitApp extends HookConsumerWidget {
   // final GoRouter Function() routerInitializer;
   final List<List<NavigationZoneEnum>>? navigationZones;
   final Provider<GoRouter>? routerProvider;
-  final Caller? authCaller;
+  final ServerpodClientShared? endpointCaller;
+  final SerializationManager? serializationManager;
+  final auth.Caller? authCaller;
+  final chats.Caller? chatsCaller;
+  // final SerializationManager? serializationManager;
   final void Function(WidgetRef, String)? deeplinkHandler;
 
   final List<Future<bool> Function()>? initializers;
@@ -113,11 +126,35 @@ class NitApp extends HookConsumerWidget {
 
               return true;
             },
+            // if (serializationManager != null)
+            //   () async {
+            //     ObjectWrapper.serializationManager = serializationManager!;
+            //     return true;
+            //   },
+            if (serializationManager != null)
+              // () => initializeServerpodSessionManager(authCaller: authCaller!),
+              () async {
+                ObjectWrapper.protocol = serializationManager!;
+                return true;
+              },
+            if (endpointCaller != null)
+              // () => initializeServerpodSessionManager(authCaller: authCaller!),
+              () async {
+                crud = EndpointCrud(endpointCaller!);
+                return true;
+              },
             if (authCaller != null)
               // () => initializeServerpodSessionManager(authCaller: authCaller!),
-              () => ref
-                  .read(nitSessionStateProvider.notifier)
-                  .initializeServerpodSessionManager(authCaller: authCaller!),
+              () => ref.read(nitSessionStateProvider.notifier).init(
+                    client: endpointCaller,
+                    authCaller: authCaller,
+                  ),
+            if (chatsCaller != null)
+              // () => initializeServerpodSessionManager(authCaller: authCaller!),
+              () async {
+                chatsModuleCaller = chatsCaller!;
+                return true;
+              },
             ...(initializers ?? []),
             () async {
               if (routerProvider != null) {

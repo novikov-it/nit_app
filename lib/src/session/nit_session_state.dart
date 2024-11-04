@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 // import 'package:nit_app/src/session_manager/session_manager_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -7,27 +8,9 @@ import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart
 part 'nit_session_state.g.dart';
 part 'nit_session_state.freezed.dart';
 
-// extension NitSessionStateExtension on WidgetRef {
-//   int get signedInUserId => read(signedInUserProvider)!.id!;
-//   bool get userIsBlocked => read(signedInUserProvider)!.blocked;
-// }
-
-// extension NitSessionStateRefExtension on Ref {
-//   int get signedInUserId => read(signedInUserProvider)!.id!;
-//   bool get userIsBlocked => read(signedInUserProvider)!.blocked;
-// }
-
-// @riverpod
-// UserInfo? signedInUser(SignedInUserRef ref) => null;
-
-// final signedInUserProvider = StateProvider<UserInfo?>(
-//   (ref) => null,
-// );
-
 @Riverpod(keepAlive: true)
 class NitSessionState extends _$NitSessionState {
-  // late final StreamingConnectionHandler _connectionHandler;
-
+  StreamingConnectionHandler? _connectionHandler;
   SessionManager? _sessionManager;
 
   @override
@@ -39,31 +22,92 @@ class NitSessionState extends _$NitSessionState {
     );
   }
 
-  Future<bool> initializeServerpodSessionManager({
-    required Caller authCaller,
+  toggleSocket() {
+    if (_connectionHandler?.status.status ==
+        StreamingConnectionStatus.disconnected) {
+      _connectionHandler!.connect();
+    }
+
+    if (_connectionHandler?.status.status ==
+        StreamingConnectionStatus.connected) {
+      _connectionHandler!.close();
+    }
+  }
+
+  Future<bool> init({
+    required ServerpodClientShared? client,
+    required Caller? authCaller,
   }) async {
+    if (client != null) {
+      _connectionHandler = StreamingConnectionHandler(
+        client: client,
+        retryEverySeconds: 1,
+        listener: (connectionState) async {
+          debugPrint('listener called ${connectionState.status}');
+          _refresh();
+        },
+      );
+
+      _connectionHandler!.connect();
+    }
+
     // The session manager keeps track of the signed-in state of the user. You
     // can query it to see if the user is currently signed in and get information
     // about the user.
-    _sessionManager = SessionManager(
-      caller: authCaller,
-    );
-
-    if (await _sessionManager!.initialize()) {
-      state = state.copyWith(
-        serverpodSessionManager: _sessionManager!,
-        signedInUser: _sessionManager!.signedInUser,
+    if (authCaller != null) {
+      _sessionManager = SessionManager(
+        caller: authCaller,
       );
-      return true;
+
+      if (await _sessionManager!.initialize()) {
+        state = state.copyWith(
+          serverpodSessionManager: _sessionManager!,
+          signedInUser: _sessionManager!.signedInUser,
+        );
+
+        _sessionManager!.addListener(_refresh);
+
+        return true;
+      }
+      return false;
+    }
+    return true;
+  }
+
+  _refresh() async {
+    if (state.signedInUser != _sessionManager?.signedInUser) {
+      // _connectionHandler?.close();
+      _connectionHandler?.client.closeStreamingConnection();
+      // _connectionHandler?.client.openStreamingConnection();
+      // _connectionHandler?.connect();
     }
 
-    return false;
+    state = NitSessionStateModel(
+      serverpodSessionManager: _sessionManager,
+      signedInUser: _sessionManager?.signedInUser,
+      websocketStatus: _connectionHandler?.status.status ??
+          StreamingConnectionStatus.disconnected,
+    );
+    // state = state.copyWith(
+    //   sessionReady: status == StreamingConnectionStatus.connected &&
+    //       sessionManager.signedInUser != null,
+    //   websocketStatus: status,
+    // );
+
+    //   // if (user != null && status == StreamingConnectionStatus.connected) {
+
+    //   // }
+    //   return true;
+    // } else {
+    //   await client.closeStreamingConnection();
+    //   return false;
+    // }
   }
 
   Future<bool> signOut() async {
     // final doctorUserId = sessionManager.signedInUser!.id!;
     if (_sessionManager != null && await _sessionManager!.signOut()) {
-      state = state.copyWith(signedInUser: null);
+      // state = state.copyWith(signedInUser: null);
       // _connectionHandler.close();
       // await client.closeStreamingConnection();
 

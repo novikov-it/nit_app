@@ -35,6 +35,7 @@ extension NitAppBuildContextExtension on BuildContext {
             true ==
                 await showBottomSheetOrDialog<bool>(
                   NitDialogLayout(
+                    title: 'Войдите в приложение',
                     child: PhoneAuthWidget(
                       onSuccess: pop,
                     ),

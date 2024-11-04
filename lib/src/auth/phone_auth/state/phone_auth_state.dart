@@ -13,9 +13,14 @@ class PhoneAuthState extends _$PhoneAuthState {
   PhoneAuthStateModel build() {
     return PhoneAuthStateModel(
       otpRequested: false,
+      everythingAccepted: false,
       phoneController: TextEditingController(),
       otpController: TextEditingController(),
     );
+  }
+
+  toggleAcceptance() {
+    state = state.copyWith(everythingAccepted: !state.everythingAccepted);
   }
 
   requestOtp() async {
@@ -40,7 +45,7 @@ class PhoneAuthState extends _$PhoneAuthState {
             ref.read(nitSessionStateProvider).serverpodSessionManager!)
         .verifyOTP(state.phoneController.text, state.otpController.text);
 
-    print(res);
+    debugPrint(res.toString());
 
     return res != null;
     // .then((userInfo) {
@@ -55,6 +60,7 @@ class PhoneAuthState extends _$PhoneAuthState {
 class PhoneAuthStateModel with _$PhoneAuthStateModel {
   const factory PhoneAuthStateModel({
     required bool otpRequested,
+    required bool everythingAccepted,
     required TextEditingController phoneController,
     required TextEditingController otpController,
     int? otpRequestTimer,

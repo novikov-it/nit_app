@@ -15,6 +15,7 @@ class NitDialogLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      // shrinkWrap: true,
       mainAxisSize: MainAxisSize.min,
       children: [
         if (title != null)
@@ -23,7 +24,7 @@ class NitDialogLayout extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineLarge,
           ),
-        const Gap(8),
+        const Gap(16),
         Flexible(
           fit: FlexFit.loose,
           child: child,
