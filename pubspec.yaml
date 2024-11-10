@@ -50,10 +50,11 @@ dependencies:
   image_picker: ^1.1.2
   photo_view: ^0.15.0
   chatview: # ^2.2.0
+    # path: ../nit_flutter_chatview
     git:
       url: git@github.com:novikov-it/nit_flutter_chatview.git
       ref: main
-    # path: ../nit_flutter_chatview
+
 
 
 
@@ -72,6 +73,7 @@ dependency_overrides:
   #       path: modules/serverpod_chat/serverpod_chat_client
   #       ref: main
   serverpod_chat_flutter:
+    # path: ../nit_serverpod/modules/serverpod_chat/serverpod_chat_flutter
     git:
         url: git@github.com:novikov-it/nit_serverpod.git
         path: modules/serverpod_chat/serverpod_chat_flutter

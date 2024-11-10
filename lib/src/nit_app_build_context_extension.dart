@@ -16,7 +16,11 @@ extension NitAppBuildContextExtension on BuildContext {
 
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
 
-  popOnTrue(bool value) => value ? pop() : {};
+  popOnTrue(bool value) => mounted && value ? pop() : {};
+
+  // mountedAction(BuildContext context, ())
+  mountedPushNamed(String name) => mounted ? pushNamed(name) : {};
+  mountedGoNamed(String name) => mounted ? goNamed(name) : {};
 
   static final maxMobileScreenWidth =
       (defaultTargetPlatform == TargetPlatform.android ||

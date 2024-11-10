@@ -18,3 +18,5 @@ export 'src/repository/single_item_provider.dart';
 export 'src/chats/nit_chats.dart';
 
 export 'package:nit_router/nit_router.dart';
+
+export 'package:chatview/chatview.dart';

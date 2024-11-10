@@ -17,11 +17,12 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$ChatControllerStateData {
   bool get isReady =>
-      throw _privateConstructorUsedError; // required ChatController serverpodController,
-  chatview.ChatController get chatviewController =>
+      throw _privateConstructorUsedError; // required chatview.ChatViewState status,
+  serverpod_chat_flutter.ChatController? get serverpodController =>
       throw _privateConstructorUsedError;
-  bool get hasMessages => throw _privateConstructorUsedError;
-  bool get hasUnreadMessages => throw _privateConstructorUsedError;
+  chatview.ChatController get chatViewController =>
+      throw _privateConstructorUsedError; // required bool hasMessages,
+  int get unreadMessageCount => throw _privateConstructorUsedError;
   ChatMessage? get lastMessage => throw _privateConstructorUsedError;
 
   /// Create a copy of ChatControllerStateData
@@ -39,9 +40,9 @@ abstract class $ChatControllerStateDataCopyWith<$Res> {
   @useResult
   $Res call(
       {bool isReady,
-      chatview.ChatController chatviewController,
-      bool hasMessages,
-      bool hasUnreadMessages,
+      serverpod_chat_flutter.ChatController? serverpodController,
+      chatview.ChatController chatViewController,
+      int unreadMessageCount,
       ChatMessage? lastMessage});
 }
 
@@ -62,9 +63,9 @@ class _$ChatControllerStateDataCopyWithImpl<$Res,
   @override
   $Res call({
     Object? isReady = null,
-    Object? chatviewController = null,
-    Object? hasMessages = null,
-    Object? hasUnreadMessages = null,
+    Object? serverpodController = freezed,
+    Object? chatViewController = null,
+    Object? unreadMessageCount = null,
     Object? lastMessage = freezed,
   }) {
     return _then(_value.copyWith(
@@ -72,18 +73,18 @@ class _$ChatControllerStateDataCopyWithImpl<$Res,
           ? _value.isReady
           : isReady // ignore: cast_nullable_to_non_nullable
               as bool,
-      chatviewController: null == chatviewController
-          ? _value.chatviewController
-          : chatviewController // ignore: cast_nullable_to_non_nullable
+      serverpodController: freezed == serverpodController
+          ? _value.serverpodController
+          : serverpodController // ignore: cast_nullable_to_non_nullable
+              as serverpod_chat_flutter.ChatController?,
+      chatViewController: null == chatViewController
+          ? _value.chatViewController
+          : chatViewController // ignore: cast_nullable_to_non_nullable
               as chatview.ChatController,
-      hasMessages: null == hasMessages
-          ? _value.hasMessages
-          : hasMessages // ignore: cast_nullable_to_non_nullable
-              as bool,
-      hasUnreadMessages: null == hasUnreadMessages
-          ? _value.hasUnreadMessages
-          : hasUnreadMessages // ignore: cast_nullable_to_non_nullable
-              as bool,
+      unreadMessageCount: null == unreadMessageCount
+          ? _value.unreadMessageCount
+          : unreadMessageCount // ignore: cast_nullable_to_non_nullable
+              as int,
       lastMessage: freezed == lastMessage
           ? _value.lastMessage
           : lastMessage // ignore: cast_nullable_to_non_nullable
@@ -103,9 +104,9 @@ abstract class _$$ChatControllerStateDataImplCopyWith<$Res>
   @useResult
   $Res call(
       {bool isReady,
-      chatview.ChatController chatviewController,
-      bool hasMessages,
-      bool hasUnreadMessages,
+      serverpod_chat_flutter.ChatController? serverpodController,
+      chatview.ChatController chatViewController,
+      int unreadMessageCount,
       ChatMessage? lastMessage});
 }
 
@@ -125,9 +126,9 @@ class __$$ChatControllerStateDataImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? isReady = null,
-    Object? chatviewController = null,
-    Object? hasMessages = null,
-    Object? hasUnreadMessages = null,
+    Object? serverpodController = freezed,
+    Object? chatViewController = null,
+    Object? unreadMessageCount = null,
     Object? lastMessage = freezed,
   }) {
     return _then(_$ChatControllerStateDataImpl(
@@ -135,18 +136,18 @@ class __$$ChatControllerStateDataImplCopyWithImpl<$Res>
           ? _value.isReady
           : isReady // ignore: cast_nullable_to_non_nullable
               as bool,
-      chatviewController: null == chatviewController
-          ? _value.chatviewController
-          : chatviewController // ignore: cast_nullable_to_non_nullable
+      serverpodController: freezed == serverpodController
+          ? _value.serverpodController
+          : serverpodController // ignore: cast_nullable_to_non_nullable
+              as serverpod_chat_flutter.ChatController?,
+      chatViewController: null == chatViewController
+          ? _value.chatViewController
+          : chatViewController // ignore: cast_nullable_to_non_nullable
               as chatview.ChatController,
-      hasMessages: null == hasMessages
-          ? _value.hasMessages
-          : hasMessages // ignore: cast_nullable_to_non_nullable
-              as bool,
-      hasUnreadMessages: null == hasUnreadMessages
-          ? _value.hasUnreadMessages
-          : hasUnreadMessages // ignore: cast_nullable_to_non_nullable
-              as bool,
+      unreadMessageCount: null == unreadMessageCount
+          ? _value.unreadMessageCount
+          : unreadMessageCount // ignore: cast_nullable_to_non_nullable
+              as int,
       lastMessage: freezed == lastMessage
           ? _value.lastMessage
           : lastMessage // ignore: cast_nullable_to_non_nullable
@@ -160,26 +161,27 @@ class __$$ChatControllerStateDataImplCopyWithImpl<$Res>
 class _$ChatControllerStateDataImpl implements _ChatControllerStateData {
   const _$ChatControllerStateDataImpl(
       {required this.isReady,
-      required this.chatviewController,
-      required this.hasMessages,
-      required this.hasUnreadMessages,
+      required this.serverpodController,
+      required this.chatViewController,
+      required this.unreadMessageCount,
       required this.lastMessage});
 
   @override
   final bool isReady;
-// required ChatController serverpodController,
+// required chatview.ChatViewState status,
   @override
-  final chatview.ChatController chatviewController;
+  final serverpod_chat_flutter.ChatController? serverpodController;
   @override
-  final bool hasMessages;
+  final chatview.ChatController chatViewController;
+// required bool hasMessages,
   @override
-  final bool hasUnreadMessages;
+  final int unreadMessageCount;
   @override
   final ChatMessage? lastMessage;
 
   @override
   String toString() {
-    return 'ChatControllerStateData(isReady: $isReady, chatviewController: $chatviewController, hasMessages: $hasMessages, hasUnreadMessages: $hasUnreadMessages, lastMessage: $lastMessage)';
+    return 'ChatControllerStateData(isReady: $isReady, serverpodController: $serverpodController, chatViewController: $chatViewController, unreadMessageCount: $unreadMessageCount, lastMessage: $lastMessage)';
   }
 
   @override
@@ -188,19 +190,19 @@ class _$ChatControllerStateDataImpl implements _ChatControllerStateData {
         (other.runtimeType == runtimeType &&
             other is _$ChatControllerStateDataImpl &&
             (identical(other.isReady, isReady) || other.isReady == isReady) &&
-            (identical(other.chatviewController, chatviewController) ||
-                other.chatviewController == chatviewController) &&
-            (identical(other.hasMessages, hasMessages) ||
-                other.hasMessages == hasMessages) &&
-            (identical(other.hasUnreadMessages, hasUnreadMessages) ||
-                other.hasUnreadMessages == hasUnreadMessages) &&
+            (identical(other.serverpodController, serverpodController) ||
+                other.serverpodController == serverpodController) &&
+            (identical(other.chatViewController, chatViewController) ||
+                other.chatViewController == chatViewController) &&
+            (identical(other.unreadMessageCount, unreadMessageCount) ||
+                other.unreadMessageCount == unreadMessageCount) &&
             (identical(other.lastMessage, lastMessage) ||
                 other.lastMessage == lastMessage));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isReady, chatviewController,
-      hasMessages, hasUnreadMessages, lastMessage);
+  int get hashCode => Object.hash(runtimeType, isReady, serverpodController,
+      chatViewController, unreadMessageCount, lastMessage);
 
   /// Create a copy of ChatControllerStateData
   /// with the given fields replaced by the non-null parameter values.
@@ -215,19 +217,19 @@ class _$ChatControllerStateDataImpl implements _ChatControllerStateData {
 abstract class _ChatControllerStateData implements ChatControllerStateData {
   const factory _ChatControllerStateData(
       {required final bool isReady,
-      required final chatview.ChatController chatviewController,
-      required final bool hasMessages,
-      required final bool hasUnreadMessages,
+      required final serverpod_chat_flutter.ChatController? serverpodController,
+      required final chatview.ChatController chatViewController,
+      required final int unreadMessageCount,
       required final ChatMessage? lastMessage}) = _$ChatControllerStateDataImpl;
 
   @override
-  bool get isReady; // required ChatController serverpodController,
+  bool get isReady; // required chatview.ChatViewState status,
   @override
-  chatview.ChatController get chatviewController;
+  serverpod_chat_flutter.ChatController? get serverpodController;
   @override
-  bool get hasMessages;
+  chatview.ChatController get chatViewController; // required bool hasMessages,
   @override
-  bool get hasUnreadMessages;
+  int get unreadMessageCount;
   @override
   ChatMessage? get lastMessage;
 

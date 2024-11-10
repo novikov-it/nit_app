@@ -75,8 +75,12 @@ class NitSessionState extends _$NitSessionState {
   }
 
   _refresh() async {
-    if (state.signedInUser != _sessionManager?.signedInUser) {
+    if (state.signedInUser != _sessionManager?.signedInUser &&
+        _connectionHandler?.status.status ==
+            StreamingConnectionStatus.connected) {
       // _connectionHandler?.close();
+
+      // _connectionHandler.client.openStreamingConnection()
       _connectionHandler?.client.closeStreamingConnection();
       // _connectionHandler?.client.openStreamingConnection();
       // _connectionHandler?.connect();
