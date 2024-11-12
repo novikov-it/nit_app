@@ -7,55 +7,61 @@ import 'package:serverpod_chat_client/module.dart';
 
 class MessageCard extends ConsumerWidget {
   final ChatMessage message;
+  final bool sentByMe;
 
-  const MessageCard({required this.message, super.key});
+  const MessageCard({
+    super.key,
+    required this.message,
+    required this.sentByMe,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (message.senderInfo == null) {
-      final pieces = message.message.split(':');
-      return Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Divider(
-                thickness: 10,
-                color: Colors.black,
-              ),
-              Text(
-                '${pieces[0]}\n${DateFormat('HH:mm, dd.MM').format(message.time.toLocal())}',
-                style: context.textTheme.labelMedium!,
-                textAlign: TextAlign.center,
-              ),
-              const Divider(
-                thickness: 10,
-                color: Colors.black,
-              ),
-            ],
-          ),
-          if (pieces.length > 1)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Card(
-                elevation: 8,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    pieces[1],
-                  ),
-                ),
-              ),
-            )
-        ],
-      );
-    }
+    // if (message.senderInfo == null) {
+    //   final pieces = message.message.split(':');
+    //   return Column(
+    //     children: [
+    //       Row(
+    //         mainAxisAlignment: MainAxisAlignment.center,
+    //         children: [
+    //           const Divider(
+    //             thickness: 10,
+    //             color: Colors.black,
+    //           ),
+    //           Text(
+    //             '${pieces[0]}\n${DateFormat('HH:mm, dd.MM').format(message.time.toLocal())}',
+    //             style: context.textTheme.labelMedium!,
+    //             textAlign: TextAlign.center,
+    //           ),
+    //           const Divider(
+    //             thickness: 10,
+    //             color: Colors.black,
+    //           ),
+    //         ],
+    //       ),
+    //       if (pieces.length > 1)
+    //         Padding(
+    //           padding: const EdgeInsets.all(8.0),
+    //           child: Card(
+    //             elevation: 8,
+    //             child: Padding(
+    //               padding: const EdgeInsets.all(8.0),
+    //               child: Text(
+    //                 pieces[1],
+    //               ),
+    //             ),
+    //           ),
+    //         )
+    //     ],
+    //   );
+    // }
 
-    final bool fromSelf =
-        message.sender == ref.read(nitSessionStateProvider).signedInUser?.id;
+    // final bool sentByMe = message.sender < 0
+    //     ? message.senderInfo?.userName == ref.read(unauthenticatedUsername)
+    //     : message.sender == ref.read(nitSessionStateProvider).signedInUser?.id;
 
     return Align(
-      alignment: fromSelf ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: sentByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 12,
@@ -65,7 +71,7 @@ class MessageCard extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (!fromSelf)
+            if (!sentByMe)
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: _userAvatar(context),
@@ -82,7 +88,7 @@ class MessageCard extends ConsumerWidget {
                     : MediaQuery.sizeOf(context).width * 0.2,
               ),
               decoration: BoxDecoration(
-                color: fromSelf
+                color: sentByMe
                     ? context.colorScheme.primaryFixedDim
                     : context.colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(8),
@@ -93,27 +99,37 @@ class MessageCard extends ConsumerWidget {
                 children: [
                   Flexible(
                     child: Column(
-                      crossAxisAlignment: fromSelf
+                      crossAxisAlignment: sentByMe
                           ? CrossAxisAlignment.start
                           : CrossAxisAlignment.end,
                       children: [
                         Column(
-                          crossAxisAlignment: fromSelf
+                          crossAxisAlignment: sentByMe
                               ? CrossAxisAlignment.end
                               : CrossAxisAlignment.start,
                           children: [
-                            if (!fromSelf) _senderName(context),
+                            if (!sentByMe)
+                              Text(
+                                message.senderInfo?.fullName ??
+                                    message.senderInfo?.userName ??
+                                    ref.read(unauthenticatedUsername),
+                                style:
+                                    context.textTheme.headlineSmall!.copyWith(
+                                  color: context.colorScheme.onSurface,
+                                  fontSize: 14,
+                                ),
+                              ),
                             if (message.message.isNotEmpty)
-                              _messageText(context, fromSelf),
+                              _messageText(context, sentByMe),
                             if (message.attachments != null &&
                                 message.attachments!.isNotEmpty)
-                              _attachments(fromSelf),
+                              _attachments(sentByMe),
                             const Gap(8),
                           ],
                         ),
                         if (message.attachments != null &&
                             message.attachments!.isNotEmpty)
-                          _timeRow(context, fromSelf),
+                          _timeRow(context, sentByMe),
                       ],
                     ),
                   ),
@@ -122,7 +138,7 @@ class MessageCard extends ConsumerWidget {
                     const Gap(8),
                   if (message.attachments == null ||
                       message.attachments!.isEmpty)
-                    _timeRow(context, fromSelf),
+                    _timeRow(context, sentByMe),
                 ],
               ),
             ),
@@ -165,16 +181,6 @@ class MessageCard extends ConsumerWidget {
         //   ),
         // ),
       ],
-    );
-  }
-
-  Text _senderName(BuildContext context) {
-    return Text(
-      message.senderInfo?.fullName ?? 'Ошибка',
-      style: context.textTheme.headlineSmall!.copyWith(
-        color: context.colorScheme.onSurface,
-        fontSize: 14,
-      ),
     );
   }
 

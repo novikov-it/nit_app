@@ -1,6 +1,4 @@
-import 'package:serverpod_client/serverpod_client.dart';
-
-import 'object_wrapper.dart';
+import 'package:nit_tools_client/nit_tools_client.dart';
 
 class EndpointCrud extends EndpointRef {
   EndpointCrud(super.caller);

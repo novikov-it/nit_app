@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/nit_app.dart';
-import 'package:chatview/chatview.dart' as chatview;
-import 'package:nit_app/src/chats/chatview/utils/chat_view_controller_extension.dart';
-import 'package:nit_app/src/chats/chatview/utils/serverpod_chat_message_extension.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_chat_client/serverpod_chat_client.dart';
-import 'package:serverpod_chat_flutter/serverpod_chat_flutter.dart'
-    as serverpod_chat_flutter;
+import 'package:serverpod_chat_flutter/serverpod_chat_flutter.dart';
 
 part 'chat_controller_state.g.dart';
 part 'chat_controller_state.freezed.dart';
 
 late final Caller chatsModuleCaller;
+
+final unauthenticatedUsername = StateProvider<String>(
+  (ref) => 'Аноним',
+);
 
 // extension ChatControllerStateExtension on ChatControllerStateData {
 //   bool get isReady =>
@@ -24,8 +25,8 @@ class ChatControllerStateData with _$ChatControllerStateData {
   const factory ChatControllerStateData({
     required bool isReady,
     // required chatview.ChatViewState status,
-    required serverpod_chat_flutter.ChatController? serverpodController,
-    required chatview.ChatController chatViewController,
+    required ChatController? serverpodController,
+    // required chatview.ChatController chatViewController,
     // required bool hasMessages,
     required int unreadMessageCount,
     required ChatMessage? lastMessage,
@@ -34,9 +35,9 @@ class ChatControllerStateData with _$ChatControllerStateData {
 
 @riverpod
 class ChatControllerState extends _$ChatControllerState {
-  serverpod_chat_flutter.ChatController? _serverpodController;
-  late final chatview.ChatController _chatViewController;
-  late chatview.ChatUser _currentUser;
+  ChatController? _serverpodController;
+  // late final chatview.ChatController _chatViewController;
+  // late chatview.ChatUser _currentUser;
   late NitSessionStateModel session;
 
   @override
@@ -45,34 +46,37 @@ class ChatControllerState extends _$ChatControllerState {
 
     session = ref.watch(nitSessionStateProvider);
 
-    _currentUser = chatview.ChatUser(
-      id: '${session.signedInUser?.id}',
-      name: '${session.signedInUser?.fullName}',
-      profilePhoto: session.signedInUser?.imageUrl,
-    );
+    // _currentUser = chatview.ChatUser(
+    //   id: '${session.signedInUser?.id}',
+    //   name: '${session.signedInUser?.fullName}',
+    //   profilePhoto: session.signedInUser?.imageUrl,
+    // );
 
-    _chatViewController = chatview.ChatController(
-      initialMessageList: [],
-      scrollController: ScrollController(),
-      currentUser: _currentUser,
-      otherUsers: [], //usersMap.values.toList(),
-    );
+    // _chatViewController = chatview.ChatController(
+    //   initialMessageList: [],
+    //   scrollController: ScrollController(),
+    //   currentUser: _currentUser,
+    //   otherUsers: [], //usersMap.values.toList(),
+    // );
 
     if (session.websocketStatus == StreamingConnectionStatus.connected &&
         _serverpodController == null) {
-      _serverpodController = serverpod_chat_flutter.ChatController(
+      _serverpodController = ChatController(
         channel: channel,
         module: chatsModuleCaller,
         sessionManager:
             ref.read(nitSessionStateProvider).serverpodSessionManager!,
+        unauthenticatedUserName: session.signedInUser != null
+            ? null
+            : ref.read(unauthenticatedUsername),
       );
 
       _serverpodController!.addConnectionStatusListener(
         _connectionStatusListener,
       );
-      _serverpodController!.addMessageReceivedListener(
-        _messageReceivedListener,
-      );
+      // _serverpodController!.addMessageReceivedListener(
+      //   _messageReceivedListener,
+      // );
       _serverpodController!.addUnreadMessagesListener(
         _unreadMessagesListener,
       );
@@ -85,7 +89,7 @@ class ChatControllerState extends _$ChatControllerState {
       isReady: false,
       // status: ChatViewState.loading,
       serverpodController: _serverpodController,
-      chatViewController: _chatViewController,
+      // chatViewController: _chatViewController,
       // hasMessages: false,
       unreadMessageCount: _unreadMessageCount,
       lastMessage: _serverpodController?.messages.lastOrNull,
@@ -97,10 +101,10 @@ class ChatControllerState extends _$ChatControllerState {
     if (_serverpodController!.joinedChannel) {
       debugPrint('joined ${_serverpodController!.channel}');
 
-      _chatViewController.loadMessagesFromServerpod(
-        messages: _serverpodController!.messages,
-        lastReadMessageId: _serverpodController!.lastReadMessageId,
-      );
+      // _chatViewController.loadMessagesFromServerpod(
+      //   messages: _serverpodController!.messages,
+      //   lastReadMessageId: _serverpodController!.lastReadMessageId,
+      // );
 
       state = state.copyWith(
         isReady: true,
@@ -110,13 +114,25 @@ class ChatControllerState extends _$ChatControllerState {
     }
   }
 
-  int get _unreadMessageCount => _serverpodController == null
-      ? 0
-      : _serverpodController!.messages
-          .where((e) =>
-              e.id! > _serverpodController!.lastReadMessageId &&
-              e.sender != session.signedInUser!.id)
-          .length;
+  // int get _unreadMessageCount =>
+
+  int get _unreadMessageCount {
+    int count = 0;
+
+    for (var message
+        in _serverpodController?.messages.reversed ?? <ChatMessage>[]) {
+      if (message.sender != _serverpodController!.joinedAsUserId &&
+          message.id != null) {
+        if (message.id! > _serverpodController!.lastReadMessageId) {
+          count++;
+        } else {
+          break;
+        }
+      }
+    }
+
+    return count;
+  }
 
   void _unreadMessagesListener() {
     state = state.copyWith(
@@ -124,50 +140,50 @@ class ChatControllerState extends _$ChatControllerState {
     );
   }
 
-  void sendMessage(
-    String message,
-    chatview.ReplyMessage replyMessage,
-    chatview.MessageType messageType,
-  ) async {
-    debugPrint('${_currentUser.name} sent $message');
-    // try {
-    _serverpodController!.postMessage(
-      message,
-    );
-    // } catch (e) {
-    // debugPrint('Error cacthed $e');
-    // }
+  // void sendMessage(
+  //   String message,
+  //   chatview.ReplyMessage replyMessage,
+  //   chatview.MessageType messageType,
+  // ) async {
+  //   debugPrint('${_currentUser.name} sent $message');
+  //   // try {
+  //   _serverpodController!.postMessage(
+  //     message,
+  //   );
+  //   // } catch (e) {
+  //   // debugPrint('Error cacthed $e');
+  //   // }
 
-    // _chatViewController.addMessage(
-    //   Message(
-    //     // messageClientId: clientMessageId,
-    //     createdAt: DateTime.now().toLocal(),
-    //     message: message,
-    //     sentBy: _currentUser.id,
-    //     replyMessage: replyMessage,
-    //     messageType: messageType,
-    //     status: MessageStatus.pending,
-    //   ),
-    // );
-  }
+  //   // _chatViewController.addMessage(
+  //   //   Message(
+  //   //     // messageClientId: clientMessageId,
+  //   //     createdAt: DateTime.now().toLocal(),
+  //   //     message: message,
+  //   //     sentBy: _currentUser.id,
+  //   //     replyMessage: replyMessage,
+  //   //     messageType: messageType,
+  //   //     status: MessageStatus.pending,
+  //   //   ),
+  //   // );
+  // }
 
-  void _messageReceivedListener(ChatMessage message, bool addedByUser) {
-    debugPrint('message received: ${message.toJson()}');
-    if (message.id == null) return;
-    // _chatViewController.loadMessagesFromServerpod(
-    //   messages: [message],
-    //   lastReadMessageId: _serverpodController!.lastReadMessageId,
-    // );
-    _chatViewController.addMessage(message.convertToUIMessage(true));
-  }
+  // void _messageReceivedListener(ChatMessage message, bool addedByUser) {
+  //   debugPrint('message received: ${message.toJson()}');
+  //   if (message.id == null) return;
+  //   // _chatViewController.loadMessagesFromServerpod(
+  //   //   messages: [message],
+  //   //   lastReadMessageId: _serverpodController!.lastReadMessageId,
+  //   // );
+  //   _chatViewController.addMessage(message.convertToUIMessage(true));
+  // }
 
-  markMessageRead(chatview.Message message) {
-    debugPrint('Message Read: ${message.id}');
+  // markMessageRead(chatview.Message message) {
+  //   debugPrint('Message Read: ${message.id}');
 
-    _serverpodController!.markMessageRead(
-      int.parse(message.id),
-    );
-  }
+  //   _serverpodController!.markMessageRead(
+  //     int.parse(message.id),
+  //   );
+  // }
 
   // TODO: Написать какой-то метод более оптимальный, чтобы не гонять по всему списку N раз
   /// New portion of messages received from server

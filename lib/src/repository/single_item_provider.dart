@@ -1,9 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:serverpod_client/serverpod_client.dart';
+import 'package:nit_tools_client/nit_tools_client.dart';
 
 import 'entity_manager_state.dart';
-import 'object_wrapper.dart';
 import 'repository.dart';
 
 final singleItemProviderFamilies = <Type,
