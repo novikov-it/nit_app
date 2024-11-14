@@ -32,11 +32,11 @@ dependencies:
         path: modules/serverpod_auth/serverpod_auth_phone_flutter
 
   nit_tools_client:
-    # path: ../nit_serverpod/modules/nit_tools/nit_tools_client
+    # path: ..nit_tools/nit_tools_client
     git:
-      url: git@github.com:novikov-it/nit_serverpod.git
-      path: modules/nit_tools/nit_tools_client
-      ref: main
+      url: git@github.com:novikov-it/nit_tools.git
+      path: nit_tools_client
+      ref: master
 
   intl: ^0.19.0
   flutter_hooks: ^0.20.1
