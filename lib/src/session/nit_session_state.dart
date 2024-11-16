@@ -8,6 +8,8 @@ import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart
 part 'nit_session_state.g.dart';
 part 'nit_session_state.freezed.dart';
 
+late final Caller? authModuleCaller;
+
 @Riverpod(keepAlive: true)
 class NitSessionState extends _$NitSessionState {
   StreamingConnectionHandler? _connectionHandler;
@@ -36,7 +38,7 @@ class NitSessionState extends _$NitSessionState {
 
   Future<bool> init({
     required ServerpodClientShared? client,
-    required Caller? authCaller,
+    // required Caller? authCaller,
   }) async {
     if (client != null) {
       _connectionHandler = StreamingConnectionHandler(
@@ -54,9 +56,9 @@ class NitSessionState extends _$NitSessionState {
     // The session manager keeps track of the signed-in state of the user. You
     // can query it to see if the user is currently signed in and get information
     // about the user.
-    if (authCaller != null) {
+    if (authModuleCaller != null) {
       _sessionManager = SessionManager(
-        caller: authCaller,
+        caller: authModuleCaller!,
       );
 
       if (await _sessionManager!.initialize()) {

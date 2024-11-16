@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nit_app/src/nit_app_build_context_extension.dart';
+import 'package:nit_app/src/repository/entity_manager_config.dart';
 // import 'package:nit_app/nit_app.dart';
 import 'package:serverpod_client/serverpod_client.dart';
 
@@ -66,7 +67,9 @@ class _State<StateEntity extends SerializableModel,
           if (widget.model != null)
             IconButton(
                 onPressed: () => ref
-                    .read(entityManagerStateProvider<StateEntity>().notifier)
+                    .read(entityManagerStateProvider<StateEntity>()(
+                            EntityManagerConfig())
+                        .notifier)
                     .delete(widget.model! as StateEntity, widget.modelId!)
                     .then(context.popOnTrue),
                 icon: const Icon(Icons.delete_forever)),
@@ -91,7 +94,9 @@ class _State<StateEntity extends SerializableModel,
 
                 if (updatedModel != null) {
                   ref
-                      .read(entityManagerStateProvider<StateEntity>().notifier)
+                      .read(entityManagerStateProvider<StateEntity>()(
+                              EntityManagerConfig())
+                          .notifier)
                       .save(updatedModel as StateEntity, widget.modelId)
                       .then(context.popOnTrue);
                 }

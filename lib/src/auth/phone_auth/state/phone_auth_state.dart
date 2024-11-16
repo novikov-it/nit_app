@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/src/session/nit_session_state.dart';
+import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_phone_flutter/serverpod_auth_phone_flutter.dart';
 
@@ -25,6 +26,16 @@ class PhoneAuthState extends _$PhoneAuthState {
 
   requestOtp() async {
     debugPrint("requesting OTP");
+    if (!state.everythingAccepted) {
+      ref.notifyUser(
+        NitNotification.error(
+          'Примите соглашение, чтобы продолжить',
+        ),
+      );
+
+      return;
+    }
+
     await PhoneAuthController(
             ref.read(nitSessionStateProvider).serverpodSessionManager!)
         .sendOTP(state.phoneController.text)

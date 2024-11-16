@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -10,11 +11,11 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:nit_app/src/chats/state/chat_controller_state.dart';
 import 'package:nit_app/src/tools/deeplinks.dart';
 import 'package:nit_router/nit_router.dart';
+import 'package:nit_tools_client/nit_tools_client.dart' as nit_tools;
 import 'package:nit_tools_client/nit_tools_client.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as auth;
 import 'package:serverpod_chat_client/serverpod_chat_client.dart' as chats;
-import 'repository/endpoint_crud.dart';
 import 'repository/entity_manager_state.dart';
 import 'session/nit_session_state.dart';
 import 'tools/firebase.dart';
@@ -36,27 +37,12 @@ class NitApp extends HookConsumerWidget {
     }
   }
 
-  // static sessionBasedRouter({
-  //   required List<List<NavigationZoneEnum>> navigationZones,
-  // }) =>
-  //     (ProviderRef ref) {
-  //       return NitRouter.prepareRouter(
-  //         navigationZones: navigationZones,
-  //         refreshListenable: sessionManager,
-  //         redirect: (context, route) => null,
-  //       );
-  //     };
-
   const NitApp({
     super.key,
     required this.title,
     this.routerProvider,
     this.navigationZones,
-    this.endpointCaller,
-    this.serializationManager,
-    this.authCaller,
-    this.chatsCaller,
-    // this.serializationManager,
+    this.client,
     this.deeplinkHandler,
     this.initializers,
     this.loadingScreen = const Center(
@@ -78,14 +64,10 @@ class NitApp extends HookConsumerWidget {
 
   final String locale;
   final String title;
-  // final GoRouter Function() routerInitializer;
   final List<List<NavigationZoneEnum>>? navigationZones;
   final Provider<GoRouter>? routerProvider;
-  final ServerpodClientShared? endpointCaller;
-  final SerializationManager? serializationManager;
-  final auth.Caller? authCaller;
-  final chats.Caller? chatsCaller;
-  // final SerializationManager? serializationManager;
+
+  final ServerpodClientShared? client;
   final void Function(WidgetRef, String)? deeplinkHandler;
 
   final List<Future<bool> Function()>? initializers;
@@ -125,34 +107,25 @@ class NitApp extends HookConsumerWidget {
 
               return true;
             },
-            // if (serializationManager != null)
-            //   () async {
-            //     ObjectWrapper.serializationManager = serializationManager!;
-            //     return true;
-            //   },
-            if (serializationManager != null)
-              // () => initializeServerpodSessionManager(authCaller: authCaller!),
+            if (client != null)
               () async {
-                ObjectWrapper.protocol = serializationManager!;
-                return true;
-              },
-            if (endpointCaller != null)
-              // () => initializeServerpodSessionManager(authCaller: authCaller!),
-              () async {
-                crud = EndpointCrud(endpointCaller!);
-                return true;
-              },
-            if (authCaller != null)
-              // () => initializeServerpodSessionManager(authCaller: authCaller!),
-              () => ref.read(nitSessionStateProvider.notifier).init(
-                    client: endpointCaller,
-                    authCaller: authCaller,
-                  ),
-            if (chatsCaller != null)
-              // () => initializeServerpodSessionManager(authCaller: authCaller!),
-              () async {
-                chatsModuleCaller = chatsCaller!;
-                return true;
+                nitToolsCaller = client!.moduleLookup.values
+                        .firstWhereOrNull((e) => e is nit_tools.Caller)
+                    as nit_tools.Caller;
+
+                authModuleCaller = client!.moduleLookup.values
+                    .firstWhereOrNull((e) => e is auth.Caller) as auth.Caller;
+
+                chatsModuleCaller = client!.moduleLookup.values
+                    .firstWhereOrNull((e) => e is chats.Caller) as chats.Caller;
+
+                NitToolsClient.protocol = client!.serializationManager;
+
+                return (authModuleCaller != null)
+                    ? ref.read(nitSessionStateProvider.notifier).init(
+                          client: client,
+                        )
+                    : true;
               },
             ...(initializers ?? []),
             () async {
@@ -161,16 +134,13 @@ class NitApp extends HookConsumerWidget {
               } else {
                 _router = NitRouter.prepareRouter(
                   navigationZones: navigationZones!,
-                  refreshListenable: authCaller != null
+                  refreshListenable: authModuleCaller != null
                       ? ref
                           .read(nitSessionStateProvider)
                           .serverpodSessionManager
                       : null,
                   redirect: null,
                 );
-                // ref
-                //     .read(sessionManagerStateProvider.notifier)
-                //     .prepareRouter(navigationZones: navigationZones!);
               }
               return true;
             },

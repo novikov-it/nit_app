@@ -1,147 +1,77 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nit_app/src/repository/entity_manager_config.dart';
 import 'package:nit_tools_client/nit_tools_client.dart';
-
-import 'endpoint_crud.dart';
-// import 'object_wrapper.dart';
 import 'repository.dart';
 
-final entityManagerProviders =
-    <Type, AsyncNotifierProvider<EntityManagerState, List<ObjectWrapper>>>{};
+late final Caller nitToolsCaller;
 
-AsyncNotifierProvider<EntityManagerState<T>, List<ObjectWrapper>>
+final entityManagerProviders = <Type,
+    AsyncNotifierProviderFamily<EntityManagerState, List<int>,
+        EntityManagerConfig>>{};
+
+AsyncNotifierProviderFamily<EntityManagerState<T>, List<int>,
+        EntityManagerConfig>
     entityManagerStateProvider<T extends SerializableModel>() {
   if (entityManagerProviders[T] == null) {
-    entityManagerProviders[T] =
-        AsyncNotifierProvider<EntityManagerState<T>, List<ObjectWrapper>>(
+    entityManagerProviders[T] = AsyncNotifierProviderFamily<
+        EntityManagerState<T>, List<int>, EntityManagerConfig>(
       EntityManagerState<T>.new,
-      // name: 'entityManagerProviders${T.toString()}',
-      // debugGetCreateSourceHash:
-      //     const bool.fromEnvironment('dart.vm.product')
-      //         ? null
-      //         : _$chatsRepositoryHash,
     );
   }
 
-  return entityManagerProviders[T]
-      as AsyncNotifierProvider<EntityManagerState<T>, List<ObjectWrapper>>;
+  return entityManagerProviders[T] as AsyncNotifierProviderFamily<
+      EntityManagerState<T>, List<int>, EntityManagerConfig>;
 }
 
-late final EndpointCrud crud;
-
 class EntityManagerState<T extends SerializableModel>
-    extends AsyncNotifier<List<ObjectWrapper>> {
+    extends FamilyAsyncNotifier<List<int>, EntityManagerConfig> {
   @override
-  Future<List<ObjectWrapper>> build() async {
+  Future<List<int>> build(EntityManagerConfig arg) async {
     debugPrint("Building state for ${T.toString()}");
-    // final res = await ref.getAll<T>();
-    // await Future.delayed(Duration(seconds: 3));
-    final res = await crud.getAll(className: T.toString());
-    debugPrint("Entity manager received: $res from API");
-    if (res.isEmpty) return [];
 
-    _updateRepository(res);
-
-    return res;
-  }
-
-  _updateRepository(List<ObjectWrapper> newModels) {
-    if (repository[T] == null) {
-      debugPrint("Initializing repo for $T");
-      initRepository<T>();
-    }
-
-    // read(objectPool[T]!.notifier).state = Map.fromEntries({
-    //   ...read(objectPool[T]!).entries,
-    //   ...newModels.map(
-    //     (e) => MapEntry(e.modelId!, e.model),
-    //   )
-    // });
-
-    for (var e in newModels) {
-      // if (read(repository[T]!(e.modelId!)) == null) {
-      ref.read(repository[T]!(e.modelId!).notifier).state = e.model as T;
-      // } else {
-      //   read(repository[T]!(e.modelId!).notifier).state = e.model as T;
-      // }
-    }
+    return await nitToolsCaller.crud
+        .getAll(className: T.toString(), filters: arg.backendFilters)
+        .then((response) => ref.processApiResponse<List<int>, T>(response))
+        .then((res) => res ?? []);
   }
 
   Future<bool> save(T model, int? modelId) async {
-    return await future.then((value) async {
-      final res = await crud.saveModel(
-        wrappedModel: ObjectWrapper(model: model, modelId: modelId),
-      );
+    return await future.then(
+      (value) async => await nitToolsCaller.crud
+          .saveModel(
+            wrappedModel: ObjectWrapper(model: model, modelId: modelId),
+          )
+          .then((response) => ref.processApiResponse<int, T>(response))
+          .then(
+        (res) {
+          if (res == null) return false;
 
-      if (res == null) return false;
-
-      _updateRepository([res]);
-
-      // return res.modelId;
-      // final id = await ref.saveModel<T>(
-      //   model,
-      //   modelId,
-      // );
-
-      // if (id != null) {
-      state = AsyncValue.data(
-          [res, ...value.whereNot((e) => e.modelId == res.modelId)]);
-      debugPrint("Updated value = ${state.value}");
-      return true;
-      // } else {
-      //   return false;
-      // }
-    });
+          state = AsyncValue.data([res, ...value.whereNot((e) => e == res)]);
+          debugPrint("Updated value = ${state.value}");
+          return true;
+        },
+      ),
+    );
   }
 
   Future<bool> delete(T model, int modelId) async {
-    return await future.then((value) async {
-      if (await crud.delete(
-        wrappedModel: ObjectWrapper(model: model, modelId: modelId),
-      )
-          //   await ref.deleteModel<T>(
-          //   model,
-          //   modelId,
-          // )
-
-          ) {
-        state =
-            AsyncValue.data([...value.whereNot((e) => e.modelId == modelId)]);
-        debugPrint("Updated value = ${state.value}");
-        return true;
-      } else {
-        return false;
-      }
-    });
+    return await future.then(
+      (value) async => await nitToolsCaller.crud
+          .delete(
+            wrappedModel: ObjectWrapper(model: model, modelId: modelId),
+          )
+          .then((response) => ref.processApiResponse<bool, T>(response))
+          .then(
+        (res) {
+          if (res == true) {
+            state = AsyncValue.data([...value.whereNot((e) => e == modelId)]);
+            debugPrint("Updated value = ${state.value}");
+          }
+          return res ?? false;
+        },
+      ),
+    );
   }
 }
-
-// (entityManagerProviders[T] ??
-//     (
-//       entityManagerProviders[T] = AutoDisposeAsyncNotifierProvider<
-//           EntityManagerState<T>, List<int>>(
-//         EntityManagerState<T>.new,
-//         name: 'entityManagerProviders${T.toString()}',
-//         // debugGetCreateSourceHash:
-//         //     const bool.fromEnvironment('dart.vm.product')
-//         //         ? null
-//         //         : _$chatsRepositoryHash,
-//       ),
-//     ))
-// // as AsyncNotifierProvider<EntityManagerState<T>, List<int>>
-// ;
-
-// class RobotManagerState extends AutoDisposeAsyncNotifier<List<int>> {
-//   @override
-//   Future<List<int>> build() async {
-//     print("Building state for robot");
-//     final res = await ref.getAll<Robot>();
-//     print(res);
-//     return res;
-//   }
-
-//   Future<bool> save(Robot model) async {
-//     return null != await ref.saveModel<Robot>(model);
-//   }
-// }

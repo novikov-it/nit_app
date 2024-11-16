@@ -5,15 +5,14 @@ import 'package:nit_tools_client/nit_tools_client.dart';
 import 'entity_manager_state.dart';
 import 'repository.dart';
 
-final singleItemProviderFamilies = <Type,
-    AsyncNotifierProviderFamily<SingleItemProviderState, ObjectWrapper?,
-        int>>{};
+final singleItemProviderFamilies =
+    <Type, AsyncNotifierProviderFamily<SingleItemProviderState, int?, int>>{};
 
-AsyncNotifierProviderFamily<SingleItemProviderState<T>, ObjectWrapper?, int>
+AsyncNotifierProviderFamily<SingleItemProviderState<T>, int?, int>
     singleItemProvider<T extends SerializableModel>() {
   if (singleItemProviderFamilies[T] == null) {
-    singleItemProviderFamilies[T] = AsyncNotifierProviderFamily<
-        SingleItemProviderState<T>, ObjectWrapper?, int>(
+    singleItemProviderFamilies[T] =
+        AsyncNotifierProviderFamily<SingleItemProviderState<T>, int?, int>(
       SingleItemProviderState<T>.new,
       // name: 'entityManagerProviders${T.toString()}',
       // debugGetCreateSourceHash:
@@ -23,43 +22,25 @@ AsyncNotifierProviderFamily<SingleItemProviderState<T>, ObjectWrapper?, int>
     );
   }
 
-  return singleItemProviderFamilies[T] as AsyncNotifierProviderFamily<
-      SingleItemProviderState<T>, ObjectWrapper?, int>;
+  return singleItemProviderFamilies[T]
+      as AsyncNotifierProviderFamily<SingleItemProviderState<T>, int?, int>;
 }
 
 class SingleItemProviderState<T extends SerializableModel>
-    extends FamilyAsyncNotifier<ObjectWrapper?, int> {
+    extends FamilyAsyncNotifier<int?, int> {
   @override
-  Future<ObjectWrapper?> build(
+  Future<int?> build(
     int arg,
   ) async {
     debugPrint("Getting single ${T.toString()} with id $arg");
     // final res = await ref.getAll<T>();
-    final res = await crud.getOne(
-      className: T.toString(),
-      id: arg,
-    );
-
-    debugPrint("Entity manager received: $res from API");
-
-    if (res != null) _updateRepository([res]);
-
-    return res;
-  }
-
-  _updateRepository(List<ObjectWrapper> newModels) {
-    if (repository[T] == null) {
-      debugPrint("Initializing repo for $T");
-      initRepository<T>();
-    }
-
-    for (var e in newModels) {
-      // if (read(repository[T]!(e.modelId!)) == null) {
-      ref.read(repository[T]!(e.modelId!).notifier).state = e.model as T;
-      // } else {
-      //   read(repository[T]!(e.modelId!).notifier).state = e.model as T;
-      // }
-    }
+    return await nitToolsCaller.crud
+        .getOne(
+          className: T.toString(),
+          id: arg,
+        )
+        .then((response) => ref.processApiResponse<int, T>(response))
+        .then((res) => res);
   }
 }
 

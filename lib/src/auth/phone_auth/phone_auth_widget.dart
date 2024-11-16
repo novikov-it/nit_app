@@ -26,20 +26,22 @@ class PhoneAuthWidget extends HookConsumerWidget {
             ),
             controller: state.phoneController,
           ),
-        Row(
-          children: [
-            Checkbox(
-              value: state.everythingAccepted,
-              onChanged: (_) =>
-                  ref.read(phoneAuthStateProvider.notifier).toggleAcceptance(),
-            ),
-            const Expanded(
-              child: Text(
-                "Даю согласие на обработку персональных данных и подтверждаю согласие с условиями оферты",
+        if (!state.otpRequested)
+          Row(
+            children: [
+              Checkbox(
+                value: state.everythingAccepted,
+                onChanged: (_) => ref
+                    .read(phoneAuthStateProvider.notifier)
+                    .toggleAcceptance(),
               ),
-            ),
-          ],
-        ),
+              const Expanded(
+                child: Text(
+                  "Даю согласие на обработку персональных данных и подтверждаю согласие с условиями оферты",
+                ),
+              ),
+            ],
+          ),
         const Gap(16),
         if (!state.otpRequested)
           ElevatedButton(

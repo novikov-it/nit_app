@@ -43,7 +43,8 @@ class NitImagePickerField extends ConsumerWidget {
 
               final path =
                   '${DateFormat('yyyy-MM-dd').format(DateTime.now())}-${image.name}';
-              var uploadDescription = await crud.getUploadDescription(
+              var uploadDescription =
+                  await nitToolsCaller.upload.getUploadDescription(
                 path: path,
                 // '${folder != null ? '$folder/' : ''}
               );
@@ -52,7 +53,7 @@ class NitImagePickerField extends ConsumerWidget {
                 debugPrint(uploadDescription);
                 var uploader = FileUploader(uploadDescription);
                 await uploader.uploadByteData(bytes);
-                var publicUrl = await crud.verifyUpload(
+                var publicUrl = await nitToolsCaller.upload.verifyUpload(
                   path: path,
                 );
 

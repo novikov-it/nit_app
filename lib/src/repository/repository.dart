@@ -1,16 +1,15 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:serverpod_client/serverpod_client.dart';
+import 'package:nit_router/nit_router.dart';
+import 'package:nit_tools_client/nit_tools_client.dart';
+import 'entity_manager_config.dart';
 import 'entity_manager_state.dart';
 import 'single_item_provider.dart';
 
 final Map<Type, StateProviderFamily<dynamic, int>> repository = {};
-// final Map<Type, StateProvider<Map<int, dynamic>>> objectPool = {};
 
 StateProviderFamily<T?, int> initRepository<T>() {
-  repository[T] = StateProvider.family<T?, int>(
-      (ref, id) => null); // ref.watch(repository[T]!(id)) as T);
-
-  // objectPool[T] = StateProvider<Map<int, T>>((ref) => {});
+  repository[T] = StateProvider.family<T?, int>((ref, id) => null);
 
   return repository[T] as StateProviderFamily<T?, int>;
 }
@@ -22,6 +21,9 @@ StateProviderFamily<T?, int> modelProvider<T>() {
 
   return rep as StateProviderFamily<T?, int>;
 }
+
+_filter<T>(T? model, bool Function(T model) filter) =>
+    model != null ? filter(model) : false;
 
 extension WidgetRefRepositoryExtension on WidgetRef {
   T? watchModel<T extends SerializableModel>(int id) {
@@ -37,204 +39,71 @@ extension WidgetRefRepositoryExtension on WidgetRef {
       read(modelProvider<T>()(id));
 
   AsyncValue<T?> watchEntityState<T extends SerializableModel>(int id) =>
-      watch(singleItemProvider<T>()(id)).whenData(
-          (value) => value == null ? null : watchModel<T>(value.modelId!));
+      watch(singleItemProvider<T>()(id))
+          .whenData((value) => value == null ? null : watchModel<T>(value));
+
+  int? get getIdFromPath => CommonNavigationParameters.id.get(
+        watch(navigationPathParametersProvider),
+      );
   //(value) => value?.model as T);
 
+  static const _defaultConfig = EntityManagerConfig();
+
   AsyncValue<List<int>> watchEntityListState<T extends SerializableModel>({
+    // List<NitBackendFilter>? backendFilters,
+    EntityManagerConfig? backendConfig,
     bool Function(T model)? frontendFilter,
   }) =>
-      watch(entityManagerStateProvider<T>()).whenData((data) =>
-          (frontendFilter == null
-                  ? data
-                  : data.where((e) => frontendFilter(e.model as T)))
-              .map((e) => e.modelId!)
-              .toList());
+      watch(
+        entityManagerStateProvider<T>()(backendConfig ?? _defaultConfig
+            // EntityManagerConfig(backendFilters: backendFilters),
+            ),
+      ).whenData(
+        (data) => frontendFilter == null
+            ? data
+            : data
+                .where((e) => _filter(watchModel<T>(e), frontendFilter))
+                .toList(),
+      );
 }
 
 extension RefRepositoryExtension on Ref {
   T? watchModel<T>(int id) => watch(modelProvider<T>()(id));
   T? readModel<T>(int id) => read(modelProvider<T>()(id));
 
-  AsyncValue<List<int>> watchEntityState<T extends SerializableModel>(
-          bool Function(T model)? frontendFilter) =>
-      watch(entityManagerStateProvider<T>()).whenData((data) =>
-          (frontendFilter == null
-                  ? data
-                  : data.where((e) => frontendFilter(e.model as T)))
-              .map((e) => e.modelId!)
-              .toList());
+  AsyncValue<List<int>> watchEntityListState<T extends SerializableModel>({
+    List<NitBackendFilter>? backendFilters,
+    bool Function(T model)? frontendFilter,
+  }) =>
+      watch(
+        entityManagerStateProvider<T>()(
+          EntityManagerConfig(backendFilters: backendFilters),
+        ),
+      ).whenData(
+        (data) => frontendFilter == null
+            ? data
+            : data
+                .where((e) => _filter(watchModel<T>(e), frontendFilter))
+                .toList(),
+      );
 
-  // List<int> selectObjects<T>({
-  //   bool Function(T model)? filter,
-  // }) =>
-  //     watch(objectPool[T]!)
-  //         .entries
-  //         .where((e) => filter == null || filter(e.value as T))
-  //         .map((e) => e.key)
-  //         .toList();
+  _updateRepository<T>(List<ObjectWrapper> newModels) {
+    if (repository[T] == null) {
+      debugPrint("Initializing repo for $T");
+      initRepository<T>();
+    }
+
+    print(T.toString());
+
+    for (var e in newModels) {
+      read(repository[T]!(e.modelId!).notifier).state = e.model as T;
+    }
+  }
+
+  K? processApiResponse<K, T>(ApiResponse<K> response) {
+    if ((response.updatedEntities ?? []).isNotEmpty) {
+      _updateRepository<T>(response.updatedEntities ?? []);
+    }
+    return response.value;
+  }
 }
-
-// extension RepositoryExtension on Ref {
-
-// }
-
-// final Map<Type, Map<int, StateProvider<dynamic>>> repository = {};
-
-// extension WidgetRefRepositoryExtension on WidgetRef {
-//   // model<T>(int id) =>
-//   //     watch(modelProvider(ModelIdentifier(className: T.toString(), id: id)));
-
-//   model<T>(int id) => watch(repository[T]![id]!);
-// }
-
-// extension RepositoryExtension on Ref {
-//   updateRepository<T>(List<ObjectWrapper> newModels) {
-//     if (repository[T] == null) repository[T] = {};
-
-//     for (var e in newModels) {
-//       if (repository[T]![e.modelId] == null) {
-//         repository[T]![e.modelId!] = StateProvider<T>((ref) => e.model as T);
-//       } else {
-//         read(repository[T]![e.modelId!]!.notifier).state = e.model as T;
-//       }
-//     }
-//   }
-// }
-
-
-
-// ProviderFamily<T, int> modelProvider<T>() => Provider.family<T, int>(
-//     (ref, id) => ref.watch(repositoryStateProvider)[T]?[id] as T);
-
-// class ModelIdentifier {
-//   const ModelIdentifier({
-//     required this.className,
-//     required this.id,
-//   });
-//   final String className;
-//   final int id;
-// }
-
-// final repository = {...[Robot].map((e) => MapEntry(e, StateProvider<));
-
-// final Map<Type, StateProvider<Map<int, dynamic>>> repository = {};
-
-// initRepository<T>() {
-//   repository[T] = StateProvider<Map<int, dynamic>>((ref) => {});
-// }
-
-// AutoDisposeAsyncNotifierProvider<EntityManagerState, List<int>>
-//     entityManagerStateProvider<T extends SerializableModel>() =>
-//         AutoDisposeAsyncNotifierProvider<EntityManagerState, List<int>>(
-//             EntityManagerState<T>.new);
-
-// class EntityManagerState<T extends SerializableModel>
-//     extends AutoDisposeAsyncNotifier<List<int>> {
-//   @override
-//   Future<List<int>> build() async {
-//     print("Building state for ${T.toString()}");
-//     final res = await ref.getAll<T>();
-//     print("Api manager returned: $res");
-//     return [1];
-//   }
-// }
-
-
-
-// initRepository<T>() {
-//   repository[T] = StateProvider<Map<int, dynamic>>((ref) => {});
-// }
-
-// StateProviderFamily<dynamic,
-//     ModelIdentifier> modelProvider = StateProvider.family<dynamic,
-//         ModelIdentifier>(
-//     (ref, modelIdentifier) =>
-//         null //JUST - мы не должны оказаться в ситуации, когда запрашивается стейт, до обновления
-//     );
-
-
-
-// StateProvider<Map<int, T>> repositoryProvider<T>() =>
-//     StateProvider<Map<int, T>>(
-//       (ref) => <int, T>{},
-//     );
-
-// StateProvider<Map<int, T>> repositoryProvider =>
-//     Provider.family<>(
-//       (ref) => <int, T>{},
-//     );
-
-// extension RepositoryExtension on Ref {
-//   updateRepository<T>(List<ObjectWrapper> newModels) {
-//     read(repositoryProvider<T>().notifier).state = {
-//       ...read(repositoryProvider<T>()),
-//       ...Map.fromEntries(
-//         newModels.map(
-//           (e) => MapEntry(
-//             e.modelId!, // JUST - апдейт вызывается только для сущностей, полученных с бэка, у которых обязательно будет id заполненный
-//             e.model as T,
-//           ),
-//         ),
-//       )
-//     };
-
-//     final test = read(repositoryProvider<T>());
-//     print(test);
-//   }
-// }
-
-
-
-
-
-// @ProviderFor(PreloadState)
-// final repositoryStateProvider =
-//     AutoDisposeAsyncNotifierProvider<PreloadState, PreloadData>.internal(
-//   PreloadState.new,
-//   name: r'preloadStateProvider',
-//   debugGetCreateSourceHash:
-//       const bool.fromEnvironment('dart.vm.product') ? null : _$preloadStateHash,
-//   dependencies: const <ProviderOrFamily>[],
-//   allTransitiveDependencies: const <ProviderOrFamily>{},
-// );
-
-// typedef _$PreloadState = AutoDisposeAsyncNotifier<PreloadData>;
-
-// extension ModelExtension on WidgetRef {
-
-//   T watchModel<T>(int id) => wa
-
-// }
-
-/// Business logic state for the Appointment.
-// @Riverpod(keepAlive: true)
-// class Repository extends _$Repository {
-//   @override
-//   Map<int, SerializableModel> build(Type type) {
-//     return <int, SerializableModel>{};
-//   }
-
-//   updateItems(List<ObjectWrapper> newModels) {
-//     // TODO: добавить проверку соответствия типов
-//     state = {
-//       ...state,
-//       ...Map.fromEntries(
-//         newModels.map(
-//           (e) => MapEntry(e.modelId, e.model),
-//         ),
-//       )
-//     };
-//   }
-
-//   // updateItem(Consultation updatedModel) async {
-//   //   await future.then((value) {
-//   //     state = AsyncValue.data(
-//   //       [
-//   //         updatedModel,
-//   //         ...value.where((e) => e.id != updatedModel.id),
-//   //       ],
-//   //     );
-//   //   });
-//   // }
-// }

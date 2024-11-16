@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:nit_app/nit_app.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_chat_client/serverpod_chat_client.dart';
 import 'package:serverpod_chat_flutter/serverpod_chat_flutter.dart';
+
+import '../../session/nit_session_state.dart';
 
 part 'chat_controller_state.g.dart';
 part 'chat_controller_state.freezed.dart';

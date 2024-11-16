@@ -14,39 +14,42 @@ class NitDialogLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      // shrinkWrap: true,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (title != null)
-          Text(
-            title!,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineLarge,
+    return NitNotificationListenerWidget(
+      notificationPresenter: NitNotification.showNotificationFlash,
+      child: Column(
+        // shrinkWrap: true,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (title != null)
+            Text(
+              title!,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headlineLarge,
+            ),
+          const Gap(16),
+          Flexible(
+            fit: FlexFit.loose,
+            child: child,
           ),
-        const Gap(16),
-        Flexible(
-          fit: FlexFit.loose,
-          child: child,
-        ),
-        if ((buttons?.isNotEmpty) ?? false) ...[
-          Gap(context.isMobile ? 16 : 24),
-          Row(
-            children: buttons!.asMap().entries.map((entry) {
-              int index = entry.key;
-              Widget button = entry.value;
-              return Expanded(
-                child: Row(
-                  children: [
-                    if (index > 0) const Gap(8),
-                    Expanded(child: button),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
-        ]
-      ],
+          if ((buttons?.isNotEmpty) ?? false) ...[
+            Gap(context.isMobile ? 16 : 24),
+            Row(
+              children: buttons!.asMap().entries.map((entry) {
+                int index = entry.key;
+                Widget button = entry.value;
+                return Expanded(
+                  child: Row(
+                    children: [
+                      if (index > 0) const Gap(8),
+                      Expanded(child: button),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ]
+        ],
+      ),
     );
   }
 }
