@@ -1,19 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nit_app/src/repository/single_item_custom_provider_config.dart';
 import 'package:nit_tools_client/nit_tools_client.dart';
 
 import 'entity_manager_state.dart';
 import 'repository.dart';
 
-final singleItemProviderFamilies =
-    <Type, AsyncNotifierProviderFamily<SingleItemProviderState, int?, int>>{};
+final singleItemCustomProviderFamilies = <Type,
+    AsyncNotifierProviderFamily<SingleItemCustomProviderState, int?,
+        SingleItemCustomProviderConfig>>{};
 
-AsyncNotifierProviderFamily<SingleItemProviderState<T>, int?, int>
-    singleItemProvider<T extends SerializableModel>() {
-  if (singleItemProviderFamilies[T] == null) {
-    singleItemProviderFamilies[T] =
-        AsyncNotifierProviderFamily<SingleItemProviderState<T>, int?, int>(
-      SingleItemProviderState<T>.new,
+AsyncNotifierProviderFamily<SingleItemCustomProviderState<T>, int?,
+        SingleItemCustomProviderConfig>
+    singleItemCustomProvider<T extends SerializableModel>() {
+  if (singleItemCustomProviderFamilies[T] == null) {
+    singleItemCustomProviderFamilies[T] = AsyncNotifierProviderFamily<
+        SingleItemCustomProviderState<T>, int?, SingleItemCustomProviderConfig>(
+      SingleItemCustomProviderState<T>.new,
       // name: 'entityManagerProviders${T.toString()}',
       // debugGetCreateSourceHash:
       //     const bool.fromEnvironment('dart.vm.product')
@@ -22,22 +25,22 @@ AsyncNotifierProviderFamily<SingleItemProviderState<T>, int?, int>
     );
   }
 
-  return singleItemProviderFamilies[T]
-      as AsyncNotifierProviderFamily<SingleItemProviderState<T>, int?, int>;
+  return singleItemCustomProviderFamilies[T] as AsyncNotifierProviderFamily<
+      SingleItemCustomProviderState<T>, int?, SingleItemCustomProviderConfig>;
 }
 
-class SingleItemProviderState<T extends SerializableModel>
-    extends FamilyAsyncNotifier<int?, int> {
+class SingleItemCustomProviderState<T extends SerializableModel>
+    extends FamilyAsyncNotifier<int?, SingleItemCustomProviderConfig> {
   @override
   Future<int?> build(
-    int arg,
+    SingleItemCustomProviderConfig arg,
   ) async {
     debugPrint("Getting single ${T.toString()} with id $arg");
     // final res = await ref.getAll<T>();
     return await nitToolsCaller.crud
-        .getOneById(
+        .getOneCustom(
           className: T.toString(),
-          id: arg,
+          filters: arg.backendFilters,
         )
         .then((response) => ref.processApiResponse<int, T>(response))
         .then((res) => res);

@@ -11,8 +11,8 @@ export 'src/admin_panel/database_config.dart';
 
 export 'src/repository/repository.dart';
 export 'src/repository/entity_manager_state.dart';
-export 'src/repository/single_item_provider.dart';
-export 'src/repository/entity_manager_config.dart';
+export 'src/repository/single_item_custom_provider_config.dart';
+export 'src/repository/entity_list_config.dart';
 
 export 'src/chats/nit_chats.dart';
 

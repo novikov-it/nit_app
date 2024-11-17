@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nit_app/src/repository/single_item_custom_provider_config.dart';
 import 'package:nit_router/nit_router.dart';
 import 'package:nit_tools_client/nit_tools_client.dart';
-import 'entity_manager_config.dart';
+import 'entity_list_config.dart';
 import 'entity_manager_state.dart';
+import 'single_item_custom_provider.dart';
 import 'single_item_provider.dart';
 
 final Map<Type, StateProviderFamily<dynamic, int>> repository = {};
@@ -39,15 +41,20 @@ extension WidgetRefRepositoryExtension on WidgetRef {
       read(modelProvider<T>()(id));
 
   AsyncValue<T?> watchEntityState<T extends SerializableModel>(int id) =>
-      watch(singleItemProvider<T>()(id))
-          .whenData((value) => value == null ? null : watchModel<T>(value));
+      watch(singleItemProvider<T>()(id)).whenData(
+        (value) => value == null ? null : watchModel<T>(value),
+      );
+
+  AsyncValue<T?> watchEntityCustomState<T extends SerializableModel>(
+          SingleItemCustomProviderConfig config) =>
+      watch(singleItemCustomProvider<T>()(config)).whenData(
+        (value) => value == null ? null : watchModel<T>(value),
+      );
 
   int? get getIdFromPath => CommonNavigationParameters.id.get(
         watch(navigationPathParametersProvider),
       );
   //(value) => value?.model as T);
-
-  static const _defaultConfig = EntityListConfig();
 
   AsyncValue<List<int>> watchEntityListState<T extends SerializableModel>({
     // List<NitBackendFilter>? backendFilters,
@@ -55,7 +62,8 @@ extension WidgetRefRepositoryExtension on WidgetRef {
     bool Function(T model)? frontendFilter,
   }) =>
       watch(
-        entityManagerStateProvider<T>()(backendConfig ?? _defaultConfig
+        entityManagerStateProvider<T>()(
+            backendConfig ?? EntityListConfig.defaultConfig
             // EntityManagerConfig(backendFilters: backendFilters),
             ),
       ).whenData(
@@ -70,6 +78,17 @@ extension WidgetRefRepositoryExtension on WidgetRef {
 extension RefRepositoryExtension on Ref {
   T? watchModel<T>(int id) => watch(modelProvider<T>()(id));
   T? readModel<T>(int id) => read(modelProvider<T>()(id));
+
+  AsyncValue<T?> watchEntityState<T extends SerializableModel>(int id) =>
+      watch(singleItemProvider<T>()(id)).whenData(
+        (value) => value == null ? null : watchModel<T>(value),
+      );
+
+  AsyncValue<T?> watchEntityCustomState<T extends SerializableModel>(
+          SingleItemCustomProviderConfig config) =>
+      watch(singleItemCustomProvider<T>()(config)).whenData(
+        (value) => value == null ? null : watchModel<T>(value),
+      );
 
   AsyncValue<List<int>> watchEntityListState<T extends SerializableModel>({
     List<NitBackendFilter>? backendFilters,

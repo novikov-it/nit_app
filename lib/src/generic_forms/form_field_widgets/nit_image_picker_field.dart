@@ -5,7 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:nit_app/nit_app.dart';
-import 'package:serverpod_client/serverpod_client.dart';
+
+import '../../repository/entity_manager_state.dart';
 
 class NitImagePickerField extends ConsumerWidget {
   const NitImagePickerField({

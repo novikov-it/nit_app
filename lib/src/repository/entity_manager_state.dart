@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nit_app/src/repository/entity_manager_config.dart';
+import 'package:nit_app/src/repository/entity_list_config.dart';
 import 'package:nit_tools_client/nit_tools_client.dart';
 import 'repository.dart';
 

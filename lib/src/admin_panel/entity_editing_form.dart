@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nit_app/src/nit_app_build_context_extension.dart';
-import 'package:nit_app/src/repository/entity_manager_config.dart';
+import 'package:nit_app/src/repository/entity_list_config.dart';
 // import 'package:nit_app/nit_app.dart';
 import 'package:serverpod_client/serverpod_client.dart';
 
