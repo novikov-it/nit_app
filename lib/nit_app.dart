@@ -18,5 +18,6 @@ export 'src/chats/nit_chats.dart';
 
 export 'package:nit_router/nit_router.dart';
 export 'package:nit_tools_client/nit_tools_client.dart';
+export 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 
 // export 'package:chatview/chatview.dart';

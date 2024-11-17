@@ -47,11 +47,11 @@ extension WidgetRefRepositoryExtension on WidgetRef {
       );
   //(value) => value?.model as T);
 
-  static const _defaultConfig = EntityManagerConfig();
+  static const _defaultConfig = EntityListConfig();
 
   AsyncValue<List<int>> watchEntityListState<T extends SerializableModel>({
     // List<NitBackendFilter>? backendFilters,
-    EntityManagerConfig? backendConfig,
+    EntityListConfig? backendConfig,
     bool Function(T model)? frontendFilter,
   }) =>
       watch(
@@ -77,7 +77,7 @@ extension RefRepositoryExtension on Ref {
   }) =>
       watch(
         entityManagerStateProvider<T>()(
-          EntityManagerConfig(backendFilters: backendFilters),
+          EntityListConfig(backendFilters: backendFilters),
         ),
       ).whenData(
         (data) => frontendFilter == null

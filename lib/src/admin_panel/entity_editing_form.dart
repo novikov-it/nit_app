@@ -68,7 +68,7 @@ class _State<StateEntity extends SerializableModel,
             IconButton(
                 onPressed: () => ref
                     .read(entityManagerStateProvider<StateEntity>()(
-                            EntityManagerConfig())
+                            EntityListConfig())
                         .notifier)
                     .delete(widget.model! as StateEntity, widget.modelId!)
                     .then(context.popOnTrue),
@@ -95,7 +95,7 @@ class _State<StateEntity extends SerializableModel,
                 if (updatedModel != null) {
                   ref
                       .read(entityManagerStateProvider<StateEntity>()(
-                              EntityManagerConfig())
+                              EntityListConfig())
                           .notifier)
                       .save(updatedModel as StateEntity, widget.modelId)
                       .then(context.popOnTrue);

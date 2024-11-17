@@ -9,26 +9,25 @@ late final Caller nitToolsCaller;
 
 final entityManagerProviders = <Type,
     AsyncNotifierProviderFamily<EntityManagerState, List<int>,
-        EntityManagerConfig>>{};
+        EntityListConfig>>{};
 
-AsyncNotifierProviderFamily<EntityManagerState<T>, List<int>,
-        EntityManagerConfig>
+AsyncNotifierProviderFamily<EntityManagerState<T>, List<int>, EntityListConfig>
     entityManagerStateProvider<T extends SerializableModel>() {
   if (entityManagerProviders[T] == null) {
     entityManagerProviders[T] = AsyncNotifierProviderFamily<
-        EntityManagerState<T>, List<int>, EntityManagerConfig>(
+        EntityManagerState<T>, List<int>, EntityListConfig>(
       EntityManagerState<T>.new,
     );
   }
 
   return entityManagerProviders[T] as AsyncNotifierProviderFamily<
-      EntityManagerState<T>, List<int>, EntityManagerConfig>;
+      EntityManagerState<T>, List<int>, EntityListConfig>;
 }
 
 class EntityManagerState<T extends SerializableModel>
-    extends FamilyAsyncNotifier<List<int>, EntityManagerConfig> {
+    extends FamilyAsyncNotifier<List<int>, EntityListConfig> {
   @override
-  Future<List<int>> build(EntityManagerConfig arg) async {
+  Future<List<int>> build(EntityListConfig arg) async {
     debugPrint("Building state for ${T.toString()}");
 
     return await nitToolsCaller.crud
