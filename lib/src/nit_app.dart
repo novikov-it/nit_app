@@ -109,15 +109,31 @@ class NitApp extends HookConsumerWidget {
             },
             if (client != null)
               () async {
-                nitToolsCaller = client!.moduleLookup.values
-                        .firstWhereOrNull((e) => e is nit_tools.Caller)
-                    as nit_tools.Caller;
+                final nitTools = client!.moduleLookup.values
+                    .firstWhereOrNull((e) => e is nit_tools.Caller);
 
-                authModuleCaller = client!.moduleLookup.values
-                    .firstWhereOrNull((e) => e is auth.Caller) as auth.Caller;
+                if (nitTools != null) {
+                  nitToolsCaller = nitTools as nit_tools.Caller;
+                }
 
-                chatsModuleCaller = client!.moduleLookup.values
-                    .firstWhereOrNull((e) => e is chats.Caller) as chats.Caller;
+                final authCaller = client!.moduleLookup.values
+                    .firstWhereOrNull((e) => e is auth.Caller);
+
+                if (authCaller != null) {
+                  authModuleCaller = authCaller as auth.Caller;
+                }
+
+                // authModuleCaller = client!.moduleLookup.values
+                //     .firstWhereOrNull((e) => e is auth.Caller) as auth.Caller;
+
+                final chatsCaller = client!.moduleLookup.values
+                    .firstWhereOrNull((e) => e is chats.Caller);
+
+                if (chatsCaller != null) {
+                  chatsModuleCaller = chatsCaller as chats.Caller;
+                }
+                // chatsModuleCaller = client!.moduleLookup.values
+                //     .firstWhereOrNull((e) => e is chats.Caller) as chats.Caller;
 
                 NitToolsClient.protocol = client!.serializationManager;
 
