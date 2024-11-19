@@ -4,9 +4,11 @@ class NitNavigationBar extends ConsumerStatefulWidget {
   const NitNavigationBar({
     super.key,
     required this.menuItems,
+    this.pathParameters,
   });
 
   final List<NitMenuItem> menuItems;
+  final Map<String, String>? pathParameters;
 
   @override
   ConsumerState<NitNavigationBar> createState() => _MainNavigationBarState();
@@ -48,7 +50,10 @@ class _MainNavigationBarState extends ConsumerState<NitNavigationBar> {
       unselectedItemColor: context.theme.colorScheme.outline,
       selectedItemColor: context.colorScheme.primaryFixedDim,
       onTap: (index) {
-        context.goNamed(widget.menuItems[index].route!.name);
+        context.goNamed(
+          widget.menuItems[index].route!.name,
+          pathParameters: widget.pathParameters ?? {},
+        );
       },
       items: widget.menuItems.mapIndexed((index, item) {
         return BottomNavigationBarItem(
