@@ -19,12 +19,20 @@ import 'package:serverpod_chat_client/serverpod_chat_client.dart' as chats;
 import 'repository/entity_manager_state.dart';
 import 'session/nit_session_state.dart';
 import 'tools/firebase.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 class NitApp extends HookConsumerWidget {
   static preInitialization({
     bool? goRouterOptionURLReflectsImperativeAPIs,
+
+    /// Used to remove hash sign from URLs using
+    bool? removeHashSignFromUrl,
     FirebaseOptions? firebaseOptions,
   }) async {
+    if (removeHashSignFromUrl == true) {
+      usePathUrlStrategy();
+    }
+
     if (goRouterOptionURLReflectsImperativeAPIs != null) {
       GoRouter.optionURLReflectsImperativeAPIs =
           goRouterOptionURLReflectsImperativeAPIs;
@@ -172,6 +180,8 @@ class NitApp extends HookConsumerWidget {
     }
 
     if (!initialization.hasData || initialization.data! != true) {
+      debugPrint(initialization.error?.toString());
+      debugPrint(initialization.stackTrace?.toString());
       return loadingFailedScreen;
     }
 

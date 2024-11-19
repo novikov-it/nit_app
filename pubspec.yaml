@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
 
   nit_router:
     # path: ../nit_router
@@ -66,9 +68,6 @@ dependencies:
   #     url: git@github.com:novikov-it/nit_flutter_chatview.git
   #     ref: main
   app_links: ^6.3.2
-
-
-
 
 dev_dependencies:
   flutter_test:

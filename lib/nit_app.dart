@@ -5,6 +5,8 @@ export 'src/session/nit_session_state.dart';
 
 export 'src/generic_forms/generic_forms.dart';
 
+export 'src/nit_utils/alerting.dart';
+
 export 'src/admin_panel/entity_manager_block.dart';
 export 'src/admin_panel/database_page.dart';
 export 'src/admin_panel/database_config.dart';
