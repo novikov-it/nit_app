@@ -112,7 +112,9 @@ class MessageCard extends ConsumerWidget {
                               Text(
                                 message.senderInfo?.fullName ??
                                     message.senderInfo?.userName ??
-                                    ref.read(unauthenticatedUsername),
+                                    message.senderName ??
+                                    '___',
+                                // ref.read(unauthenticatedUsername),
                                 style:
                                     context.textTheme.headlineSmall!.copyWith(
                                   color: context.colorScheme.onSurface,
