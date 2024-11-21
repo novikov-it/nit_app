@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/src/repository/single_item_custom_provider_config.dart';
+import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 import 'package:nit_router/nit_router.dart';
 import 'package:nit_tools_client/nit_tools_client.dart';
 import 'entity_list_config.dart';
@@ -120,6 +121,15 @@ extension RefRepositoryExtension on Ref {
   }
 
   K? processApiResponse<K, T>(ApiResponse<K> response) {
+    debugPrint(response.toJson().toString());
+    if (response.error != null || response.warning != null) {
+      notifyUser(
+        response.error != null
+            ? NitNotification.error(response.error!)
+            : NitNotification.warning(response.warning!),
+      );
+    }
+
     if ((response.updatedEntities ?? []).isNotEmpty) {
       _updateRepository<T>(response.updatedEntities ?? []);
     }
