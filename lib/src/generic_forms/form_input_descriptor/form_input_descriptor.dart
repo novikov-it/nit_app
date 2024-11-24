@@ -13,10 +13,12 @@ part 'parts/text_form_input_descriptor.dart';
 
 abstract class FormInputDescriptor {
   const FormInputDescriptor({
-    this.isRequired = false,
-    this.displayTitle,
+    required this.isHidden,
+    required this.isRequired,
+    required this.displayTitle,
   });
 
+  final bool isHidden;
   final bool isRequired;
-  final String? displayTitle;
+  final String displayTitle;
 }

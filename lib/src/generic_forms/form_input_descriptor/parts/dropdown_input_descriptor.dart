@@ -2,8 +2,9 @@ part of '../form_input_descriptor.dart';
 
 abstract class DropdownInputDescriptor<Entity> extends FormInputDescriptor {
   const DropdownInputDescriptor({
+    required super.displayTitle,
+    super.isHidden = false,
     super.isRequired = false,
-    super.displayTitle,
     this.nullLabel,
     this.labelExtractor,
     this.labelField,
@@ -23,8 +24,9 @@ abstract class DropdownInputDescriptor<Entity> extends FormInputDescriptor {
 class PredefinedDropdownInputDescriptor<Entity>
     extends DropdownInputDescriptor {
   const PredefinedDropdownInputDescriptor({
+    required super.displayTitle,
+    super.isHidden = false,
     super.isRequired = false,
-    super.displayTitle,
     required List<Entity> optionsList,
     super.nullLabel,
     super.labelExtractor,
@@ -41,8 +43,9 @@ class PredefinedDropdownInputDescriptor<Entity>
 class EntityDropdownInputDescriptor<Entity extends SerializableModel>
     extends DropdownInputDescriptor<Entity> {
   const EntityDropdownInputDescriptor({
+    required super.displayTitle,
+    super.isHidden = false,
     super.isRequired = false,
-    super.displayTitle,
     super.nullLabel,
     super.labelExtractor,
     super.labelField,

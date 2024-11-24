@@ -52,7 +52,19 @@ extension NitAppBuildContextExtension on BuildContext {
   Future<T?> showBottomSheetOrDialog<T>(
     Widget child,
   ) =>
-      isMobile ? showForceBottomSheetDialog(child) : showForceDialog(child);
+      isMobile
+          ? showForceBottomSheetDialog(
+              ProviderScope(
+                overrides: [
+                  navigationPathParametersProvider.overrideWith(
+                    (ref) => ProviderScope.containerOf(this)
+                        .read(navigationPathParametersProvider),
+                  )
+                ],
+                child: child,
+              ),
+            )
+          : showForceDialog(child);
 
   Future<T?> showForceDialog<T>(
     Widget child,

@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'database_config.dart';
 
-class DatabasePage extends ConsumerStatefulWidget {
-  const DatabasePage({
+class NitDatabasePage extends ConsumerStatefulWidget {
+  const NitDatabasePage({
     super.key,
     required this.pageDescriptors,
   });
@@ -12,10 +12,10 @@ class DatabasePage extends ConsumerStatefulWidget {
   final List<DatabasePageDescriptor> pageDescriptors;
 
   @override
-  ConsumerState<DatabasePage> createState() => _State();
+  ConsumerState<NitDatabasePage> createState() => _State();
 }
 
-class _State extends ConsumerState<DatabasePage> {
+class _State extends ConsumerState<NitDatabasePage> {
   late DatabasePageDescriptor _selectedPage = widget.pageDescriptors.first;
 
   @override
