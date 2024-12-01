@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:serverpod_chat_client/module.dart';

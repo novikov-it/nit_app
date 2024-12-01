@@ -39,7 +39,9 @@ class EntityManagerState<Entity extends SerializableModel>
   }
 
   @override
-  Future<bool> save(Entity model, int? modelId) async {
+  Future<bool> save(
+    Entity model,
+  ) async {
     return await future.then(
       (value) async => await nitToolsCaller.crud
           .saveModel(
@@ -58,6 +60,7 @@ class EntityManagerState<Entity extends SerializableModel>
     );
   }
 
+  @override
   Future<bool> delete(Entity model, int modelId) async {
     return await future.then(
       (value) async => await nitToolsCaller.crud

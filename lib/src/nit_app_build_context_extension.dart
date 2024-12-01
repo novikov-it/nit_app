@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:adaptive_breakpoints/adaptive_breakpoints.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nit_app/nit_app.dart';

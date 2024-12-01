@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:nit_app/src/generic_forms/nit_form_state/nit_form_state.dart';
 import 'package:nit_app/src/nit_app_build_context_extension.dart';
 import 'package:nit_app/src/repository/entity_manager_interface.dart';
 import 'package:nit_app/src/repository/repository.dart';
@@ -157,7 +156,7 @@ class NitFormState<StateEntity extends SerializableModel,
                     //             EntityListConfig())
                     //         .notifier)
                     widget.entityManager
-                        .save(updatedModel as StateEntity, widget.modelId)
+                        .save(updatedModel as StateEntity)
                         .then(context.popOnTrue);
                   }
                 }

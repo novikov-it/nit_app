@@ -23,7 +23,7 @@ StateProviderFamily<SerializableModel?, int> modelProvider(String className) {
 
   if (rep == null) return initRepository(className);
 
-  return rep as StateProviderFamily<SerializableModel?, int>;
+  return rep; // as StateProviderFamily<SerializableModel?, int>;
 }
 
 _filter<T>(T? model, bool Function(T model) filter) =>
@@ -109,25 +109,24 @@ extension RefRepositoryExtension on Ref {
                 .toList(),
       );
 
-  Future<bool> saveModel(SerializableModel model) async {
+  Future<int?> saveModel(SerializableModel model) async {
     return await nitToolsCaller.crud
         .saveModel(
           wrappedModel: ObjectWrapper.wrap(model: model),
         )
         .then(
-          (response) => processApiResponse<int>(response) != null,
+          (response) => processApiResponse<int>(response),
         );
   }
 
-  Future<bool> saveModels(List<SerializableModel> models) async {
+  Future<List<int>?> saveModels(List<SerializableModel> models) async {
     return await nitToolsCaller.crud
         .saveModels(
           wrappedModels:
               models.map((model) => ObjectWrapper.wrap(model: model)).toList(),
         )
         .then(
-          (response) =>
-              processApiResponse<List<int>>(response)?.length == models.length,
+          (response) => processApiResponse<List<int>>(response),
         );
   }
 

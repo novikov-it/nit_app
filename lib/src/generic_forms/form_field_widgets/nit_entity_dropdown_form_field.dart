@@ -22,8 +22,6 @@ class NitEntityDropdownFormField<Entity extends SerializableModel>
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final t = formStateProvider(context).values;
-
     return ref
         .watchEntityListState<Entity>(
           backendConfig: EntityListConfig(

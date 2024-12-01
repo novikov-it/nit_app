@@ -26,11 +26,11 @@ class CustomChatView extends StatefulWidget {
 
   /// Creates a new [CustomChatView].
   const CustomChatView({
-    Key? key,
+    super.key,
     required this.controller,
     required this.tileBuilder,
     this.leading,
-  }) : super(key: key);
+  });
 
   @override
   CustomChatViewState createState() => CustomChatViewState();
