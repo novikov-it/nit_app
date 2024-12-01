@@ -39,7 +39,7 @@ class SingleItemProviderState<T extends SerializableModel>
           className: T.toString(),
           id: arg,
         )
-        .then((response) => ref.processApiResponse<int, T>(response))
+        .then((response) => ref.processApiResponse<int>(response))
         .then((res) => res);
   }
 }

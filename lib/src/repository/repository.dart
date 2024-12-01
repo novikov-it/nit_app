@@ -9,37 +9,37 @@ import 'entity_manager_state.dart';
 import 'single_item_custom_provider.dart';
 import 'single_item_provider.dart';
 
-final Map<Type, StateProviderFamily<dynamic, int>> repository = {};
+final Map<String, StateProviderFamily<SerializableModel?, int>> repository = {};
 
-StateProviderFamily<T?, int> initRepository<T>() {
-  repository[T] = StateProvider.family<T?, int>((ref, id) => null);
+StateProviderFamily<SerializableModel?, int> initRepository(String className) {
+  repository[className] =
+      StateProvider.family<SerializableModel?, int>((ref, id) => null);
 
-  return repository[T] as StateProviderFamily<T?, int>;
+  return repository[className] as StateProviderFamily<SerializableModel?, int>;
 }
 
-StateProviderFamily<T?, int> modelProvider<T>() {
-  final rep = repository[T];
+StateProviderFamily<SerializableModel?, int> modelProvider(String className) {
+  final rep = repository[className];
 
-  if (rep == null) return initRepository<T>();
+  if (rep == null) return initRepository(className);
 
-  return rep as StateProviderFamily<T?, int>;
+  return rep as StateProviderFamily<SerializableModel?, int>;
 }
 
 _filter<T>(T? model, bool Function(T model) filter) =>
     model != null ? filter(model) : false;
 
 extension WidgetRefRepositoryExtension on WidgetRef {
-  T? watchModel<T extends SerializableModel>(int id) {
-    final p = modelProvider<T>();
+  // T? watchModel<T extends SerializableModel>(int id) =>
+  //     watch(modelProvider<T>()(id));
 
-    final t = watch(p(id));
+  // T? readModel<T extends SerializableModel>(int id) =>
+  //     read(modelProvider<T>()(id));
 
-    return t;
-  }
-
-  // watch((id));
+  T? watchModel<T extends SerializableModel>(int id) =>
+      watch(modelProvider(T.toString())(id)) as T?;
   T? readModel<T extends SerializableModel>(int id) =>
-      read(modelProvider<T>()(id));
+      read(modelProvider(T.toString())(id)) as T?;
 
   AsyncValue<T?> watchEntityState<T extends SerializableModel>(int id) =>
       watch(singleItemProvider<T>()(id)).whenData(
@@ -77,8 +77,10 @@ extension WidgetRefRepositoryExtension on WidgetRef {
 }
 
 extension RefRepositoryExtension on Ref {
-  T? watchModel<T>(int id) => watch(modelProvider<T>()(id));
-  T? readModel<T>(int id) => read(modelProvider<T>()(id));
+  T? watchModel<T extends SerializableModel>(int id) =>
+      watch(modelProvider(T.toString())(id)) as T?;
+  T? readModel<T extends SerializableModel>(int id) =>
+      read(modelProvider(T.toString())(id)) as T?;
 
   AsyncValue<T?> watchEntityState<T extends SerializableModel>(int id) =>
       watch(singleItemProvider<T>()(id)).whenData(
@@ -107,20 +109,47 @@ extension RefRepositoryExtension on Ref {
                 .toList(),
       );
 
-  _updateRepository<T>(List<ObjectWrapper> newModels) {
-    if (repository[T] == null) {
-      debugPrint("Initializing repo for $T");
-      initRepository<T>();
-    }
+  Future<bool> saveModel(SerializableModel model) async {
+    return await nitToolsCaller.crud
+        .saveModel(
+          wrappedModel: ObjectWrapper.wrap(model: model),
+        )
+        .then(
+          (response) => processApiResponse<int>(response) != null,
+        );
+  }
 
-    print(T.toString());
+  Future<bool> saveModels(List<SerializableModel> models) async {
+    return await nitToolsCaller.crud
+        .saveModels(
+          wrappedModels:
+              models.map((model) => ObjectWrapper.wrap(model: model)).toList(),
+        )
+        .then(
+          (response) =>
+              processApiResponse<List<int>>(response)?.length == models.length,
+        );
+  }
+
+  _updateRepository(List<ObjectWrapper> newModels) {
+    // if (repository[T.toString()] == null) {
+    //   debugPrint("Initializing repo for $T");
+    //   initRepository<T>();
+    // }
+
+    // print(T.toString());
 
     for (var e in newModels) {
-      read(repository[T]!(e.modelId!).notifier).state = e.model as T;
+      if (repository[e.nitMappingClassname] == null) {
+        debugPrint("Initializing repo for ${e.nitMappingClassname}");
+        initRepository(e.nitMappingClassname);
+      }
+      read(repository[e.nitMappingClassname]!(e.modelId!).notifier).state =
+          e.model;
     }
   }
 
-  K? processApiResponse<K, T>(ApiResponse<K> response) {
+  K? processApiResponse<K>(ApiResponse<K> response) {
     debugPrint(response.toJson().toString());
     if (response.error != null || response.warning != null) {
       notifyUser(
@@ -131,7 +160,7 @@ extension RefRepositoryExtension on Ref {
     }
 
     if ((response.updatedEntities ?? []).isNotEmpty) {
-      _updateRepository<T>(response.updatedEntities ?? []);
+      _updateRepository(response.updatedEntities ?? []);
     }
     return response.value;
   }

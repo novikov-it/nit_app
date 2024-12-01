@@ -45,11 +45,12 @@ class NitApp extends HookConsumerWidget {
     }
   }
 
-  const NitApp({
+  NitApp({
     super.key,
     required this.title,
     this.routerProvider,
     this.navigationZones,
+    this.redirectProvider,
     this.client,
     this.deeplinkHandler,
     this.initializers,
@@ -68,12 +69,26 @@ class NitApp extends HookConsumerWidget {
     ),
     this.locale = 'ru',
     this.themeData,
-  });
+  }) {
+    assert(
+      routerProvider != null || navigationZones != null,
+      'You need to provide router configuration. Either routerProvider or navigationZones should be passed',
+    );
+    _routerProvider = routerProvider ??
+        nitRouterStateProvider(navigationZones!, redirectProvider);
+    // NitRouter.prepareRouterProvider(
+    //     navigationZones: navigationZones!,
+    //     redirectProvider: redirectProvider);
+  }
 
   final String locale;
   final String title;
   final List<List<NavigationZoneEnum>>? navigationZones;
   final Provider<GoRouter>? routerProvider;
+  final
+      // Provider<Map<NavigationZoneEnum, NavigationZoneEnum>>?
+
+      Provider<NitRedirectsStateModel>? redirectProvider;
 
   final ServerpodClientShared? client;
   final void Function(WidgetRef, String)? deeplinkHandler;
@@ -84,7 +99,7 @@ class NitApp extends HookConsumerWidget {
 
   final ThemeData? themeData;
 
-  static late final GoRouter _router;
+  late final ProviderBase<GoRouter> _routerProvider;
 
   Future<bool> _futuresQueue(List<Future<bool> Function()> initializers) async {
     if (initializers.isEmpty) return true;
@@ -102,10 +117,6 @@ class NitApp extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    assert(
-      routerProvider != null || navigationZones != null,
-      'You need to provide router configuration. Either routerProvider or navigationZones should be passed',
-    );
     final initialization = useFuture(
       useMemoized(
         () => _futuresQueue(
@@ -152,22 +163,22 @@ class NitApp extends HookConsumerWidget {
                     : true;
               },
             ...(initializers ?? []),
-            () async {
-              if (routerProvider != null) {
-                _router = ref.read(routerProvider!);
-              } else {
-                _router = NitRouter.prepareRouter(
-                  navigationZones: navigationZones!,
-                  refreshListenable: authModuleCaller != null
-                      ? ref
-                          .read(nitSessionStateProvider)
-                          .serverpodSessionManager
-                      : null,
-                  redirect: null,
-                );
-              }
-              return true;
-            },
+            // () async {
+            //   if (routerProvider != null) {
+            //     _router = ref.watch(routerProvider!);
+            //   } else {
+            //     _router = NitRouter.prepareRouter(
+            //       navigationZones: navigationZones!,
+            //       refreshListenable: authModuleCaller != null
+            //           ? ref
+            //               .read(nitSessionStateProvider)
+            //               .serverpodSessionManager
+            //           : null,
+            //       redirect: null,
+            //     );
+            //   }
+            //   return true;
+            // },
             if (!kIsWeb && deeplinkHandler != null)
               () => ref.handleDeeplinks(deeplinkHandler),
           ],
@@ -198,9 +209,17 @@ class NitApp extends HookConsumerWidget {
             PointerDeviceKind.unknown,
           },
         ),
-        routerDelegate: _router.routerDelegate,
-        routeInformationProvider: _router.routeInformationProvider,
-        routeInformationParser: _router.routeInformationParser,
+        routerConfig: ref.watch(
+          _routerProvider,
+          // routerProvider ??
+          //     NitRouter.prepareRouterProvider(
+          //       navigationZones: navigationZones!,
+          //       redirectProvider: redirectProvider,
+          //     ),
+        ),
+        // routerDelegate: _router.routerDelegate,
+        // routeInformationProvider: _router.routeInformationProvider,
+        // routeInformationParser: _router.routeInformationParser,
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,

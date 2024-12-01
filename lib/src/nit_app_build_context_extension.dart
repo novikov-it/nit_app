@@ -52,19 +52,7 @@ extension NitAppBuildContextExtension on BuildContext {
   Future<T?> showBottomSheetOrDialog<T>(
     Widget child,
   ) =>
-      isMobile
-          ? showForceBottomSheetDialog(
-              ProviderScope(
-                overrides: [
-                  navigationPathParametersProvider.overrideWith(
-                    (ref) => ProviderScope.containerOf(this)
-                        .read(navigationPathParametersProvider),
-                  )
-                ],
-                child: child,
-              ),
-            )
-          : showForceDialog(child);
+      isMobile ? showForceBottomSheetDialog(child) : showForceDialog(child);
 
   Future<T?> showForceDialog<T>(
     Widget child,
@@ -73,8 +61,12 @@ extension NitAppBuildContextExtension on BuildContext {
         context: this,
         builder: (context) {
           return ProviderScope(
-            // TODO: change to OverlayPortal - https://github.com/rrousselGit/riverpod/issues/3261#issuecomment-1992492897
-            parent: ProviderScope.containerOf(context),
+            overrides: [
+              navigationPathParametersProvider.overrideWith(
+                (ref) => ProviderScope.containerOf(this)
+                    .read(navigationPathParametersProvider),
+              )
+            ],
             child: Dialog(
               elevation: 8,
               shape: RoundedRectangleBorder(
@@ -138,37 +130,45 @@ extension NitAppBuildContextExtension on BuildContext {
         ),
         isScrollControlled: true,
         builder: (BuildContext context) {
-          return Padding(
-            // height: MediaQuery.of(context).size.height * 0.7,
-            padding: EdgeInsets.only(
-              top: 16,
-              left: 16,
-              right: 16,
-              bottom: max(
-                16,
-                MediaQuery.of(context).viewInsets.bottom,
+          return ProviderScope(
+            overrides: [
+              navigationPathParametersProvider.overrideWith(
+                (ref) => ProviderScope.containerOf(this)
+                    .read(navigationPathParametersProvider),
+              )
+            ],
+            child: Padding(
+              // height: MediaQuery.of(context).size.height * 0.7,
+              padding: EdgeInsets.only(
+                top: 16,
+                left: 16,
+                right: 16,
+                bottom: max(
+                  16,
+                  MediaQuery.of(context).viewInsets.bottom,
+                ),
               ),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Center(
-                  child: Container(
-                    height: 4,
-                    width: MediaQuery.sizeOf(context).width * 0.15,
-                    decoration: BoxDecoration(
-                      color: context.theme.colorScheme.outline,
-                      borderRadius: BorderRadius.circular(8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: Container(
+                      height: 4,
+                      width: MediaQuery.sizeOf(context).width * 0.15,
+                      decoration: BoxDecoration(
+                        color: context.theme.colorScheme.outline,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                   ),
-                ),
-                const Gap(16),
-                // child,
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: child,
-                ),
-              ],
+                  const Gap(16),
+                  // child,
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: child,
+                  ),
+                ],
+              ),
             ),
           );
         },

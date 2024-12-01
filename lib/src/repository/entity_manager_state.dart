@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/src/repository/entity_list_config.dart';
+import 'package:nit_app/src/repository/entity_manager_interface.dart';
 import 'package:nit_tools_client/nit_tools_client.dart';
 import 'repository.dart';
 
@@ -24,25 +25,27 @@ AsyncNotifierProviderFamily<EntityManagerState<T>, List<int>, EntityListConfig>
       EntityManagerState<T>, List<int>, EntityListConfig>;
 }
 
-class EntityManagerState<T extends SerializableModel>
-    extends FamilyAsyncNotifier<List<int>, EntityListConfig> {
+class EntityManagerState<Entity extends SerializableModel>
+    extends FamilyAsyncNotifier<List<int>, EntityListConfig>
+    implements EntityManagerInterface<Entity> {
   @override
   Future<List<int>> build(EntityListConfig arg) async {
-    debugPrint("Building state for ${T.toString()}");
+    debugPrint("Building state for ${Entity.toString()}");
 
     return await nitToolsCaller.crud
-        .getAll(className: T.toString(), filters: arg.backendFilters)
-        .then((response) => ref.processApiResponse<List<int>, T>(response))
+        .getAll(className: Entity.toString(), filters: arg.backendFilters)
+        .then((response) => ref.processApiResponse<List<int>>(response))
         .then((res) => res ?? []);
   }
 
-  Future<bool> save(T model, int? modelId) async {
+  @override
+  Future<bool> save(Entity model, int? modelId) async {
     return await future.then(
       (value) async => await nitToolsCaller.crud
           .saveModel(
-            wrappedModel: ObjectWrapper(model: model, modelId: modelId),
+            wrappedModel: ObjectWrapper.wrap(model: model),
           )
-          .then((response) => ref.processApiResponse<int, T>(response))
+          .then((response) => ref.processApiResponse<int>(response))
           .then(
         (res) {
           if (res == null) return false;
@@ -55,13 +58,13 @@ class EntityManagerState<T extends SerializableModel>
     );
   }
 
-  Future<bool> delete(T model, int modelId) async {
+  Future<bool> delete(Entity model, int modelId) async {
     return await future.then(
       (value) async => await nitToolsCaller.crud
           .delete(
-            wrappedModel: ObjectWrapper(model: model, modelId: modelId),
+            wrappedModel: ObjectWrapper.wrap(model: model),
           )
-          .then((response) => ref.processApiResponse<bool, T>(response))
+          .then((response) => ref.processApiResponse<bool>(response))
           .then(
         (res) {
           if (res == true) {

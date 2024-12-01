@@ -42,7 +42,7 @@ class SingleItemCustomProviderState<T extends SerializableModel>
           className: T.toString(),
           filters: arg.backendFilters,
         )
-        .then((response) => ref.processApiResponse<int, T>(response))
+        .then((response) => ref.processApiResponse<int>(response))
         .then((res) => res);
   }
 }
