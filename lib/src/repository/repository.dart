@@ -93,6 +93,12 @@ extension RefRepositoryExtension on Ref {
         (value) => value == null ? null : watchModel<T>(value),
       );
 
+  // AsyncValue<T?> readEntityCustomState<T extends SerializableModel>(
+  //         SingleItemCustomProviderConfig config) =>
+  //     watch(singleItemCustomProvider<T>()(config)).whenData(
+  //       (value) => value == null ? null : readModel<T>(value),
+  //     );
+
   AsyncValue<List<int>> watchEntityListState<T extends SerializableModel>({
     List<NitBackendFilter>? backendFilters,
     bool Function(T model)? frontendFilter,

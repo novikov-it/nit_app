@@ -9,8 +9,8 @@ class FirebaseInitializer {
       options: options,
     );
 
-    final firebaseMessaging = FirebaseMessaging.instance;
-    firebaseMessaging.requestPermission();
+    // final firebaseMessaging = FirebaseMessaging.instance;
+    // firebaseMessaging.requestPermission();
 
     // // Set the background messaging handler early on, as a named top-level function
     // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
