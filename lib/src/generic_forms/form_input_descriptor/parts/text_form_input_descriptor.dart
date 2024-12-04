@@ -1,17 +1,17 @@
 part of '../form_input_descriptor.dart';
 
-class TextInputDescriptor extends FormInputDescriptor {
+class TextInputDescriptor<ValueType> extends FormInputDescriptor {
   const TextInputDescriptor({
     required super.displayTitle,
     super.isRequired = false,
     this.validators,
   });
 
-  final List<Validator>? validators;
+  final List<Validator<ValueType>>? validators;
 
   @override
   Widget prepareWidget(ModelFieldDescriptor fieldDescriptor) {
-    return NitTextFormField(
+    return NitTextFormField<ValueType>(
       fieldDescriptor: fieldDescriptor,
       inputDescriptor: this,
     );

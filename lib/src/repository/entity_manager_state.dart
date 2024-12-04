@@ -61,11 +61,12 @@ class EntityManagerState<Entity extends SerializableModel>
   }
 
   @override
-  Future<bool> delete(Entity model, int modelId) async {
+  Future<bool> delete(int modelId) async {
     return await future.then(
       (value) async => await nitToolsCaller.crud
           .delete(
-            wrappedModel: ObjectWrapper.wrap(model: model),
+            className: Entity.toString(), modelId: modelId,
+            // wrappedModel: ObjectWrapper.wrap(model: model),
           )
           .then((response) => ref.processApiResponse<bool>(response))
           .then(

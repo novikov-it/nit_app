@@ -33,6 +33,11 @@ class _MainNavigationBarState extends ConsumerState<NitNavigationBar> {
             '${element.route!.root}${element.route!.route.path}'.split('/');
 
         for (var i = 0; i < urlSections.length; i++) {
+          if (i >= routeSections.length) {
+            // print('${urlSections[i]} does not match ${routeSections[i]}');
+
+            return false;
+          }
           if (routeSections[i].startsWith(':') ||
               urlSections[i] == routeSections[i]) {
             // print('${urlSections[i]} matches ${routeSections[i]}');

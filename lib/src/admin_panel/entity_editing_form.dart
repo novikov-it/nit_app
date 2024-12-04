@@ -124,7 +124,7 @@ class NitFormState<StateEntity extends SerializableModel,
                       //             EntityListConfig())
                       //         .notifier)
                       widget.entityManager
-                          .delete(model!, widget.modelId!)
+                          .delete(widget.modelId!)
                           .then(context.popOnTrue),
                   icon: const Icon(Icons.delete_forever)),
             ElevatedButton(
