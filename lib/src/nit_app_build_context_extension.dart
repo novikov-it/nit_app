@@ -16,6 +16,7 @@ extension NitAppBuildContextExtension on BuildContext {
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
 
   popOnTrue(bool value) => mounted && value ? pop() : {};
+  popIfNotNull(dynamic value) => mounted && value != null ? pop() : {};
 
   // mountedAction(BuildContext context, ())
   mountedPushNamed(String name) => mounted ? pushNamed(name) : {};

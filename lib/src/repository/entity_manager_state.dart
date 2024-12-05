@@ -39,7 +39,7 @@ class EntityManagerState<Entity extends SerializableModel>
   }
 
   @override
-  Future<bool> save(
+  Future<int?> save(
     Entity model,
   ) async {
     return await future.then(
@@ -50,11 +50,11 @@ class EntityManagerState<Entity extends SerializableModel>
           .then((response) => ref.processApiResponse<int>(response))
           .then(
         (res) {
-          if (res == null) return false;
+          if (res == null) return null;
 
           state = AsyncValue.data([res, ...value.whereNot((e) => e == res)]);
           debugPrint("Updated value = ${state.value}");
-          return true;
+          return res;
         },
       ),
     );

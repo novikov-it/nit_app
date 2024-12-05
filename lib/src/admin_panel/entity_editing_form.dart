@@ -157,7 +157,7 @@ class NitFormState<StateEntity extends SerializableModel,
                     //         .notifier)
                     widget.entityManager
                         .save(updatedModel as StateEntity)
-                        .then(context.popOnTrue);
+                        .then(context.popIfNotNull);
                   }
                 }
               },
