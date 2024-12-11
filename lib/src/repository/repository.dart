@@ -41,6 +41,33 @@ extension WidgetRefRepositoryExtension on WidgetRef {
   T? readModel<T extends SerializableModel>(int id) =>
       read(modelProvider(T.toString())(id)) as T?;
 
+  Future<T> watchOrFetchModel<T extends SerializableModel>(int id) async {
+    T? model = watchModel<T>(id);
+
+    if (model == null) await watch(singleItemProvider<T>()(id).future);
+
+    return watchModel<T>(id)!;
+  }
+
+  AsyncValue<T> watchOrFetchModelAsync<T extends SerializableModel>(int id) {
+    T? model = watchModel<T>(id);
+
+    // if (model == null) await watch(singleItemProvider<T>()(id).future);
+
+    return model != null
+        ? AsyncData(model)
+        : watch(singleItemProvider<T>()(id))
+            .whenData((_) => watchModel<T>(id)!);
+  }
+
+  Future<T> readOrFetchModel<T extends SerializableModel>(int id) async {
+    T? model = readModel<T>(id);
+
+    if (model == null) await watch(singleItemProvider<T>()(id).future);
+
+    return readModel<T>(id)!;
+  }
+
   AsyncValue<T?> watchEntityState<T extends SerializableModel>(int id) =>
       watch(singleItemProvider<T>()(id)).whenData(
         (value) => value == null ? null : watchModel<T>(value),
@@ -81,6 +108,22 @@ extension RefRepositoryExtension on Ref {
       watch(modelProvider(T.toString())(id)) as T?;
   T? readModel<T extends SerializableModel>(int id) =>
       read(modelProvider(T.toString())(id)) as T?;
+
+  Future<T> watchOrFetchModel<T extends SerializableModel>(int id) async {
+    T? model = watchModel<T>(id);
+
+    if (model == null) await watch(singleItemProvider<T>()(id).future);
+
+    return watchModel<T>(id)!;
+  }
+
+  Future<T> readOrFetchModel<T extends SerializableModel>(int id) async {
+    T? model = readModel<T>(id);
+
+    if (model == null) await watch(singleItemProvider<T>()(id).future);
+
+    return readModel<T>(id)!;
+  }
 
   AsyncValue<T?> watchEntityState<T extends SerializableModel>(int id) =>
       watch(singleItemProvider<T>()(id)).whenData(
