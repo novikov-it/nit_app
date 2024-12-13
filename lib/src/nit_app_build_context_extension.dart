@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:adaptive_breakpoints/adaptive_breakpoints.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_app/src/auth/phone_auth/phone_auth_widget.dart';
 
@@ -112,14 +112,15 @@ extension NitAppBuildContextExtension on BuildContext {
       );
 
   Future<T?> showForceBottomSheetDialog<T>(
-    Widget child,
-  ) =>
+    Widget child, {
+    double maxHeightPercentage = 0.8,
+  }) =>
       showModalBottomSheet<T>(
         context: this,
         constraints: BoxConstraints.loose(
           Size(
             MediaQuery.of(this).size.width,
-            MediaQuery.of(this).size.height * 0.8,
+            MediaQuery.of(this).size.height * maxHeightPercentage,
           ),
         ),
         shape: const RoundedRectangleBorder(
