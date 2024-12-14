@@ -40,8 +40,9 @@ class EntityManagerState<Entity extends SerializableModel>
 
   @override
   Future<int?> save(
-    Entity model,
-  ) async {
+    Entity model, {
+    bool andRemoveFromList = false,
+  }) async {
     return await future.then(
       (value) async => await nitToolsCaller.crud
           .saveModel(
@@ -52,7 +53,10 @@ class EntityManagerState<Entity extends SerializableModel>
         (res) {
           if (res == null) return null;
 
-          state = AsyncValue.data([res, ...value.whereNot((e) => e == res)]);
+          state = AsyncValue.data([
+            if (!andRemoveFromList) res,
+            ...value.whereNot((e) => e == res)
+          ]);
           debugPrint("Updated value = ${state.value}");
           return res;
         },

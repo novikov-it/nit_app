@@ -117,12 +117,13 @@ extension NitAppBuildContextExtension on BuildContext {
   }) =>
       showModalBottomSheet<T>(
         context: this,
-        constraints: BoxConstraints.loose(
-          Size(
-            MediaQuery.of(this).size.width,
-            MediaQuery.of(this).size.height * maxHeightPercentage,
-          ),
-        ),
+        // constraints: BoxConstraints.loose(
+        //   Size(
+        //     MediaQuery.of(this).size.width,
+        //     MediaQuery.of(this).size.height * 0.8 +
+        //         MediaQuery.viewInsetsOf(this).bottom,
+        //   ),
+        // ),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(16),
@@ -138,16 +139,25 @@ extension NitAppBuildContextExtension on BuildContext {
                     .read(navigationPathParametersProvider),
               )
             ],
-            child: Padding(
-              // height: MediaQuery.of(context).size.height * 0.7,
+            child: Container(
+              constraints: BoxConstraints.loose(
+                Size(
+                  MediaQuery.of(this).size.width,
+                  MediaQuery.of(this).size.height * 0.8 +
+                      MediaQuery.viewInsetsOf(this).bottom,
+                ),
+              ),
+              // height: MediaQuery.of(context).size.height * 0.8 +
+              //     MediaQuery.of(context).viewInsets.bottom,
               padding: EdgeInsets.only(
                 top: 16,
                 left: 16,
                 right: 16,
-                bottom: max(
-                  16,
-                  MediaQuery.of(context).viewInsets.bottom,
-                ),
+                bottom:
+                    // max(
+                    //   16,
+                    MediaQuery.of(context).viewInsets.bottom + 16,
+                // ),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
