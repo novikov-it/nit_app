@@ -2,13 +2,30 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:serverpod_client/serverpod_client.dart';
-
-import 'repository/entity_manager_state.dart';
+import 'package:nit_app/nit_app.dart';
+import 'auth/phone_auth/phone_auth_widget.dart';
 
 extension NitAppWidgetRefExtension on WidgetRef {
+  requireLogin({
+    Function()? thenAction,
+  }) async {
+    final userLoggedIn = read(nitSessionStateProvider).signedInUser != null ||
+        true ==
+            await context.showBottomSheetOrDialog<bool>(
+              NitDialogLayout(
+                title: 'Войдите в приложение',
+                child: PhoneAuthWidget(
+                  onSuccess: context.pop,
+                ),
+              ),
+            );
+
+    if (userLoggedIn && thenAction != null) thenAction();
+  }
+
   Future<String?> uploadImageToServer(XFile image) async {
     final imageBytes = await image.readAsBytes();
 

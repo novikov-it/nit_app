@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/src/session/nit_session_state.dart';
-import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_phone_flutter/serverpod_auth_phone_flutter.dart';
 
@@ -14,27 +13,27 @@ class PhoneAuthState extends _$PhoneAuthState {
   PhoneAuthStateModel build() {
     return PhoneAuthStateModel(
       otpRequested: false,
-      everythingAccepted: false,
+      // everythingAccepted: false,
       phoneController: TextEditingController(),
       otpController: TextEditingController(),
     );
   }
 
-  toggleAcceptance() {
-    state = state.copyWith(everythingAccepted: !state.everythingAccepted);
-  }
+  // toggleAcceptance() {
+  //   state = state.copyWith(everythingAccepted: !state.everythingAccepted);
+  // }
 
   requestOtp() async {
     debugPrint("requesting OTP");
-    if (!state.everythingAccepted) {
-      ref.notifyUser(
-        NitNotification.error(
-          'Примите соглашение, чтобы продолжить',
-        ),
-      );
+    // if (!state.everythingAccepted) {
+    //   ref.notifyUser(
+    //     NitNotification.error(
+    //       'Примите соглашение, чтобы продолжить',
+    //     ),
+    //   );
 
-      return;
-    }
+    //   return;
+    // }
 
     await PhoneAuthController(
             ref.read(nitSessionStateProvider).serverpodSessionManager!)
@@ -71,7 +70,7 @@ class PhoneAuthState extends _$PhoneAuthState {
 class PhoneAuthStateModel with _$PhoneAuthStateModel {
   const factory PhoneAuthStateModel({
     required bool otpRequested,
-    required bool everythingAccepted,
+    // required bool everythingAccepted,
     required TextEditingController phoneController,
     required TextEditingController otpController,
     int? otpRequestTimer,

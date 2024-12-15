@@ -30,25 +30,6 @@ extension NitAppBuildContextExtension on BuildContext {
 
   bool get isMobile => MediaQuery.sizeOf(this).width <= maxMobileScreenWidth;
 
-  requireLogin(
-    WidgetRef ref, {
-    Function()? thenAction,
-  }) async {
-    final userLoggedIn =
-        ref.read(nitSessionStateProvider).signedInUser != null ||
-            true ==
-                await showBottomSheetOrDialog<bool>(
-                  NitDialogLayout(
-                    title: 'Войдите в приложение',
-                    child: PhoneAuthWidget(
-                      onSuccess: pop,
-                    ),
-                  ),
-                );
-
-    if (userLoggedIn && thenAction != null) thenAction();
-  }
-
   Future<T?> showBottomSheetOrDialog<T>(
     Widget child,
   ) =>

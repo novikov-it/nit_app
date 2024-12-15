@@ -40,7 +40,7 @@ class NitCheckboxField extends NitFormField<bool> {
 
     return FormField<bool>(
       // onSaved: onSaved(context),
-      initialValue: initialValue(context),
+      initialValue: initialValue(context) ?? false,
       builder: (fieldState) {
         // field.value
         return Row(
