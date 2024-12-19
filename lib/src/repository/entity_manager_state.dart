@@ -38,6 +38,19 @@ class EntityManagerState<Entity extends SerializableModel>
         .then((res) => res ?? []);
   }
 
+  void manualInsert(int modelId, Entity model) async {
+    return await future.then((value) async {
+      ref.manualUpdate(modelId, model);
+
+      state = AsyncValue.data(
+        [
+          modelId,
+          ...value.whereNot((e) => e == modelId),
+        ],
+      );
+    });
+  }
+
   @override
   Future<int?> save(
     Entity model, {

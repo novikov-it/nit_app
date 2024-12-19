@@ -197,6 +197,19 @@ extension RefRepositoryExtension on Ref {
     }
   }
 
+  void manualUpdate<K extends SerializableModel>(
+    int modelId,
+    K model,
+  ) {
+    final typeName = K.toString();
+
+    if (repository[typeName] == null) {
+      debugPrint("Initializing repo for $typeName");
+      initRepository(typeName);
+    }
+    read(repository[typeName]!(modelId).notifier).state = model;
+  }
+
   K? processApiResponse<K>(ApiResponse<K> response) {
     debugPrint(response.toJson().toString());
     if (response.error != null || response.warning != null) {

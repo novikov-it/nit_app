@@ -26,17 +26,14 @@ extension NitAppWidgetRefExtension on WidgetRef {
     if (userLoggedIn && thenAction != null) thenAction();
   }
 
-  Future<String?> uploadImageToServer(XFile image) async {
-    final imageBytes = await image.readAsBytes();
-
-    final byteData = ByteData.view(imageBytes.buffer);
-
-    final path =
-        '${DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())}-${image.name}';
+  Future<String?> uploadFileToServer({
+    required Uint8List bytes,
+    required String path,
+  }) async {
+    final byteData = ByteData.view(bytes.buffer);
 
     var uploadDescription = await nitToolsCaller.upload.getUploadDescription(
       path: path,
-      // '${folder != null ? '$folder/' : ''}
     );
 
     if (uploadDescription == null) {
@@ -62,7 +59,11 @@ extension NitAppWidgetRefExtension on WidgetRef {
           return null;
         }
 
-        uploadImageToServer(image);
+        uploadFileToServer(
+          bytes: await image.readAsBytes(),
+          path:
+              '${DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())}-${image.name}',
+        );
       },
     );
   }

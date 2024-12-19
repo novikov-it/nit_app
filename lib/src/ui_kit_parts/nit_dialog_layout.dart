@@ -39,9 +39,11 @@ class NitDialogLayout extends StatelessWidget {
                 Widget button = entry.value;
                 return Expanded(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (index > 0) const Gap(8),
-                      Expanded(child: button),
+                      // Expanded(child: button),
+                      button,
                     ],
                   ),
                 );
