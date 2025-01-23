@@ -1,17 +1,18 @@
 part of '../form_input_descriptor.dart';
 
-abstract class DropdownInputDescriptor<Entity> extends FormInputDescriptor {
+abstract class DropdownInputDescriptor<ValueType>
+    extends FormInputDescriptor<ValueType> {
   const DropdownInputDescriptor({
     required super.displayTitle,
     super.isRequired = false,
     this.nullLabel,
-    this.labelExtractor,
-    this.labelField,
+    // this.labelExtractor,
+    // this.labelField,
   });
 
   final String? nullLabel;
-  final String Function(WidgetRef ref, Entity model)? labelExtractor;
-  final ModelFieldDescriptor<Entity>? labelField;
+  // final String Function(WidgetRef ref, Entity model)? labelExtractor;
+  // final ModelFieldDescriptor<Entity>? labelField;
 
   // AsyncValue<List<Entity>> optionsList(WidgetRef ref);
 
@@ -20,41 +21,42 @@ abstract class DropdownInputDescriptor<Entity> extends FormInputDescriptor {
       field.initialValue;
 }
 
-class PredefinedDropdownInputDescriptor<Entity>
-    extends DropdownInputDescriptor {
+class PredefinedDropdownInputDescriptor<ValueType>
+    extends DropdownInputDescriptor<ValueType> {
   const PredefinedDropdownInputDescriptor({
     required super.displayTitle,
     super.isRequired = false,
-    required this.optionsList,
+    required this.optionsMap,
     super.nullLabel,
-    super.labelExtractor,
-    super.labelField,
+    // super.labelExtractor,
+    // super.labelField,
   });
 
-  final List<Entity> optionsList;
+  final Map<ValueType, String> optionsMap;
 
   @override
   Widget prepareWidget(ModelFieldDescriptor fieldDescriptor) {
     return NitDropdownFormField(
       fieldDescriptor: fieldDescriptor,
       inputDescriptor: this,
-      optionsList: optionsList,
+      optionsMap: optionsMap,
     );
   }
 }
 
 class EntityDropdownInputDescriptor<Entity extends SerializableModel>
-    extends DropdownInputDescriptor<Entity> {
+    extends DropdownInputDescriptor<int> {
   const EntityDropdownInputDescriptor({
     required super.displayTitle,
     super.isRequired,
     super.nullLabel,
-    super.labelExtractor,
-    super.labelField,
+    // super.labelExtractor,
+    required this.labelField,
     this.filteringFields,
   });
 
   final List<ModelFieldDescriptor>? filteringFields;
+  final ModelFieldDescriptor<Entity> labelField;
 
   @override
   Widget prepareWidget(ModelFieldDescriptor fieldDescriptor) {

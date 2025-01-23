@@ -11,11 +11,15 @@ class NitChatView extends ConsumerStatefulWidget {
     // required this.serverpodChatController,
     // required this.currentUser,
     required this.channel,
+    this.loadingWidget = const Center(
+      child: CircularProgressIndicator(),
+    ),
   });
 
   // final serverpod_chat.ChatController serverpodChatController;
   // final chatview.ChatUser currentUser;
   final String channel;
+  final Widget loadingWidget;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _NitChatViewState();
@@ -45,6 +49,6 @@ class _NitChatViewState extends ConsumerState<NitChatView> {
       ]);
     }
 
-    return CircularProgressIndicator();
+    return widget.loadingWidget;
   }
 }

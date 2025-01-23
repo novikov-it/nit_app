@@ -1,9 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_app/src/generic_forms/form_field_widgets/nit_form_field.dart';
 
@@ -29,41 +25,11 @@ class NitImagePickerField extends NitFormField<String> {
         // field.value
         return InkWell(
           onTap: () async {
-            final ImagePicker picker = ImagePicker();
+            final publicUrl = await ref.pickImage();
 
-            final XFile? image =
-                await picker.pickImage(source: ImageSource.gallery);
-
-            if (image == null) {
-              debugPrint('no image');
-              return;
-            }
-
-            final buffer = await image.readAsBytes();
-            final bytes = ByteData.view(buffer.buffer);
-
-            final path =
-                '${DateFormat('yyyy-MM-dd').format(DateTime.now())}-${image.name}';
-            var uploadDescription =
-                await nitToolsCaller.upload.getUploadDescription(
-              path: path,
-              // '${folder != null ? '$folder/' : ''}
-            );
-
-            if (uploadDescription != null) {
-              debugPrint(uploadDescription);
-              var uploader = FileUploader(uploadDescription);
-              await uploader.uploadByteData(bytes);
-              var publicUrl = await nitToolsCaller.upload.verifyUpload(
-                path: path,
-              );
-
-              debugPrint('$publicUrl');
-
-              if (context.mounted) {
-                onChangedAction(context)(publicUrl);
-                fieldState.didChange(publicUrl);
-              }
+            if (context.mounted) {
+              onChangedAction(context)(publicUrl);
+              fieldState.didChange(publicUrl);
             }
           },
           child: Container(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_chat_client/serverpod_chat_client.dart';
 import 'package:serverpod_chat_flutter/serverpod_chat_flutter.dart';
@@ -73,17 +74,32 @@ class ChatControllerState extends _$ChatControllerState {
       );
 
       _serverpodController!.addConnectionStatusListener(
-        _connectionStatusListener,
+        _updateState,
+        // _connectionStatusListener,
       );
-      // _serverpodController!.addMessageReceivedListener(
-      //   _messageReceivedListener,
-      // );
+      _serverpodController!.addMessageReceivedListener(
+        (message, addedByUser) {
+          if (!addedByUser && message.senderInfo != null) {
+            ref.notifyUser(message);
+            // ref.read(notificationAreaStateProvider.notifier).add(
+            //       AppNotification(
+            //         userId: ref.signedInUserId,
+            //         userRole: ref.role,
+            //         type: AppNotificationType.chat,
+            //         timestamp: DateTime.now(),
+            //         objectId: _chatId,
+            //         title: '${message.senderInfo!.userName} пишет',
+            //         text: message.message,
+            //         isRead: false,
+            //       ),
+            //     );
+          }
+          _updateState();
+        },
+      );
       _serverpodController!.addUnreadMessagesListener(
-        _unreadMessagesListener,
+        _updateState,
       );
-      // _serverpodController!.addReceivedMessageChunkListener(
-      //   _receivedMessageChunkListener,
-      // );
     }
 
     return ChatControllerStateData(
@@ -97,16 +113,16 @@ class ChatControllerState extends _$ChatControllerState {
     );
   }
 
-  void _connectionStatusListener() {
-    // TODO: обработать прочие важные ситуации
-    if (_serverpodController!.joinedChannel) {
-      debugPrint('joined ${_serverpodController!.channel}');
+  // void _connectionStatusListener() {
+  //   // TODO: обработать прочие важные ситуации
+  //   if (_serverpodController!.joinedChannel) {
+  //     debugPrint('joined ${_serverpodController!.channel}');
+  //     _updateState();
+  //   }
+  // }
 
-      // _chatViewController.loadMessagesFromServerpod(
-      //   messages: _serverpodController!.messages,
-      //   lastReadMessageId: _serverpodController!.lastReadMessageId,
-      // );
-
+  _updateState() {
+    if (true == _serverpodController?.joinedChannel) {
       state = state.copyWith(
         isReady: true,
         unreadMessageCount: _unreadMessageCount,
@@ -114,8 +130,6 @@ class ChatControllerState extends _$ChatControllerState {
       );
     }
   }
-
-  // int get _unreadMessageCount =>
 
   int get _unreadMessageCount {
     int count = 0;
@@ -135,11 +149,11 @@ class ChatControllerState extends _$ChatControllerState {
     return count;
   }
 
-  void _unreadMessagesListener() {
-    state = state.copyWith(
-      unreadMessageCount: _unreadMessageCount,
-    );
-  }
+  // void _unreadMessagesListener() {
+  //   state = state.copyWith(
+  //     unreadMessageCount: _unreadMessageCount,
+  //   );
+  // }
 
   // void sendMessage(
   //   String message,

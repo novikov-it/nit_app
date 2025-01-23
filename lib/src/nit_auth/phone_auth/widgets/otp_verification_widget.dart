@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
+import '../../config/nit_auth_config.dart';
 import '../state/phone_auth_state.dart';
 
 class OtpVerificationWidget extends ConsumerWidget {
@@ -20,6 +21,9 @@ class OtpVerificationWidget extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        Text(
+          NitAuthConfig.config.otpInputInstructions,
+        ),
         TextField(
           decoration: const InputDecoration(
             labelText: 'Код из СМС',

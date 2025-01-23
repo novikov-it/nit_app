@@ -6,11 +6,13 @@ class NitDialogLayout extends StatelessWidget {
     this.title,
     required this.child,
     this.buttons,
+    this.buttonsAlignment = MainAxisAlignment.spaceBetween,
   });
 
   final String? title;
   final Widget child;
   final List<Widget>? buttons;
+  final MainAxisAlignment buttonsAlignment;
 
   @override
   Widget build(BuildContext context) {
@@ -34,20 +36,20 @@ class NitDialogLayout extends StatelessWidget {
           if ((buttons?.isNotEmpty) ?? false) ...[
             Gap(context.isMobile ? 16 : 24),
             Row(
-              children: buttons!.asMap().entries.map((entry) {
-                int index = entry.key;
-                Widget button = entry.value;
-                return Expanded(
-                  child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: buttons!.asMap().entries.map(
+                (entry) {
+                  int index = entry.key;
+                  Widget button = entry.value;
+                  return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       if (index > 0) const Gap(8),
-                      // Expanded(child: button),
                       button,
                     ],
-                  ),
-                );
-              }).toList(),
+                  );
+                },
+              ).toList(),
             ),
           ]
         ],

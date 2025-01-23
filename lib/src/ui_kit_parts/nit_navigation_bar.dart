@@ -23,20 +23,23 @@ class _MainNavigationBarState extends ConsumerState<NitNavigationBar> {
 
     if (mounted) {
       // print(GoRouterState.of(context).uri.toString());
+      final state = GoRouterState.of(context);
       final urlSections =
           GoRouterState.of(context).uri.toString().split('?')[0].split('/');
       // print(urlSections);
-      _currentIndex = widget.menuItems.indexWhere((element) {
+      _currentIndex = widget.menuItems.indexWhere((element)
+          // element.route?.name == state.name);
+          {
         // print('${element.route!.root}${element.route!.route.path}');
 
-        final routeSections =
-            '${element.route!.root}${element.route!.route.path}'.split('/');
+        final routeSections = element.route!.fullPath.split('/');
+        // '${element.route!.root}${element.route!.route.path}'.split('/');
 
         for (var i = 0; i < urlSections.length; i++) {
           if (i >= routeSections.length) {
             // print('${urlSections[i]} does not match ${routeSections[i]}');
 
-            return false;
+            return true;
           }
           if (routeSections[i].startsWith(':') ||
               urlSections[i] == routeSections[i]) {
@@ -78,10 +81,14 @@ class _MainNavigationBarState extends ConsumerState<NitNavigationBar> {
       unselectedItemColor: context.theme.colorScheme.outline,
       selectedItemColor: context.colorScheme.primaryFixedDim,
       onTap: (index) {
-        context.goNamed(
-          widget.menuItems[index].route!.name,
-          pathParameters: widget.pathParameters ?? {},
-        );
+        if (widget.menuItems[index].onPressed != null) {
+          widget.menuItems[index].onPressed!(context, ref);
+        } else if (widget.menuItems[index].route != null) {
+          context.goNamed(
+            widget.menuItems[index].route!.name,
+            pathParameters: widget.pathParameters ?? {},
+          );
+        }
       },
       items: widget.menuItems.mapIndexed((index, item) {
         return BottomNavigationBarItem(

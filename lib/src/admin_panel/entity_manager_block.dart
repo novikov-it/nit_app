@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
+import 'package:nit_app/src/repository/repository.dart';
+import '../repository/entity_list_config.dart';
+import '../repository/entity_manager_state.dart';
 import 'entity_editing_form.dart';
 
 class EntityManagerBlock<Entity extends SerializableModel,
@@ -10,15 +13,17 @@ class EntityManagerBlock<Entity extends SerializableModel,
     super.key,
     required this.fields,
     required this.listViewBuilder,
+    this.customBackendConfig,
   });
 
   final List<FormDescriptor> fields;
   final Widget Function({required int id, Key? key}) listViewBuilder;
+  final EntityListConfig? customBackendConfig;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // return ref.read(entityManagerStateProvider<Entity>()).when(
-    final backendConfig = EntityListConfig.defaultConfig;
+    final backendConfig = customBackendConfig ?? EntityListConfig.defaultConfig;
     final entityManager =
         ref.read(entityManagerStateProvider<Entity>()(backendConfig).notifier);
 

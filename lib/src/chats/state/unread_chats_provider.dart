@@ -1,24 +1,28 @@
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:nit_app/nit_app.dart';
 // import 'package:riverpod_annotation/riverpod_annotation.dart';
-// import 'chat_list_state.dart';
 
 // part 'unread_chats_provider.g.dart';
 
 // @riverpod
-// AsyncValue<bool> hasUnreadChat(
-//   HasUnreadChatRef ref,
+// AsyncValue<int> unreadChatsCount(
+//   Ref ref,
 // ) {
-//   return ref.watch(chatListStateProvider).maybeWhen(
-//         orElse: () => const AsyncData(false),
-//         data: (channels) => AsyncData(
-//           channels.isEmpty
-//               ? false
-//               : channels.any((element) => element.hasUnreadMessages),
-//         ),
-//       );
+//   return ref.watch(chatListStateProvider).whenData((data) => data.channels
+//       .where(
+//         (e) =>
+//             ref
+//                 .watch(
+//                   chatControllerStateProvider(e.channelName),
+//                 )
+//                 .unreadMessageCount >
+//             0,
+//         // .maybeWhen(
+//         //   data: (data) => data.unreadMessageCount > 0 ? 1 : 0,
+//         //   orElse: () => 0,
+//         // ),
+//       )
+//       .length);
 
-//   // return ref.watch(chatListStateProvider).whenData(
-//   //       (channels) => channels.isEmpty
-//   //           ? false
-//   //           : channels.any((element) => element.hasUnreadMessages),
-//   //     );
+//   // return res.isEmpty ? 0 : res.reduce((value, element) => value + element);
 // }

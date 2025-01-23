@@ -14,11 +14,6 @@ AsyncNotifierProviderFamily<SingleItemProviderState<T>, int?, int>
     singleItemProviderFamilies[T] =
         AsyncNotifierProviderFamily<SingleItemProviderState<T>, int?, int>(
       SingleItemProviderState<T>.new,
-      // name: 'entityManagerProviders${T.toString()}',
-      // debugGetCreateSourceHash:
-      //     const bool.fromEnvironment('dart.vm.product')
-      //         ? null
-      //         : _$chatsRepositoryHash,
     );
   }
 
@@ -33,8 +28,7 @@ class SingleItemProviderState<T extends SerializableModel>
     int arg,
   ) async {
     debugPrint("Getting single ${T.toString()} with id $arg");
-    // final res = await ref.getAll<T>();
-    return await nitToolsCaller.crud
+    return await nitToolsCaller!.crud
         .getOneById(
           className: T.toString(),
           id: arg,
@@ -43,32 +37,3 @@ class SingleItemProviderState<T extends SerializableModel>
         .then((res) => res);
   }
 }
-
-// (entityManagerProviders[T] ??
-//     (
-//       entityManagerProviders[T] = AutoDisposeAsyncNotifierProvider<
-//           EntityManagerState<T>, List<int>>(
-//         EntityManagerState<T>.new,
-//         name: 'entityManagerProviders${T.toString()}',
-//         // debugGetCreateSourceHash:
-//         //     const bool.fromEnvironment('dart.vm.product')
-//         //         ? null
-//         //         : _$chatsRepositoryHash,
-//       ),
-//     ))
-// // as AsyncNotifierProvider<EntityManagerState<T>, List<int>>
-// ;
-
-// class RobotManagerState extends AutoDisposeAsyncNotifier<List<int>> {
-//   @override
-//   Future<List<int>> build() async {
-//     print("Building state for robot");
-//     final res = await ref.getAll<Robot>();
-//     print(res);
-//     return res;
-//   }
-
-//   Future<bool> save(Robot model) async {
-//     return null != await ref.saveModel<Robot>(model);
-//   }
-// }

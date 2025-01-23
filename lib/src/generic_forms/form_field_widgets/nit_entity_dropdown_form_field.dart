@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_app/src/generic_forms/form_field_widgets/nit_dropdown_form_field.dart';
 import 'package:nit_app/src/generic_forms/form_field_widgets/nit_form_field.dart';
+import 'package:nit_app/src/repository/repository.dart';
+
+import '../../repository/entity_list_config.dart';
 
 class NitEntityDropdownFormField<Entity extends SerializableModel>
     extends NitFormField<Entity> {
@@ -46,7 +49,15 @@ class NitEntityDropdownFormField<Entity extends SerializableModel>
             inputDescriptor: inputDescriptor,
             // initialValue: initialValue,
             // onSaved: onSaved,
-            optionsList: data,
+            optionsMap: Map.fromEntries(
+              data.map(
+                (e) => MapEntry(
+                  e.toJson()['id'],
+                  inputDescriptor.labelField.initialValue(ref, e),
+                  // e.toString(),
+                ),
+              ),
+            ),
           ),
         );
   }

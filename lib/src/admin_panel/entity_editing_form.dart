@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nit_app/src/nit_app_build_context_extension.dart';
-import 'package:nit_app/src/repository/entity_manager_interface.dart';
 import 'package:nit_app/src/repository/repository.dart';
 // import 'package:nit_app/nit_app.dart';
 import 'package:serverpod_client/serverpod_client.dart';
 
 import '../generic_forms/generic_forms.dart';
 import '../nit_app_ui_kit.dart';
+import '../repository/entity_manager_interface.dart';
 
 class NitForm<Entity extends SerializableModel,
         FormDescriptor extends ModelFieldDescriptor<Entity>>
@@ -69,34 +69,37 @@ class NitFormState<StateEntity extends SerializableModel,
   void initState() {
     super.initState();
 
-    if (widget.modelId != null) {
-      model = ref.readModel(
-        widget.modelId!,
-      );
-      values = Map.fromEntries(
-        widget.fields.map(
-          (e) => MapEntry(
-            e.name,
-            e.initialValue(
-              ref,
-              model,
-            ),
+    // if (widget.modelId != null) {
+    model = widget.modelId != null
+        ? ref.readModel(
+            widget.modelId!,
+          )
+        : null;
+    values = Map.fromEntries(
+      widget.fields.map(
+        (e) => MapEntry(
+          e.name,
+          e.initialValue(
+            ref,
+            model,
           ),
         ),
-      );
-    } else {
-      model = null;
-      values = Map.fromEntries(
-        widget.fields.map(
-          (e) => MapEntry(
-            e.name,
-            e.defaultValue(
-              ref,
-            ),
-          ),
-        ),
-      );
-    }
+      ),
+    );
+    // }
+    // else {
+    //   model = null;
+    //   values = Map.fromEntries(
+    //     widget.fields.map(
+    //       (e) => MapEntry(
+    //         e.name,
+    //         e.defaultValue(
+    //           ref,
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
   }
 
   setValue<T>(ModelFieldDescriptor field, T? value) {
@@ -118,15 +121,16 @@ class NitFormState<StateEntity extends SerializableModel,
           buttons: [
             if (widget.modelId != null)
               IconButton(
-                  onPressed: () =>
-                      // ref
-                      //     .read(entityManagerStateProvider<StateEntity>()(
-                      //             EntityListConfig())
-                      //         .notifier)
-                      widget.entityManager
-                          .delete(widget.modelId!)
-                          .then(context.popOnTrue),
-                  icon: const Icon(Icons.delete_forever)),
+                onPressed: () =>
+                    // ref
+                    //     .read(entityManagerStateProvider<StateEntity>()(
+                    //             EntityListConfig())
+                    //         .notifier)
+                    widget.entityManager
+                        .delete(widget.modelId!)
+                        .then(context.popOnTrue),
+                icon: const Icon(Icons.delete_forever),
+              ),
             ElevatedButton(
               onPressed: () {
                 context.pop();

@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/src/session/nit_session_state.dart';
+import 'package:nit_router/nit_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_phone_flutter/serverpod_auth_phone_flutter.dart';
+
+import '../../config/nit_auth_config.dart';
 
 part 'phone_auth_state.g.dart';
 part 'phone_auth_state.freezed.dart';
 
 @riverpod
 class PhoneAuthState extends _$PhoneAuthState {
+  // Map<String, String>? _extraParams;
+
   @override
   PhoneAuthStateModel build() {
     return PhoneAuthStateModel(
@@ -19,11 +25,18 @@ class PhoneAuthState extends _$PhoneAuthState {
     );
   }
 
+  String get _phone => toNumericString(
+        state.phoneController.text,
+        allowHyphen: false,
+      );
+
   // toggleAcceptance() {
   //   state = state.copyWith(everythingAccepted: !state.everythingAccepted);
   // }
 
-  requestOtp() async {
+  requestOtp({
+    Map<String, String>? extraParams,
+  }) async {
     debugPrint("requesting OTP");
     // if (!state.everythingAccepted) {
     //   ref.notifyUser(
@@ -37,7 +50,10 @@ class PhoneAuthState extends _$PhoneAuthState {
 
     await PhoneAuthController(
             ref.read(nitSessionStateProvider).serverpodSessionManager!)
-        .sendOTP(state.phoneController.text)
+        .sendOTP(
+      _phone,
+      extraParams: extraParams,
+    )
         .then((response) {
       if (response.success) {
         debugPrint("OTP requested");
@@ -53,7 +69,10 @@ class PhoneAuthState extends _$PhoneAuthState {
     // return null !=
     final res = await PhoneAuthController(
             ref.read(nitSessionStateProvider).serverpodSessionManager!)
-        .verifyOTP(state.phoneController.text, state.otpController.text);
+        .verifyOTP(
+      _phone,
+      state.otpController.text,
+    );
 
     debugPrint(res.toString());
 

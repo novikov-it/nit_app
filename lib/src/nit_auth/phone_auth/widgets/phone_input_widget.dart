@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
-import 'package:nit_app/src/nit_app_build_context_extension.dart';
 
 import '../state/phone_auth_state.dart';
 
 class PhoneInputWidget extends ConsumerWidget {
-  const PhoneInputWidget({super.key});
+  const PhoneInputWidget({
+    super.key,
+    this.extraParams,
+  });
+
+  final Map<String, String>? extraParams;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,13 +22,27 @@ class PhoneInputWidget extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Text(
+            NitAuthConfig.config.phoneInputInstructions,
+          ),
           TextFormField(
+            inputFormatters: [PhoneInputFormatter()],
             decoration: const InputDecoration(
               labelText: 'Телефон',
             ),
             controller: state.phoneController,
-            validator: (value) =>
-                value?.isNotEmpty != true ? 'Обязательное поле' : null,
+            validator: (phone) {
+              if (phone?.isNotEmpty != true) return 'Обязательное поле';
+
+              if (!isPhoneValid(
+                toNumericString(phone, allowHyphen: false),
+                allowEndlessPhone: false,
+              )) {
+                return 'Неверный формат номера';
+              }
+
+              return null;
+            },
           ),
           Gap(4),
           FormField<bool>(
@@ -72,7 +91,9 @@ class PhoneInputWidget extends ConsumerWidget {
           Builder(
             builder: (context) => FilledButton(
               onPressed: () => Form.maybeOf(context)?.validate() == true
-                  ? ref.read(phoneAuthStateProvider.notifier).requestOtp()
+                  ? ref.read(phoneAuthStateProvider.notifier).requestOtp(
+                        extraParams: extraParams,
+                      )
                   : {},
               child: const Text('Запросить код подтверждения'),
             ),

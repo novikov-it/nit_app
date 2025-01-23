@@ -1,6 +1,6 @@
 part of '../form_input_descriptor.dart';
 
-class TextInputDescriptor<ValueType> extends FormInputDescriptor {
+class TextInputDescriptor<ValueType> extends FormInputDescriptor<ValueType> {
   const TextInputDescriptor({
     required super.displayTitle,
     super.isRequired = false,

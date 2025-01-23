@@ -8,6 +8,7 @@ export 'src/session/signed_in_extension.dart';
 export 'src/generic_forms/generic_forms.dart';
 
 export 'src/nit_utils/alerting.dart';
+export 'src/nit_auth/nit_auth.dart';
 
 export 'src/admin_panel/entity_manager_block.dart';
 export 'src/admin_panel/database_page.dart';

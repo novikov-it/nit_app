@@ -17,10 +17,10 @@ dependencies:
     sdk: flutter
 
   nit_router:
-    # path: ../nit_router
-    git:
-      url: git@github.com:novikov-it/nit_router.git
-      ref: master
+    path: ../nit_router
+    # git:
+    #   url: git@github.com:novikov-it/nit_router.git
+    #   ref: master
 
   serverpod_client: ^2.1.1
   serverpod_chat_client: ^2.1.1
@@ -28,6 +28,7 @@ dependencies:
   serverpod_auth_client: ^2.1.1
   serverpod_auth_shared_flutter: ^2.1.1
   serverpod_auth_phone_flutter:
+    # path: ../nit_serverpod/modules/serverpod_auth/serverpod_auth_phone_flutter
     git:
         url: git@github.com:novikov-it/nit_serverpod.git
         ref: main
@@ -41,6 +42,7 @@ dependencies:
       ref: master
 
   nit_riverpod_notifications:
+    # path: ../nit_riverpod_notifications
     git:
       url: git@github.com:novikov-it/nit_riverpod_notifications.git
       ref: master
@@ -68,6 +70,7 @@ dependencies:
   #     url: git@github.com:novikov-it/nit_flutter_chatview.git
   #     ref: main
   app_links: ^6.3.2
+  flutter_multi_formatter: ^2.13.0
 
 dev_dependencies:
   flutter_test:
@@ -79,11 +82,11 @@ dev_dependencies:
 
 dependency_overrides:
   serverpod_chat_client:
-    # path: ../nit_serverpod/modules/serverpod_chat/serverpod_chat_client
-    git:
-        url: git@github.com:novikov-it/nit_serverpod.git
-        path: modules/serverpod_chat/serverpod_chat_client
-        ref: main
+    path: ../nit_serverpod/modules/serverpod_chat/serverpod_chat_client
+    # git:
+    #     url: git@github.com:novikov-it/nit_serverpod.git
+    #     path: modules/serverpod_chat/serverpod_chat_client
+    #     ref: main
   serverpod_chat_flutter:
     # path: ../nit_serverpod/modules/serverpod_chat/serverpod_chat_flutter
     git:
@@ -91,7 +94,7 @@ dependency_overrides:
         path: modules/serverpod_chat/serverpod_chat_flutter
         ref: main
   serverpod_auth_client:
-    # path: ../../nit_serverpod/modules/serverpod_auth/serverpod_auth_client
+    # path: ../nit_serverpod/modules/serverpod_auth/serverpod_auth_client
     git:
       url: git@github.com:novikov-it/nit_serverpod.git
       path: modules/serverpod_auth/serverpod_auth_client

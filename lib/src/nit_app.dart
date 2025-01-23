@@ -8,6 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:nit_app/src/nit_auth/config/nit_auth_config.dart';
 import 'package:nit_app/src/chats/state/chat_controller_state.dart';
 import 'package:nit_app/src/tools/deeplinks.dart';
 import 'package:nit_router/nit_router.dart';
@@ -28,6 +29,7 @@ class NitApp extends HookConsumerWidget {
     /// Used to remove hash sign from URLs using
     bool? removeHashSignFromUrl,
     FirebaseOptions? firebaseOptions,
+    String? firebaseVapidKey,
   }) async {
     if (removeHashSignFromUrl == true) {
       usePathUrlStrategy();
@@ -42,6 +44,7 @@ class NitApp extends HookConsumerWidget {
 
     if (firebaseOptions != null) {
       await FirebaseInitializer.init(firebaseOptions);
+      // NotificationsRepository.vapidKey = firebaseVapidKey;
     }
   }
 
@@ -52,6 +55,7 @@ class NitApp extends HookConsumerWidget {
     this.navigationZones,
     this.redirectProvider,
     this.client,
+    this.nitAuthConfig,
     this.deeplinkHandler,
     this.initializers,
     this.loadingScreen = const Center(
@@ -91,6 +95,7 @@ class NitApp extends HookConsumerWidget {
       Provider<NitRedirectsStateModel>? redirectProvider;
 
   final ServerpodClientShared? client;
+  final NitAuthConfig? nitAuthConfig;
   final void Function(WidgetRef, String)? deeplinkHandler;
 
   final List<Future<bool> Function()>? initializers;
@@ -159,8 +164,14 @@ class NitApp extends HookConsumerWidget {
                 return (authModuleCaller != null)
                     ? ref.read(nitSessionStateProvider.notifier).init(
                           client: client,
+                          enableAppNotifications: true,
                         )
                     : true;
+              },
+            if (nitAuthConfig != null)
+              () async {
+                NitAuthConfig.config = nitAuthConfig!;
+                return true;
               },
             ...(initializers ?? []),
             // () async {

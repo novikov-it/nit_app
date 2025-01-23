@@ -1,25 +1,27 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nit_app/src/repository/single_item_custom_provider_config.dart';
 import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 import 'package:nit_router/nit_router.dart';
 import 'package:nit_tools_client/nit_tools_client.dart';
 import 'entity_list_config.dart';
 import 'entity_manager_state.dart';
 import 'single_item_custom_provider.dart';
+import 'single_item_custom_provider_config.dart';
 import 'single_item_provider.dart';
 
-final Map<String, StateProviderFamily<SerializableModel?, int>> repository = {};
+final Map<String, StateProviderFamily<SerializableModel?, int>> _repository =
+    {};
+final Map<String, List<Function(int, SerializableModel)>> _updateListeners = {};
 
 StateProviderFamily<SerializableModel?, int> initRepository(String className) {
-  repository[className] =
+  _repository[className] =
       StateProvider.family<SerializableModel?, int>((ref, id) => null);
 
-  return repository[className] as StateProviderFamily<SerializableModel?, int>;
+  return _repository[className] as StateProviderFamily<SerializableModel?, int>;
 }
 
 StateProviderFamily<SerializableModel?, int> modelProvider(String className) {
-  final rep = repository[className];
+  final rep = _repository[className];
 
   if (rep == null) return initRepository(className);
 
@@ -37,8 +39,10 @@ extension WidgetRefRepositoryExtension on WidgetRef {
   //     read(modelProvider<T>()(id));
 
   T? watchModel<T extends SerializableModel>(int id) =>
+      // TODO: Изменить, toString() не работает на Web release из-за minification
       watch(modelProvider(T.toString())(id)) as T?;
   T? readModel<T extends SerializableModel>(int id) =>
+      // TODO: Изменить, toString() не работает на Web release из-за minification
       read(modelProvider(T.toString())(id)) as T?;
 
   Future<T> watchOrFetchModel<T extends SerializableModel>(int id) async {
@@ -159,7 +163,7 @@ extension RefRepositoryExtension on Ref {
       );
 
   Future<int?> saveModel(SerializableModel model) async {
-    return await nitToolsCaller.crud
+    return await nitToolsCaller!.crud
         .saveModel(
           wrappedModel: ObjectWrapper.wrap(model: model),
         )
@@ -169,7 +173,7 @@ extension RefRepositoryExtension on Ref {
   }
 
   Future<List<int>?> saveModels(List<SerializableModel> models) async {
-    return await nitToolsCaller.crud
+    return await nitToolsCaller!.crud
         .saveModels(
           wrappedModels:
               models.map((model) => ObjectWrapper.wrap(model: model)).toList(),
@@ -180,19 +184,12 @@ extension RefRepositoryExtension on Ref {
   }
 
   _updateRepository(List<ObjectWrapper> newModels) {
-    // if (repository[T.toString()] == null) {
-    //   debugPrint("Initializing repo for $T");
-    //   initRepository<T>();
-    // }
-
-    // print(T.toString());
-
     for (var e in newModels) {
-      if (repository[e.nitMappingClassname] == null) {
+      if (_repository[e.nitMappingClassname] == null) {
         debugPrint("Initializing repo for ${e.nitMappingClassname}");
         initRepository(e.nitMappingClassname);
       }
-      read(repository[e.nitMappingClassname]!(e.modelId!).notifier).state =
+      read(_repository[e.nitMappingClassname]!(e.modelId!).notifier).state =
           e.model;
     }
   }
@@ -201,13 +198,14 @@ extension RefRepositoryExtension on Ref {
     int modelId,
     K model,
   ) {
+    // TODO: Изменить, toString() не работает на Web release из-за minification
     final typeName = K.toString();
 
-    if (repository[typeName] == null) {
+    if (_repository[typeName] == null) {
       debugPrint("Initializing repo for $typeName");
       initRepository(typeName);
     }
-    read(repository[typeName]!(modelId).notifier).state = model;
+    read(_repository[typeName]!(modelId).notifier).state = model;
   }
 
   K? processApiResponse<K>(ApiResponse<K> response) {
@@ -224,5 +222,43 @@ extension RefRepositoryExtension on Ref {
       _updateRepository(response.updatedEntities ?? []);
     }
     return response.value;
+  }
+
+  updateFromStream(ObjectWrapper update) {
+    _updateRepository([update]);
+    // final modelId = update.toJson()['id'];
+    // ref.manualUpdate(modelId, update);
+    // for (var t in _updateListeners) {
+    //   if (update is t) {
+    //     print("update is $t");
+    //   }
+    // }
+    final t = _updateListeners;
+    for (var listener in _updateListeners[update.nitMappingClassname] ?? []) {
+      listener(update.modelId, update.model);
+    }
+  }
+
+  addUpdatesListener<T extends SerializableModel>(
+      Function(
+        int id,
+        SerializableModel entity,
+      ) listener) {
+    // TODO: Изменить, toString() не работает на Web release из-за minification
+    if (_updateListeners[T.toString()] == null) {
+      _updateListeners[T.toString()] = [];
+    }
+    _updateListeners[T.toString()]!.add(listener);
+  }
+
+  removeUpdatesListener<T>(
+      Function(
+        int id,
+        SerializableModel entity,
+      ) listener) {
+    // TODO: Изменить, toString() не работает на Web release из-за minification
+    if (_updateListeners[T.toString()] != null) {
+      _updateListeners[T.toString()]!.remove(listener);
+    }
   }
 }

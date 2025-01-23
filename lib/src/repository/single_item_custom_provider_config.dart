@@ -8,6 +8,4 @@ class SingleItemCustomProviderConfig with _$SingleItemCustomProviderConfig {
   const factory SingleItemCustomProviderConfig({
     required List<NitBackendFilter> backendFilters,
   }) = _SingleItemCustomProviderConfig;
-
-  // final List<NitBackendFilter> backendFilters;
 }

@@ -6,7 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:nit_app/nit_app.dart';
-import 'auth/phone_auth/phone_auth_widget.dart';
+import 'nit_auth/phone_auth/phone_auth_widget.dart';
+import 'repository/entity_manager_state.dart';
 
 extension NitAppWidgetRefExtension on WidgetRef {
   requireLogin({
@@ -19,6 +20,12 @@ extension NitAppWidgetRefExtension on WidgetRef {
                 title: 'Войдите в приложение',
                 child: PhoneAuthWidget(
                   onSuccess: context.pop,
+                  extraParams:
+                      NitAuthConfig.config.authExtraParamsProvider == null
+                          ? null
+                          : read(
+                              NitAuthConfig.config.authExtraParamsProvider!,
+                            ),
                 ),
               ),
             );
@@ -32,7 +39,7 @@ extension NitAppWidgetRefExtension on WidgetRef {
   }) async {
     final byteData = ByteData.view(bytes.buffer);
 
-    var uploadDescription = await nitToolsCaller.upload.getUploadDescription(
+    var uploadDescription = await nitToolsCaller!.upload.getUploadDescription(
       path: path,
     );
 
@@ -42,7 +49,7 @@ extension NitAppWidgetRefExtension on WidgetRef {
     debugPrint(uploadDescription);
     var uploader = FileUploader(uploadDescription);
     await uploader.uploadByteData(byteData);
-    var publicUrl = await nitToolsCaller.upload.verifyUpload(
+    var publicUrl = await nitToolsCaller!.upload.verifyUpload(
       path: path,
     );
 
@@ -59,7 +66,7 @@ extension NitAppWidgetRefExtension on WidgetRef {
           return null;
         }
 
-        uploadFileToServer(
+        return uploadFileToServer(
           bytes: await image.readAsBytes(),
           path:
               '${DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())}-${image.name}',

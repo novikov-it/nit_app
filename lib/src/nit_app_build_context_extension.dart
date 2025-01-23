@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nit_app/nit_app.dart';
-import 'package:nit_app/src/auth/phone_auth/phone_auth_widget.dart';
 
 extension NitAppBuildContextExtension on BuildContext {
   ThemeData get theme => Theme.of(this);
@@ -113,13 +112,19 @@ extension NitAppBuildContextExtension on BuildContext {
         ),
         isScrollControlled: true,
         builder: (BuildContext context) {
+          // final t = ProviderScope.containerOf(this)
+          //     .read(navigationPathParametersProvider);
+          // final t2 = ref.read(navigationPathParametersProvider);
           return ProviderScope(
-            overrides: [
-              navigationPathParametersProvider.overrideWith(
-                (ref) => ProviderScope.containerOf(this)
-                    .read(navigationPathParametersProvider),
-              )
-            ],
+            parent: ProviderScope.containerOf(this),
+            // overrides: [
+            //   navigationPathParametersProvider.overrideWith(
+            //     (ref) =>
+            //         // t,
+            //         ProviderScope.containerOf(this)
+            //             .read(navigationPathParametersProvider),
+            //   )
+            // ],
             child: Container(
               constraints: BoxConstraints.loose(
                 Size(
