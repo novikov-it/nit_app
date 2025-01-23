@@ -17,10 +17,10 @@ dependencies:
     sdk: flutter
 
   nit_router:
-    path: ../nit_router
-    # git:
-    #   url: git@github.com:novikov-it/nit_router.git
-    #   ref: master
+    # path: ../nit_router
+    git:
+      url: git@github.com:novikov-it/nit_router.git
+      ref: master
 
   serverpod_client: ^2.1.1
   serverpod_chat_client: ^2.1.1
