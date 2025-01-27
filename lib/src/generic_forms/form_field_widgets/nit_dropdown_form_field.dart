@@ -23,7 +23,6 @@ class NitDropdownFormField<ValueType> extends NitFormField<ValueType> {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final t = initialValue(context);
     return DropdownButtonFormField<ValueType>(
       value: initialValue(context),
       items: [

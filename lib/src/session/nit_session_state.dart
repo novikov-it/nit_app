@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/src/repository/repository.dart';
@@ -27,6 +28,7 @@ class NitSessionStateModel with _$NitSessionStateModel {
 class NitSessionState extends _$NitSessionState {
   StreamingConnectionHandler? _connectionHandler;
   SessionManager? _sessionManager;
+  static late final String? vapidKey;
 
   @override
   NitSessionStateModel build() {
@@ -86,6 +88,7 @@ class NitSessionState extends _$NitSessionState {
         );
 
         _sessionManager!.addListener(_refresh);
+        _updateNotificationsToken();
 
         return true;
       }
@@ -108,6 +111,10 @@ class NitSessionState extends _$NitSessionState {
       _listenToUpdates();
     }
 
+    if (state.signedInUser?.id != _sessionManager?.signedInUser?.id) {
+      _updateNotificationsToken();
+    }
+
     state = NitSessionStateModel(
       serverpodSessionManager: _sessionManager,
       signedInUser: _sessionManager?.signedInUser,
@@ -115,6 +122,34 @@ class NitSessionState extends _$NitSessionState {
           StreamingConnectionStatus.disconnected,
     );
   }
+
+  requestNotificationsPermission() async =>
+      await FirebaseMessaging.instance.requestPermission().then(_updateFcm);
+
+  _updateNotificationsToken() async {
+    debugPrint("Updating Notifications Token");
+    return await FirebaseMessaging.instance
+        .getNotificationSettings()
+        .then(_updateFcm);
+  }
+
+  _updateFcm(NotificationSettings settings) async => [
+        AuthorizationStatus.authorized,
+        AuthorizationStatus.provisional
+      ].contains(
+        settings.authorizationStatus,
+      )
+          ? await FirebaseMessaging.instance
+              .getToken(
+                vapidKey: vapidKey,
+              )
+              .then(
+                (token) async => token != null
+                    ? await nitToolsCaller!.services
+                        .setFcmToken(fcmToken: token)
+                    : {},
+              )
+          : {};
 
   Future<void> _listenToUpdates() async {
     nitToolsCaller!.crud.resetStream();

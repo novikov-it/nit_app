@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/src/session/nit_session_state.dart';
-import 'package:nit_router/nit_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_phone_flutter/serverpod_auth_phone_flutter.dart';
-
-import '../../config/nit_auth_config.dart';
 
 part 'phone_auth_state.g.dart';
 part 'phone_auth_state.freezed.dart';

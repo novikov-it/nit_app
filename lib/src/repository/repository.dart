@@ -25,19 +25,13 @@ StateProviderFamily<SerializableModel?, int> modelProvider(String className) {
 
   if (rep == null) return initRepository(className);
 
-  return rep; // as StateProviderFamily<SerializableModel?, int>;
+  return rep;
 }
 
 _filter<T>(T? model, bool Function(T model) filter) =>
     model != null ? filter(model) : false;
 
 extension WidgetRefRepositoryExtension on WidgetRef {
-  // T? watchModel<T extends SerializableModel>(int id) =>
-  //     watch(modelProvider<T>()(id));
-
-  // T? readModel<T extends SerializableModel>(int id) =>
-  //     read(modelProvider<T>()(id));
-
   T? watchModel<T extends SerializableModel>(int id) =>
       // TODO: Изменить, toString() не работает на Web release из-за minification
       watch(modelProvider(T.toString())(id)) as T?;
@@ -53,15 +47,12 @@ extension WidgetRefRepositoryExtension on WidgetRef {
     return watchModel<T>(id)!;
   }
 
-  AsyncValue<T> watchOrFetchModelAsync<T extends SerializableModel>(int id) {
+  AsyncValue<T?> watchOrFetchModelAsync<T extends SerializableModel>(int id) {
     T? model = watchModel<T>(id);
-
-    // if (model == null) await watch(singleItemProvider<T>()(id).future);
 
     return model != null
         ? AsyncData(model)
-        : watch(singleItemProvider<T>()(id))
-            .whenData((_) => watchModel<T>(id)!);
+        : watch(singleItemProvider<T>()(id)).whenData((_) => watchModel<T>(id));
   }
 
   Future<T> readOrFetchModel<T extends SerializableModel>(int id) async {
@@ -86,18 +77,14 @@ extension WidgetRefRepositoryExtension on WidgetRef {
   int? get getIdFromPath => CommonNavigationParameters.id.get(
         watch(navigationPathParametersProvider),
       );
-  //(value) => value?.model as T);
 
   AsyncValue<List<int>> watchEntityListState<T extends SerializableModel>({
-    // List<NitBackendFilter>? backendFilters,
     EntityListConfig? backendConfig,
     bool Function(T model)? frontendFilter,
   }) =>
       watch(
         entityManagerStateProvider<T>()(
-            backendConfig ?? EntityListConfig.defaultConfig
-            // EntityManagerConfig(backendFilters: backendFilters),
-            ),
+            backendConfig ?? EntityListConfig.defaultConfig),
       ).whenData(
         (data) => frontendFilter == null
             ? data
@@ -105,6 +92,43 @@ extension WidgetRefRepositoryExtension on WidgetRef {
                 .where((e) => _filter(watchModel<T>(e), frontendFilter))
                 .toList(),
       );
+
+  Future<int?> saveModel(SerializableModel model) async {
+    return await nitToolsCaller!.crud
+        .saveModel(
+          wrappedModel: ObjectWrapper.wrap(model: model),
+        )
+        .then(
+          (response) => _processApiResponse<int>(response),
+        );
+  }
+
+  K? _processApiResponse<K>(ApiResponse<K> response) {
+    debugPrint(response.toJson().toString());
+    if (response.error != null || response.warning != null) {
+      notifyUser(
+        response.error != null
+            ? NitNotification.error(response.error!)
+            : NitNotification.warning(response.warning!),
+      );
+    }
+
+    if ((response.updatedEntities ?? []).isNotEmpty) {
+      _updateRepository(response.updatedEntities ?? []);
+    }
+    return response.value;
+  }
+
+  _updateRepository(List<ObjectWrapper> newModels) {
+    for (var e in newModels) {
+      if (_repository[e.nitMappingClassname] == null) {
+        debugPrint("Initializing repo for ${e.nitMappingClassname}");
+        initRepository(e.nitMappingClassname);
+      }
+      read(_repository[e.nitMappingClassname]!(e.modelId!).notifier).state =
+          e.model;
+    }
+  }
 }
 
 extension RefRepositoryExtension on Ref {
@@ -113,12 +137,12 @@ extension RefRepositoryExtension on Ref {
   T? readModel<T extends SerializableModel>(int id) =>
       read(modelProvider(T.toString())(id)) as T?;
 
-  Future<T> watchOrFetchModel<T extends SerializableModel>(int id) async {
+  Future<T?> watchOrFetchModel<T extends SerializableModel>(int id) async {
     T? model = watchModel<T>(id);
 
     if (model == null) await watch(singleItemProvider<T>()(id).future);
 
-    return watchModel<T>(id)!;
+    return watchModel<T>(id);
   }
 
   Future<T> readOrFetchModel<T extends SerializableModel>(int id) async {
@@ -139,12 +163,6 @@ extension RefRepositoryExtension on Ref {
       watch(singleItemCustomProvider<T>()(config)).whenData(
         (value) => value == null ? null : watchModel<T>(value),
       );
-
-  // AsyncValue<T?> readEntityCustomState<T extends SerializableModel>(
-  //         SingleItemCustomProviderConfig config) =>
-  //     watch(singleItemCustomProvider<T>()(config)).whenData(
-  //       (value) => value == null ? null : readModel<T>(value),
-  //     );
 
   AsyncValue<List<int>> watchEntityListState<T extends SerializableModel>({
     List<NitBackendFilter>? backendFilters,
@@ -226,14 +244,6 @@ extension RefRepositoryExtension on Ref {
 
   updateFromStream(ObjectWrapper update) {
     _updateRepository([update]);
-    // final modelId = update.toJson()['id'];
-    // ref.manualUpdate(modelId, update);
-    // for (var t in _updateListeners) {
-    //   if (update is t) {
-    //     print("update is $t");
-    //   }
-    // }
-    final t = _updateListeners;
     for (var listener in _updateListeners[update.nitMappingClassname] ?? []) {
       listener(update.modelId, update.model);
     }

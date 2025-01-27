@@ -52,9 +52,10 @@ class NitCheckboxField extends NitFormField<bool> {
                 fieldState.didChange(value);
               },
             ),
-            Text(
-              inputDescriptor.displayTitle,
-            ),
+            if (inputDescriptor.displayTitle != null)
+              Text(
+                inputDescriptor.displayTitle!,
+              ),
           ],
         );
       },

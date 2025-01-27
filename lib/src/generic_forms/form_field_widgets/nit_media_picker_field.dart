@@ -26,11 +26,12 @@ class NitMediaPickerField extends NitFormField<List<String>> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              inputDescriptor.displayTitle,
-              // 'Цена',
-              style: context.theme.inputDecorationTheme.labelStyle,
-            ),
+            if (inputDescriptor.displayTitle != null)
+              Text(
+                inputDescriptor.displayTitle!,
+                // 'Цена',
+                style: context.theme.inputDecorationTheme.labelStyle,
+              ),
             SizedBox(
               height: 150,
               child: CarouselView(

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
-import 'package:nit_app/src/repository/repository.dart';
-import '../repository/entity_list_config.dart';
-import '../repository/entity_manager_state.dart';
-import 'entity_editing_form.dart';
 
 class EntityManagerBlock<Entity extends SerializableModel,
         FormDescriptor extends ModelFieldDescriptor<Entity>>
@@ -14,11 +10,13 @@ class EntityManagerBlock<Entity extends SerializableModel,
     required this.fields,
     required this.listViewBuilder,
     this.customBackendConfig,
+    this.allowDelete = true,
   });
 
   final List<FormDescriptor> fields;
   final Widget Function({required int id, Key? key}) listViewBuilder;
   final EntityListConfig? customBackendConfig;
+  final bool allowDelete;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,10 +42,11 @@ class EntityManagerBlock<Entity extends SerializableModel,
                               IconButton(
                                 onPressed: () =>
                                     context.showBottomSheetOrDialog(
-                                  NitForm<Entity, FormDescriptor>(
+                                  NitGenericForm<Entity, FormDescriptor>(
                                     fields: fields,
                                     modelId: modelId,
                                     entityManager: entityManager,
+                                    allowDelete: allowDelete,
                                   ),
                                 ),
                                 icon: const Icon(Icons.edit),
@@ -67,7 +66,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
               ),
               FilledButton(
                 onPressed: () => context.showBottomSheetOrDialog<Entity>(
-                  NitForm<Entity, FormDescriptor>(
+                  NitGenericForm<Entity, FormDescriptor>(
                     fields: fields,
                     entityManager: entityManager,
                     // fields: (FormDescriptor as Enum).value,

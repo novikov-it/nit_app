@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -11,23 +12,27 @@ import '../generic_forms/generic_forms.dart';
 import '../nit_app_ui_kit.dart';
 import '../repository/entity_manager_interface.dart';
 
-class NitForm<Entity extends SerializableModel,
+class NitGenericForm<Entity extends SerializableModel,
         FormDescriptor extends ModelFieldDescriptor<Entity>>
     extends ConsumerStatefulWidget {
-  const NitForm({
+  const NitGenericForm({
     super.key,
+    this.title = 'Редактирование',
     required this.fields,
-    required this.entityManager,
+    this.entityManager,
     this.modelId,
     // this.initialModel,
     this.customOnSaveAction,
+    this.allowDelete = true,
   });
 
   // final NitGenericFormEnum
+  final String title;
   final int? modelId;
   final List<FormDescriptor> fields;
   final Function(Entity? model)? customOnSaveAction;
-  final EntityManagerInterface entityManager;
+  final EntityManagerInterface? entityManager;
+  final bool allowDelete;
 
   static NitFormState? maybeOf(BuildContext context) {
     final _NitFormScope? scope =
@@ -54,16 +59,18 @@ class NitForm<Entity extends SerializableModel,
   }
 
   @override
-  ConsumerState<NitForm> createState() =>
+  ConsumerState<NitGenericForm> createState() =>
       NitFormState<Entity, FormDescriptor>();
 }
 
 class NitFormState<StateEntity extends SerializableModel,
         StateFormDescriptor extends ModelFieldDescriptor<StateEntity>>
-    extends ConsumerState<NitForm> {
+    extends ConsumerState<NitGenericForm> {
   final _formKey = GlobalKey<FormState>();
   late final StateEntity? model;
   late final Map<String, dynamic> values;
+
+  late final List<StateFormDescriptor> visibleFields;
 
   @override
   void initState() {
@@ -86,20 +93,9 @@ class NitFormState<StateEntity extends SerializableModel,
         ),
       ),
     );
-    // }
-    // else {
-    //   model = null;
-    //   values = Map.fromEntries(
-    //     widget.fields.map(
-    //       (e) => MapEntry(
-    //         e.name,
-    //         e.defaultValue(
-    //           ref,
-    //         ),
-    //       ),
-    //     ),
-    //   );
-    // }
+    visibleFields = widget.fields
+        .whereNot((e) => e.inputDescriptor is HiddenInputDescriptor)
+        .toList() as List<StateFormDescriptor>;
   }
 
   setValue<T>(ModelFieldDescriptor field, T? value) {
@@ -117,18 +113,15 @@ class NitFormState<StateEntity extends SerializableModel,
       child: Form(
         key: _formKey,
         child: NitDialogLayout(
-          title: "Редактирование",
+          title: widget.title,
           buttons: [
-            if (widget.modelId != null)
+            if (widget.modelId != null &&
+                widget.entityManager != null &&
+                widget.allowDelete)
               IconButton(
-                onPressed: () =>
-                    // ref
-                    //     .read(entityManagerStateProvider<StateEntity>()(
-                    //             EntityListConfig())
-                    //         .notifier)
-                    widget.entityManager
-                        .delete(widget.modelId!)
-                        .then(context.popOnTrue),
+                onPressed: () => widget.entityManager!
+                    .delete(widget.modelId!)
+                    .then(context.popOnTrue),
                 icon: const Icon(Icons.delete_forever),
               ),
             ElevatedButton(
@@ -140,7 +133,7 @@ class NitFormState<StateEntity extends SerializableModel,
               ),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState?.validate() != false) {
                   // Вызывает срабатывание
                   // _formKey.currentState?.save();
@@ -155,12 +148,10 @@ class NitFormState<StateEntity extends SerializableModel,
                   );
 
                   if (updatedModel != null) {
-                    // ref
-                    //     .read(entityManagerStateProvider<StateEntity>()(
-                    //             EntityListConfig())
-                    //         .notifier)
-                    widget.entityManager
-                        .save(updatedModel as StateEntity)
+                    await (widget.entityManager != null
+                            ? widget.entityManager!
+                                .save(updatedModel as StateEntity)
+                            : ref.saveModel(updatedModel))
                         .then(context.popIfNotNull);
                   }
                 }
@@ -172,13 +163,13 @@ class NitFormState<StateEntity extends SerializableModel,
           ],
           child: ListView.separated(
             shrinkWrap: true,
-            itemCount: widget.fields.length,
-            itemBuilder: (context, index) => widget
-                .fields[index].inputDescriptor
-                .prepareWidget(widget.fields[index]),
+            itemCount: visibleFields.length,
+            itemBuilder: (context, index) => visibleFields[index]
+                .inputDescriptor
+                .prepareWidget(visibleFields[index]),
             // .prepareField()
             // .prepareFormWidget(ref, widget.model),
-            separatorBuilder: (context, index) => const Gap(8),
+            separatorBuilder: (context, index) => const Gap(0),
           ),
         ),
       ),

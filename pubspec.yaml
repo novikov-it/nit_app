@@ -82,11 +82,11 @@ dev_dependencies:
 
 dependency_overrides:
   serverpod_chat_client:
-    path: ../nit_serverpod/modules/serverpod_chat/serverpod_chat_client
-    # git:
-    #     url: git@github.com:novikov-it/nit_serverpod.git
-    #     path: modules/serverpod_chat/serverpod_chat_client
-    #     ref: main
+    # path: ../nit_serverpod/modules/serverpod_chat/serverpod_chat_client
+    git:
+        url: git@github.com:novikov-it/nit_serverpod.git
+        path: modules/serverpod_chat/serverpod_chat_client
+        ref: main
   serverpod_chat_flutter:
     # path: ../nit_serverpod/modules/serverpod_chat/serverpod_chat_flutter
     git:

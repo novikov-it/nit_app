@@ -22,31 +22,44 @@ class NitImagePickerField extends NitFormField<String> {
       // onSaved: onSaved(context),
       initialValue: initialValue(context),
       builder: (fieldState) {
-        // field.value
-        return InkWell(
-          onTap: () async {
-            final publicUrl = await ref.pickImage();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (inputDescriptor.displayTitle != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  inputDescriptor.displayTitle!,
+                  // 'Цена',
+                  style: context.theme.inputDecorationTheme.labelStyle,
+                ),
+              ),
+            InkWell(
+              onTap: () async {
+                final publicUrl = await ref.pickImage();
 
-            if (context.mounted) {
-              onChangedAction(context)(publicUrl);
-              fieldState.didChange(publicUrl);
-            }
-          },
-          child: Container(
-            height: 120,
-            width: 120,
-            decoration: BoxDecoration(
-              color: fieldState.value != null
-                  ? null
-                  : context.colorScheme.secondaryContainer,
-              image: fieldState.value == null
-                  ? null
-                  : DecorationImage(
-                      image: NetworkImage(fieldState.value!),
-                      fit: BoxFit.cover,
-                    ),
+                if (context.mounted) {
+                  onChangedAction(context)(publicUrl);
+                  fieldState.didChange(publicUrl);
+                }
+              },
+              child: Container(
+                height: 120,
+                width: 120,
+                decoration: BoxDecoration(
+                  color: fieldState.value != null
+                      ? null
+                      : context.colorScheme.secondaryContainer,
+                  image: fieldState.value == null
+                      ? null
+                      : DecorationImage(
+                          image: NetworkImage(fieldState.value!),
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
             ),
-          ),
+          ],
         );
       },
     );
