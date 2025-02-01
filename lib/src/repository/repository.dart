@@ -74,10 +74,6 @@ extension WidgetRefRepositoryExtension on WidgetRef {
         (value) => value == null ? null : watchModel<T>(value),
       );
 
-  int? get getIdFromPath => CommonNavigationParameters.id.get(
-        watch(navigationPathParametersProvider),
-      );
-
   AsyncValue<List<int>> watchEntityListState<T extends SerializableModel>({
     EntityListConfig? backendConfig,
     bool Function(T model)? frontendFilter,

@@ -19,8 +19,9 @@ mixin _$NitSessionStateModel {
   SessionManager? get serverpodSessionManager =>
       throw _privateConstructorUsedError;
   UserInfo? get signedInUser => throw _privateConstructorUsedError;
-  StreamingConnectionStatus get websocketStatus =>
+  nit_tools.StreamingConnectionStatus get websocketStatus =>
       throw _privateConstructorUsedError;
+  bool get notificationsEnabled => throw _privateConstructorUsedError;
 
   /// Create a copy of NitSessionStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -38,7 +39,8 @@ abstract class $NitSessionStateModelCopyWith<$Res> {
   $Res call(
       {SessionManager? serverpodSessionManager,
       UserInfo? signedInUser,
-      StreamingConnectionStatus websocketStatus});
+      nit_tools.StreamingConnectionStatus websocketStatus,
+      bool notificationsEnabled});
 }
 
 /// @nodoc
@@ -60,6 +62,7 @@ class _$NitSessionStateModelCopyWithImpl<$Res,
     Object? serverpodSessionManager = freezed,
     Object? signedInUser = freezed,
     Object? websocketStatus = null,
+    Object? notificationsEnabled = null,
   }) {
     return _then(_value.copyWith(
       serverpodSessionManager: freezed == serverpodSessionManager
@@ -73,7 +76,11 @@ class _$NitSessionStateModelCopyWithImpl<$Res,
       websocketStatus: null == websocketStatus
           ? _value.websocketStatus
           : websocketStatus // ignore: cast_nullable_to_non_nullable
-              as StreamingConnectionStatus,
+              as nit_tools.StreamingConnectionStatus,
+      notificationsEnabled: null == notificationsEnabled
+          ? _value.notificationsEnabled
+          : notificationsEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -89,7 +96,8 @@ abstract class _$$NitSessionStateModelImplCopyWith<$Res>
   $Res call(
       {SessionManager? serverpodSessionManager,
       UserInfo? signedInUser,
-      StreamingConnectionStatus websocketStatus});
+      nit_tools.StreamingConnectionStatus websocketStatus,
+      bool notificationsEnabled});
 }
 
 /// @nodoc
@@ -108,6 +116,7 @@ class __$$NitSessionStateModelImplCopyWithImpl<$Res>
     Object? serverpodSessionManager = freezed,
     Object? signedInUser = freezed,
     Object? websocketStatus = null,
+    Object? notificationsEnabled = null,
   }) {
     return _then(_$NitSessionStateModelImpl(
       serverpodSessionManager: freezed == serverpodSessionManager
@@ -121,7 +130,11 @@ class __$$NitSessionStateModelImplCopyWithImpl<$Res>
       websocketStatus: null == websocketStatus
           ? _value.websocketStatus
           : websocketStatus // ignore: cast_nullable_to_non_nullable
-              as StreamingConnectionStatus,
+              as nit_tools.StreamingConnectionStatus,
+      notificationsEnabled: null == notificationsEnabled
+          ? _value.notificationsEnabled
+          : notificationsEnabled // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -132,18 +145,21 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
   const _$NitSessionStateModelImpl(
       {required this.serverpodSessionManager,
       required this.signedInUser,
-      required this.websocketStatus});
+      required this.websocketStatus,
+      required this.notificationsEnabled});
 
   @override
   final SessionManager? serverpodSessionManager;
   @override
   final UserInfo? signedInUser;
   @override
-  final StreamingConnectionStatus websocketStatus;
+  final nit_tools.StreamingConnectionStatus websocketStatus;
+  @override
+  final bool notificationsEnabled;
 
   @override
   String toString() {
-    return 'NitSessionStateModel(serverpodSessionManager: $serverpodSessionManager, signedInUser: $signedInUser, websocketStatus: $websocketStatus)';
+    return 'NitSessionStateModel(serverpodSessionManager: $serverpodSessionManager, signedInUser: $signedInUser, websocketStatus: $websocketStatus, notificationsEnabled: $notificationsEnabled)';
   }
 
   @override
@@ -157,12 +173,14 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
             (identical(other.signedInUser, signedInUser) ||
                 other.signedInUser == signedInUser) &&
             (identical(other.websocketStatus, websocketStatus) ||
-                other.websocketStatus == websocketStatus));
+                other.websocketStatus == websocketStatus) &&
+            (identical(other.notificationsEnabled, notificationsEnabled) ||
+                other.notificationsEnabled == notificationsEnabled));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, serverpodSessionManager, signedInUser, websocketStatus);
+  int get hashCode => Object.hash(runtimeType, serverpodSessionManager,
+      signedInUser, websocketStatus, notificationsEnabled);
 
   /// Create a copy of NitSessionStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -177,17 +195,19 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
 
 abstract class _NitSessionStateModel implements NitSessionStateModel {
   const factory _NitSessionStateModel(
-          {required final SessionManager? serverpodSessionManager,
-          required final UserInfo? signedInUser,
-          required final StreamingConnectionStatus websocketStatus}) =
-      _$NitSessionStateModelImpl;
+      {required final SessionManager? serverpodSessionManager,
+      required final UserInfo? signedInUser,
+      required final nit_tools.StreamingConnectionStatus websocketStatus,
+      required final bool notificationsEnabled}) = _$NitSessionStateModelImpl;
 
   @override
   SessionManager? get serverpodSessionManager;
   @override
   UserInfo? get signedInUser;
   @override
-  StreamingConnectionStatus get websocketStatus;
+  nit_tools.StreamingConnectionStatus get websocketStatus;
+  @override
+  bool get notificationsEnabled;
 
   /// Create a copy of NitSessionStateModel
   /// with the given fields replaced by the non-null parameter values.

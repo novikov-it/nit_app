@@ -21,6 +21,7 @@ class NitSessionStateModel with _$NitSessionStateModel {
     required SessionManager? serverpodSessionManager,
     required UserInfo? signedInUser,
     required StreamingConnectionStatus websocketStatus,
+    required bool notificationsEnabled,
   }) = _NitSessionStateModel;
 }
 
@@ -36,6 +37,7 @@ class NitSessionState extends _$NitSessionState {
       serverpodSessionManager: _sessionManager,
       signedInUser: _sessionManager?.signedInUser,
       websocketStatus: StreamingConnectionStatus.disconnected,
+      notificationsEnabled: false,
     );
   }
 
@@ -83,12 +85,13 @@ class NitSessionState extends _$NitSessionState {
 
       if (await _sessionManager!.initialize()) {
         state = state.copyWith(
-          serverpodSessionManager: _sessionManager!,
-          signedInUser: _sessionManager!.signedInUser,
-        );
+            serverpodSessionManager: _sessionManager!,
+            signedInUser: _sessionManager!.signedInUser,
+            notificationsEnabled: await _checkNotificationsStatus(
+              refreshFcmToken: true,
+            ));
 
         _sessionManager!.addListener(_refresh);
-        _updateNotificationsToken();
 
         return true;
       }
@@ -111,45 +114,54 @@ class NitSessionState extends _$NitSessionState {
       _listenToUpdates();
     }
 
-    if (state.signedInUser?.id != _sessionManager?.signedInUser?.id) {
-      _updateNotificationsToken();
-    }
-
     state = NitSessionStateModel(
-      serverpodSessionManager: _sessionManager,
-      signedInUser: _sessionManager?.signedInUser,
-      websocketStatus: _connectionHandler?.status.status ??
-          StreamingConnectionStatus.disconnected,
+        serverpodSessionManager: _sessionManager,
+        signedInUser: _sessionManager?.signedInUser,
+        websocketStatus: _connectionHandler?.status.status ??
+            StreamingConnectionStatus.disconnected,
+        notificationsEnabled: await _checkNotificationsStatus(
+            refreshFcmToken:
+                state.signedInUser?.id != _sessionManager?.signedInUser?.id));
+  }
+
+  requestNotificationsPermission() async {
+    state = state.copyWith(
+      notificationsEnabled: await _checkNotificationsStatus(
+        refreshFcmToken: true,
+        requestPermission: true,
+      ),
     );
   }
 
-  requestNotificationsPermission() async =>
-      await FirebaseMessaging.instance.requestPermission().then(_updateFcm);
-
-  _updateNotificationsToken() async {
+  Future<bool> _checkNotificationsStatus({
+    required bool refreshFcmToken,
+    bool requestPermission = false,
+  }) async {
     debugPrint("Updating Notifications Token");
-    return await FirebaseMessaging.instance
-        .getNotificationSettings()
-        .then(_updateFcm);
+    final settings = requestPermission
+        ? await FirebaseMessaging.instance.requestPermission()
+        : await FirebaseMessaging.instance.getNotificationSettings();
+
+    if ([AuthorizationStatus.authorized, AuthorizationStatus.provisional]
+        .contains(
+      settings.authorizationStatus,
+    )) {
+      if (refreshFcmToken) _updateFcm();
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  _updateFcm(NotificationSettings settings) async => [
-        AuthorizationStatus.authorized,
-        AuthorizationStatus.provisional
-      ].contains(
-        settings.authorizationStatus,
+  _updateFcm() async => await FirebaseMessaging.instance
+      .getToken(
+        vapidKey: vapidKey,
       )
-          ? await FirebaseMessaging.instance
-              .getToken(
-                vapidKey: vapidKey,
-              )
-              .then(
-                (token) async => token != null
-                    ? await nitToolsCaller!.services
-                        .setFcmToken(fcmToken: token)
-                    : {},
-              )
-          : {};
+      .then(
+        (token) async => token != null
+            ? await nitToolsCaller!.services.setFcmToken(fcmToken: token)
+            : {},
+      );
 
   Future<void> _listenToUpdates() async {
     nitToolsCaller!.crud.resetStream();

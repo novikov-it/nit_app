@@ -17,9 +17,17 @@ class NitRatingField extends NitFormField<int> {
   Widget build(BuildContext context, WidgetRef ref) {
     return FormField<int>(
       initialValue: initialValue(context),
+      validator: (value) {
+        if (inputDescriptor.isRequired && value == null) {
+          return 'Обязательное поле';
+        }
+
+        return null;
+      },
       builder: (fieldState) {
         // field.value
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (inputDescriptor.displayTitle != null)
               Text(
@@ -44,6 +52,13 @@ class NitRatingField extends NitFormField<int> {
                   )
                   .toList(),
             ),
+            if (fieldState.hasError)
+              Text(
+                fieldState.errorText!,
+                style: context.textTheme.labelMedium!.copyWith(
+                  color: context.colorScheme.error,
+                ),
+              )
           ],
         );
       },
