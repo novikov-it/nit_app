@@ -107,6 +107,10 @@ class NitSessionState extends _$NitSessionState {
       );
 
       if (await _sessionManager.initialize()) {
+        // if (nitToolsCaller != null) {
+        //   _openUpdatesStream();
+        // }
+
         state = state.copyWith(
           serverpodSessionManager: _sessionManager,
           signedInUserId: _sessionManager.signedInUser?.id,
@@ -139,18 +143,42 @@ class NitSessionState extends _$NitSessionState {
             StreamingConnectionStatus.connected) {
       _listenToUpdates();
     }
-
-    state = NitSessionStateModel(
-      serverpodSessionManager: _sessionManager,
-      signedInUserId: _sessionManager.signedInUser?.id,
-      scopeNames: _sessionManager.signedInUser?.scopeNames ?? [],
-      websocketStatus: _connectionHandler?.status.status ??
-          StreamingConnectionStatus.disconnected,
-      // notificationsEnabled: await _checkNotificationsStatus(
-      //     refreshFcmToken:
-      //         state.signedInUser?.id != _sessionManager?.signedInUser?.id),
-    );
+    if (_sessionManager.signedInUser?.id != state.signedInUserId) {
+      // if (nitToolsCaller != null) {
+      //   _openUpdatesStream();
+      // }
+      state = NitSessionStateModel(
+        serverpodSessionManager: _sessionManager,
+        signedInUserId: _sessionManager.signedInUser?.id,
+        scopeNames: _sessionManager.signedInUser?.scopeNames ?? [],
+        websocketStatus: _connectionHandler?.status.status ??
+            StreamingConnectionStatus.disconnected,
+        // notificationsEnabled: await _checkNotificationsStatus(
+        //     refreshFcmToken:
+        //         state.signedInUser?.id != _sessionManager?.signedInUser?.id),
+      );
+    }
   }
+
+  // _openUpdatesStream() {
+  //   var outStream = nitToolsCaller!.crud.updatesStream();
+
+  //   outStream.listen(
+  //     (update) {
+  //       if (update is nit_tools.ObjectWrapper) {
+  //         ref.notifyUser(update.model);
+  //         ref.updateFromStream(update);
+  //       }
+
+  //       // May be useful for debug
+  //       ref.notifyUser(
+  //         NitNotification.warning(
+  //           update.toString(),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   // requestNotificationsPermission() async {
   //   state = state.copyWith(

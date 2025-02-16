@@ -41,7 +41,7 @@ extension NitAppBuildContextExtension on BuildContext {
         context: this,
         builder: (context) {
           return ProviderScope(
-            parent: ProviderScope.containerOf(this),
+            // parent: ProviderScope.containerOf(this),
 
             // overrides: [
             //   navigationPathParametersProvider.overrideWith(
@@ -118,7 +118,7 @@ extension NitAppBuildContextExtension on BuildContext {
           //     .read(navigationPathParametersProvider);
           // final t2 = ref.read(navigationPathParametersProvider);
           return ProviderScope(
-            parent: ProviderScope.containerOf(this),
+            // parent: ProviderScope.containerOf(this),
             // overrides: [
             //   navigationPathParametersProvider.overrideWith(
             //     (ref) =>

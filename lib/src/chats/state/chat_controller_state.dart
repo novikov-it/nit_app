@@ -61,7 +61,8 @@ class ChatControllerState extends _$ChatControllerState {
     //   otherUsers: [], //usersMap.values.toList(),
     // );
 
-    if (session.websocketStatus == StreamingConnectionStatus.connected &&
+    if (
+        // session.websocketStatus == StreamingConnectionStatus.connected &&
         _serverpodController == null) {
       _serverpodController = ChatController(
         channel: channel,
