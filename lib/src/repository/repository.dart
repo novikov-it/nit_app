@@ -1,13 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
-import 'package:nit_router/nit_router.dart';
 import 'package:nit_tools_client/nit_tools_client.dart';
 import 'entity_list_config.dart';
 import 'entity_manager_state.dart';
 import 'single_item_custom_provider.dart';
 import 'single_item_custom_provider_config.dart';
 import 'single_item_provider.dart';
+
+const int nitLoadingModelMockId = -273;
 
 final Map<String, StateProviderFamily<SerializableModel?, int>> _repository =
     {};
@@ -47,12 +48,13 @@ extension WidgetRefRepositoryExtension on WidgetRef {
     return watchModel<T>(id)!;
   }
 
-  AsyncValue<T?> watchOrFetchModelAsync<T extends SerializableModel>(int id) {
+  AsyncValue<T> watchOrFetchModelAsync<T extends SerializableModel>(int id) {
     T? model = watchModel<T>(id);
 
     return model != null
         ? AsyncData(model)
-        : watch(singleItemProvider<T>()(id)).whenData((_) => watchModel<T>(id));
+        : watch(singleItemProvider<T>()(id))
+            .whenData((_) => watchModel<T>(id)!);
   }
 
   Future<T> readOrFetchModel<T extends SerializableModel>(int id) async {
@@ -133,12 +135,12 @@ extension RefRepositoryExtension on Ref {
   T? readModel<T extends SerializableModel>(int id) =>
       read(modelProvider(T.toString())(id)) as T?;
 
-  Future<T?> watchOrFetchModel<T extends SerializableModel>(int id) async {
+  Future<T> watchOrFetchModel<T extends SerializableModel>(int id) async {
     T? model = watchModel<T>(id);
 
     if (model == null) await watch(singleItemProvider<T>()(id).future);
 
-    return watchModel<T>(id);
+    return watchModel<T>(id)!;
   }
 
   Future<T> readOrFetchModel<T extends SerializableModel>(int id) async {

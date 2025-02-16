@@ -68,7 +68,7 @@ class ChatControllerState extends _$ChatControllerState {
         module: chatsModuleCaller,
         sessionManager:
             ref.read(nitSessionStateProvider).serverpodSessionManager!,
-        unauthenticatedUserName: session.signedInUser != null
+        unauthenticatedUserName: session.signedInUserId != null
             ? null
             : ref.read(unauthenticatedUsername),
       );

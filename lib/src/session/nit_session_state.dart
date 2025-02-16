@@ -1,46 +1,46 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:nit_app/src/repository/repository.dart';
-import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
+import 'package:nit_app/nit_app.dart';
 import 'package:nit_tools_client/nit_tools_client.dart' as nit_tools;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:serverpod_auth_client/module.dart';
+import 'package:serverpod_auth_client/module.dart' as auth;
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
-
-import '../repository/entity_manager_state.dart';
 
 part 'nit_session_state.g.dart';
 part 'nit_session_state.freezed.dart';
 
-late final Caller? authModuleCaller;
+late final auth.Caller? authModuleCaller;
 
 @freezed
 class NitSessionStateModel with _$NitSessionStateModel {
   const factory NitSessionStateModel({
     required SessionManager? serverpodSessionManager,
-    required UserInfo? signedInUser,
+    required int? signedInUserId,
+    required List<String> scopeNames,
     required StreamingConnectionStatus websocketStatus,
-    required bool notificationsEnabled,
+    // required bool notificationsEnabled,
   }) = _NitSessionStateModel;
 }
 
 @Riverpod(keepAlive: true)
 class NitSessionState extends _$NitSessionState {
   StreamingConnectionHandler? _connectionHandler;
-  SessionManager? _sessionManager;
+  late final SessionManager _sessionManager;
+
   static late final String? vapidKey;
 
   @override
   NitSessionStateModel build() {
     return NitSessionStateModel(
-      serverpodSessionManager: _sessionManager,
-      signedInUser: _sessionManager?.signedInUser,
+      serverpodSessionManager: null,
+      signedInUserId: null, // _sessionManager?.signedInUser,
+      scopeNames: [],
       websocketStatus: StreamingConnectionStatus.disconnected,
-      notificationsEnabled: false,
+      // notificationsEnabled: false,
     );
   }
 
+  // May be useful for debug
   // toggleSocket() {
   //   if (_connectionHandler?.status.status ==
   //       StreamingConnectionStatus.disconnected) {
@@ -51,6 +51,29 @@ class NitSessionState extends _$NitSessionState {
   //       StreamingConnectionStatus.connected) {
   //     _connectionHandler!.close();
   //   }
+  // }
+
+  // int? _previousServerpodUserId;
+  // Future<int?> get _getUserId async {
+  //   final serverpodUserId = _sessionManager.signedInUser?.id;
+  //   if (serverpodUserId == _previousServerpodUserId) {
+  //     return state.signedInUserId;
+  //   }
+
+  //   _previousServerpodUserId = serverpodUserId;
+
+  //   if (serverpodUserId == null) return null;
+
+  //   return await nitToolsCaller!.crud
+  //       .getOneCustom(
+  //         className: 'User',
+  //         filters: [
+  //           NitBackendFilter(
+  //               fieldName: 'userInfoId', equalsTo: serverpodUserId.toString())
+  //         ],
+  //       )
+  //       .then((response) => ref.processApiResponse<int>(response))
+  //       .then((res) => res);
   // }
 
   Future<bool> init({
@@ -83,15 +106,18 @@ class NitSessionState extends _$NitSessionState {
         caller: authModuleCaller!,
       );
 
-      if (await _sessionManager!.initialize()) {
+      if (await _sessionManager.initialize()) {
         state = state.copyWith(
-            serverpodSessionManager: _sessionManager!,
-            signedInUser: _sessionManager!.signedInUser,
-            notificationsEnabled: await _checkNotificationsStatus(
-              refreshFcmToken: true,
-            ));
+          serverpodSessionManager: _sessionManager,
+          signedInUserId: _sessionManager.signedInUser?.id,
+          scopeNames: _sessionManager.signedInUser?.scopeNames ?? [],
 
-        _sessionManager!.addListener(_refresh);
+          // notificationsEnabled: await _checkNotificationsStatus(
+          //   refreshFcmToken: true,
+          // ),
+        );
+
+        _sessionManager.addListener(_refresh);
 
         return true;
       }
@@ -101,7 +127,7 @@ class NitSessionState extends _$NitSessionState {
   }
 
   _refresh() async {
-    if (state.signedInUser?.id != _sessionManager?.signedInUser?.id &&
+    if (state.signedInUserId != _sessionManager.signedInUser?.id &&
         _connectionHandler?.status.status ==
             StreamingConnectionStatus.connected) {
       _connectionHandler?.client.closeStreamingConnection();
@@ -115,62 +141,67 @@ class NitSessionState extends _$NitSessionState {
     }
 
     state = NitSessionStateModel(
-        serverpodSessionManager: _sessionManager,
-        signedInUser: _sessionManager?.signedInUser,
-        websocketStatus: _connectionHandler?.status.status ??
-            StreamingConnectionStatus.disconnected,
-        notificationsEnabled: await _checkNotificationsStatus(
-            refreshFcmToken:
-                state.signedInUser?.id != _sessionManager?.signedInUser?.id));
-  }
-
-  requestNotificationsPermission() async {
-    state = state.copyWith(
-      notificationsEnabled: await _checkNotificationsStatus(
-        refreshFcmToken: true,
-        requestPermission: true,
-      ),
+      serverpodSessionManager: _sessionManager,
+      signedInUserId: _sessionManager.signedInUser?.id,
+      scopeNames: _sessionManager.signedInUser?.scopeNames ?? [],
+      websocketStatus: _connectionHandler?.status.status ??
+          StreamingConnectionStatus.disconnected,
+      // notificationsEnabled: await _checkNotificationsStatus(
+      //     refreshFcmToken:
+      //         state.signedInUser?.id != _sessionManager?.signedInUser?.id),
     );
   }
 
-  Future<bool> _checkNotificationsStatus({
-    required bool refreshFcmToken,
-    bool requestPermission = false,
-  }) async {
-    debugPrint("Updating Notifications Token");
-    final settings = requestPermission
-        ? await FirebaseMessaging.instance.requestPermission()
-        : await FirebaseMessaging.instance.getNotificationSettings();
+  // requestNotificationsPermission() async {
+  //   state = state.copyWith(
+  //     notificationsEnabled: await _checkNotificationsStatus(
+  //       refreshFcmToken: true,
+  //       requestPermission: true,
+  //     ),
+  //   );
+  // }
 
-    if ([AuthorizationStatus.authorized, AuthorizationStatus.provisional]
-        .contains(
-      settings.authorizationStatus,
-    )) {
-      if (refreshFcmToken) _updateFcm();
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // Future<bool> _checkNotificationsStatus({
+  //   required bool refreshFcmToken,
+  //   bool requestPermission = false,
+  // }) async {
+  //   debugPrint("Updating Notifications Token");
+  //   final settings = requestPermission
+  //       ? await FirebaseMessaging.instance.requestPermission()
+  //       : await FirebaseMessaging.instance.getNotificationSettings();
 
-  _updateFcm() async => await FirebaseMessaging.instance
-      .getToken(
-        vapidKey: vapidKey,
-      )
-      .then(
-        (token) async => token != null
-            ? await nitToolsCaller!.services.setFcmToken(fcmToken: token)
-            : {},
-      );
+  //   if ([
+  //     AuthorizationStatus.authorized,
+  //     AuthorizationStatus.provisional,
+  //   ].contains(
+  //     settings.authorizationStatus,
+  //   )) {
+  //     if (refreshFcmToken) _updateFcm();
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+  // _updateFcm() async => await FirebaseMessaging.instance
+  //     .getToken(
+  //       vapidKey: vapidKey,
+  //     )
+  //     .then(
+  //       (token) async => token != null
+  //           ? await nitToolsCaller!.services.setFcmToken(fcmToken: token)
+  //           : {},
+  //     );
 
   Future<void> _listenToUpdates() async {
     nitToolsCaller!.crud.resetStream();
     await for (var update in nitToolsCaller!.crud.stream) {
       if (update is nit_tools.ObjectWrapper) {
-        ref.notifyUser(update.className);
+        ref.notifyUser(update.model);
         ref.updateFromStream(update);
       }
 
+      // May be useful for debug
       // ref.notifyUser(
       //   NitNotification.warning(
       //     update.toString(),
@@ -180,10 +211,6 @@ class NitSessionState extends _$NitSessionState {
   }
 
   Future<bool> signOut() async {
-    if (_sessionManager != null && await _sessionManager!.signOut()) {
-      return true;
-    }
-
-    return false;
+    return await _sessionManager.signOut();
   }
 }

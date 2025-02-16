@@ -12,7 +12,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:nit_app/src/nit_auth/config/nit_auth_config.dart';
 import 'package:nit_app/src/chats/state/chat_controller_state.dart';
 import 'package:nit_app/src/tools/deeplinks.dart';
-import 'package:nit_router/nit_router.dart';
+// import 'package:nit_router/nit_router.dart';
 import 'package:nit_tools_client/nit_tools_client.dart' as nit_tools;
 import 'package:nit_tools_client/nit_tools_client.dart';
 import 'package:oktoast/oktoast.dart';
@@ -52,9 +52,9 @@ class NitApp extends HookConsumerWidget {
   NitApp({
     super.key,
     required this.title,
-    this.routerProvider,
-    this.navigationZones,
-    this.redirectProvider,
+    required this.routerProvider,
+    // this.navigationZones,
+    // this.redirectProvider,
     this.client,
     this.nitAuthConfig,
     this.deeplinkHandler,
@@ -74,26 +74,27 @@ class NitApp extends HookConsumerWidget {
     ),
     this.locale = 'ru',
     this.themeData,
-  }) {
-    assert(
-      routerProvider != null || navigationZones != null,
-      'You need to provide router configuration. Either routerProvider or navigationZones should be passed',
-    );
-    _routerProvider = routerProvider ??
-        nitRouterStateProvider(navigationZones!, redirectProvider);
-    // NitRouter.prepareRouterProvider(
-    //     navigationZones: navigationZones!,
-    //     redirectProvider: redirectProvider);
-  }
+  });
+  //  {
+  // assert(
+  //   routerProvider != null || navigationZones != null,
+  //   'You need to provide router configuration. Either routerProvider or navigationZones should be passed',
+  // );
+  // _routerProvider = routerProvider ??
+  //     nitRouterStateProvider(navigationZones!, redirectProvider);
+  // NitRouter.prepareRouterProvider(
+  //     navigationZones: navigationZones!,
+  //     redirectProvider: redirectProvider);
+  // }
 
   final String locale;
   final String title;
-  final List<List<NavigationZoneEnum>>? navigationZones;
-  final Provider<GoRouter>? routerProvider;
-  final
-      // Provider<Map<NavigationZoneEnum, NavigationZoneEnum>>?
+  // final List<List<NavigationZoneEnum>>? navigationZones;
+  // final Provider<RouterConfig<Object>> routerProvider;
+  final ProviderBase<RouterConfig<Object>> routerProvider;
+  // final Provider<Map<NavigationZoneEnum, NavigationZoneEnum>>?
 
-      Provider<NitRedirectsStateModel>? redirectProvider;
+  // Provider<NitRedirectsStateModel>? redirectProvider;
 
   final ServerpodClientShared? client;
   final NitAuthConfig? nitAuthConfig;
@@ -105,7 +106,7 @@ class NitApp extends HookConsumerWidget {
 
   final ThemeData? themeData;
 
-  late final ProviderBase<GoRouter> _routerProvider;
+  // late final ProviderBase<GoRouter> _routerProvider;
 
   Future<bool> _futuresQueue(List<Future<bool> Function()> initializers) async {
     if (initializers.isEmpty) return true;
@@ -222,7 +223,7 @@ class NitApp extends HookConsumerWidget {
           },
         ),
         routerConfig: ref.watch(
-          _routerProvider,
+          routerProvider,
           // routerProvider ??
           //     NitRouter.prepareRouterProvider(
           //       navigationZones: navigationZones!,

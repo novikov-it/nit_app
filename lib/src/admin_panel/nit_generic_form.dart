@@ -169,7 +169,7 @@ class NitFormState<StateEntity extends SerializableModel,
                 .prepareWidget(visibleFields[index]),
             // .prepareField()
             // .prepareFormWidget(ref, widget.model),
-            separatorBuilder: (context, index) => const Gap(0),
+            separatorBuilder: (context, index) => const Gap(8),
           ),
         ),
       ),

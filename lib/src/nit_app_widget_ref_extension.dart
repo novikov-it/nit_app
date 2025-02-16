@@ -13,7 +13,7 @@ extension NitAppWidgetRefExtension on WidgetRef {
   requireLogin({
     Function()? thenAction,
   }) async {
-    final userLoggedIn = read(nitSessionStateProvider).signedInUser != null ||
+    final userLoggedIn = read(nitSessionStateProvider).signedInUserId != null ||
         true ==
             await context.showBottomSheetOrDialog<bool>(
               NitDialogLayout(

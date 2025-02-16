@@ -12,7 +12,7 @@ export 'src/nit_auth/nit_auth.dart';
 
 export 'src/admin_panel/nit_generic_form.dart';
 export 'src/admin_panel/entity_manager_block.dart';
-export 'src/admin_panel/database_page.dart';
+export 'src/admin_panel/database_page/database_page.dart';
 export 'src/admin_panel/database_config.dart';
 
 export 'src/repository/repository.dart';
@@ -24,7 +24,6 @@ export 'src/repository/entity_list_config.dart';
 
 export 'src/chats/nit_chats.dart';
 
-export 'package:nit_router/nit_router.dart';
 export 'package:nit_tools_client/nit_tools_client.dart';
 export 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 

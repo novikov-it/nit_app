@@ -41,12 +41,14 @@ extension NitAppBuildContextExtension on BuildContext {
         context: this,
         builder: (context) {
           return ProviderScope(
-            overrides: [
-              navigationPathParametersProvider.overrideWith(
-                (ref) => ProviderScope.containerOf(this)
-                    .read(navigationPathParametersProvider),
-              )
-            ],
+            parent: ProviderScope.containerOf(this),
+
+            // overrides: [
+            //   navigationPathParametersProvider.overrideWith(
+            //     (ref) => ProviderScope.containerOf(this)
+            //         .read(navigationPathParametersProvider),
+            //   )
+            // ],
             child: Dialog(
               elevation: 8,
               shape: RoundedRectangleBorder(

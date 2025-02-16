@@ -16,11 +16,11 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
 
-  nit_router:
-    # path: ../nit_router
-    git:
-      url: git@github.com:novikov-it/nit_router.git
-      ref: master
+  # nit_router:
+  #   # path: ../nit_router
+  #   git:
+  #     url: git@github.com:novikov-it/nit_router.git
+  #     ref: master
 
   serverpod_client: ^2.1.1
   serverpod_chat_client: ^2.1.1
@@ -71,6 +71,8 @@ dependencies:
   #     ref: main
   app_links: ^6.3.2
   flutter_multi_formatter: ^2.13.0
+  skeletonizer: ^1.4.3
+  conditional_parent_widget: ^0.0.2
 
 dev_dependencies:
   flutter_test:

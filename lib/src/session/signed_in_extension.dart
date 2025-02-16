@@ -12,13 +12,13 @@ extension SignedInExtension on Ref {
 
   bool get signedIn => watch(
         nitSessionStateProvider.select(
-          (value) => value.signedInUser != null,
+          (value) => value.signedInUserId != null,
         ),
       );
 
   int? get signedInUserId => watch(
         nitSessionStateProvider.select(
-          (value) => value.signedInUser?.id,
+          (value) => value.signedInUserId,
         ),
       );
 }
@@ -34,13 +34,17 @@ extension SignedInWidgetExtension on WidgetRef {
 
   bool get signedIn => watch(
         nitSessionStateProvider.select(
-          (value) => value.signedInUser != null,
+          (value) => value.signedInUserId != null,
         ),
       );
 
   int? get signedInUserId => watch(
         nitSessionStateProvider.select(
-          (value) => value.signedInUser?.id,
+          (value) => value.signedInUserId,
         ),
       );
+
+  bool hasAccess(String scopeName) =>
+      watch(nitSessionStateProvider.select((value) => value.scopeNames))
+          .contains(scopeName);
 }

@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 
 class DPD {
   const DPD({
-    this.pageTitle,
-    this.entityManagerBlock,
+    required this.pageTitle,
+    required this.entityManagerBlock,
   });
-  final String? pageTitle;
-  final Widget? entityManagerBlock;
+  final String pageTitle;
+  final Widget entityManagerBlock;
 }
 
 abstract class DatabasePageDescriptor implements Enum {
-  DatabasePageDescriptor([
-    this.pageDescriptor = const DPD(),
-  ]);
+  DatabasePageDescriptor(
+    this.pageDescriptor, // = const DPD(),
+  );
 
   final DPD pageDescriptor;
 }
