@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nit_app/src/nit_app_build_context_extension.dart';
+import 'package:nit_ui_kit/nit_ui_kit.dart';
 import '../database_config.dart';
 
 class NitDatabasePage extends ConsumerStatefulWidget {

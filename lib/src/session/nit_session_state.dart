@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/nit_app.dart';
+import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 import 'package:nit_tools_client/nit_tools_client.dart' as nit_tools;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/module.dart' as auth;

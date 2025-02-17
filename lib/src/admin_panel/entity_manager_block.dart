@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nit_app/nit_app.dart';
-
-import 'details_page.dart';
+import 'package:nit_ui_kit/nit_ui_kit.dart';
 
 class EntityManagerBlock<Entity extends SerializableModel,
         FormDescriptor extends ModelFieldDescriptor<Entity>>

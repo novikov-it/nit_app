@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_app/src/generic_forms/form_field_widgets/nit_form_field.dart';
+import 'package:nit_ui_kit/nit_ui_kit.dart';
 
 class NitImagePickerField extends NitFormField<String> {
   const NitImagePickerField({

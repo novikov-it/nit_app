@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +48,7 @@ class NitApp extends HookConsumerWidget {
     }
   }
 
-  NitApp({
+  const NitApp({
     super.key,
     required this.title,
     required this.routerProvider,

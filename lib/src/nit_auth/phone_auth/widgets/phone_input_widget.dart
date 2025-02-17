@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
+import 'package:nit_ui_kit/nit_ui_kit.dart';
 
 import '../state/phone_auth_state.dart';
 
