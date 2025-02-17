@@ -42,7 +42,10 @@ dependencies:
       ref: master
 
   nit_ui_kit:
-    path: ../nit_ui_kit
+    # path: ../nit_ui_kit
+    git:
+      url: git@github.com:novikov-it/nit_ui_kit
+      ref: master
 
   nit_riverpod_notifications: ^0.0.1
   #   # path: ../nit_riverpod_notifications
