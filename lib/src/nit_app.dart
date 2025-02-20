@@ -5,22 +5,22 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nit_app/src/nit_auth/config/nit_auth_config.dart';
-import 'package:nit_app/src/chats/state/chat_controller_state.dart';
-import 'package:nit_app/src/tools/deeplinks.dart';
+// import 'package:nit_app/src/chats/state/chat_controller_state.dart';
+import 'package:nit_app/src/utils/deeplinks.dart';
 // import 'package:nit_router/nit_router.dart';
 import 'package:nit_tools_client/nit_tools_client.dart' as nit_tools;
 import 'package:nit_tools_client/nit_tools_client.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as auth;
-import 'package:serverpod_chat_client/serverpod_chat_client.dart' as chats;
+
 import 'repository/entity_manager_state.dart';
 import 'session/nit_session_state.dart';
-import 'tools/firebase.dart';
-import 'package:flutter_web_plugins/url_strategy.dart';
+import 'utils/firebase.dart';
 
 class NitApp extends HookConsumerWidget {
   static preInitialization({
@@ -151,12 +151,12 @@ class NitApp extends HookConsumerWidget {
                 // authModuleCaller = client!.moduleLookup.values
                 //     .firstWhereOrNull((e) => e is auth.Caller) as auth.Caller;
 
-                final chatsCaller = client!.moduleLookup.values
-                    .firstWhereOrNull((e) => e is chats.Caller);
+                // final chatsCaller = client!.moduleLookup.values
+                //     .firstWhereOrNull((e) => e is chats.Caller);
 
-                if (chatsCaller != null) {
-                  chatsModuleCaller = chatsCaller as chats.Caller;
-                }
+                // if (chatsCaller != null) {
+                //   chatsModuleCaller = chatsCaller as chats.Caller;
+                // }
                 // chatsModuleCaller = client!.moduleLookup.values
                 //     .firstWhereOrNull((e) => e is chats.Caller) as chats.Caller;
 
