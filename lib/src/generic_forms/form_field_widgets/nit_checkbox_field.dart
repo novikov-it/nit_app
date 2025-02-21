@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nit_app/nit_app.dart';
 
+import '../form_input_descriptor/form_input_descriptor.dart';
 import 'nit_form_field.dart';
 
 class NitCheckboxField extends NitFormField<bool> {

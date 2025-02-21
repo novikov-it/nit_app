@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nit_app/nit_app.dart';
+import 'package:nit_app/src/repository/repository.dart';
+import 'package:nit_tools_client/nit_tools_client.dart';
 import 'package:nit_ui_kit/nit_ui_kit.dart';
+
+import '../generic_forms/descriptors/model_field_descriptor.dart';
+import '../repository/entity_list_config.dart';
+import '../repository/entity_manager_state.dart';
+import 'nit_generic_form.dart';
 
 class EntityManagerBlock<Entity extends SerializableModel,
         FormDescriptor extends ModelFieldDescriptor<Entity>>

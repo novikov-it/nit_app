@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_tools_client/nit_tools_client.dart';
+
 import 'entity_list_config.dart';
 import 'entity_manager_interface.dart';
 import 'repository.dart';
@@ -31,9 +32,7 @@ class EntityManagerState<Entity extends SerializableModel>
   @override
   Future<List<int>> build(EntityListConfig config) async {
     ref.onDispose(
-      () => ref
-          // .read(nitSessionStateProvider.notifier)
-          .removeUpdatesListener<Entity>(
+      () => ref.removeUpdatesListener<Entity>(
         _updatesListener,
       ),
     );
@@ -54,9 +53,7 @@ class EntityManagerState<Entity extends SerializableModel>
           (res) => res ?? <int>[],
         );
 
-    ref
-        // .read(nitSessionStateProvider.notifier)
-        .addUpdatesListener<Entity>(_updatesListener);
+    ref.addUpdatesListener<Entity>(_updatesListener);
 
     return result;
   }

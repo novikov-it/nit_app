@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nit_app/nit_app.dart';
 import 'package:nit_app/src/generic_forms/form_field_widgets/nit_form_field.dart';
 import 'package:nit_app/src/generic_forms/generic_forms.dart';
 
