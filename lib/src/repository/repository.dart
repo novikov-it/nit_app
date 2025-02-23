@@ -1,14 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nit_app/src/repository/default_models_repository.dart';
 import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 import 'package:nit_tools_client/nit_tools_client.dart';
+
 import 'entity_list_config.dart';
 import 'entity_manager_state.dart';
 import 'single_item_custom_provider.dart';
 import 'single_item_custom_provider_config.dart';
 import 'single_item_provider.dart';
-
-const int nitLoadingModelMockId = -273;
 
 final Map<String, StateProviderFamily<SerializableModel?, int>> _repository =
     {};
@@ -33,10 +33,18 @@ _filter<T>(T? model, bool Function(T model) filter) =>
     model != null ? filter(model) : false;
 
 extension WidgetRefRepositoryExtension on WidgetRef {
-  T? watchModel<T extends SerializableModel>(int id) =>
+  T defaultModel<T>() => DefaultModelsRepository.get<T>();
+
+  T? watchModel<T extends SerializableModel>(int id) => id ==
+          DefaultModelsRepository.mockModelId
+      ? DefaultModelsRepository.get<T>()
+      :
       // TODO: Изменить, toString() не работает на Web release из-за minification
       watch(modelProvider(T.toString())(id)) as T?;
-  T? readModel<T extends SerializableModel>(int id) =>
+  T? readModel<T extends SerializableModel>(int id) => id ==
+          DefaultModelsRepository.mockModelId
+      ? DefaultModelsRepository.get<T>()
+      :
       // TODO: Изменить, toString() не работает на Web release из-за minification
       read(modelProvider(T.toString())(id)) as T?;
 
@@ -130,10 +138,16 @@ extension WidgetRefRepositoryExtension on WidgetRef {
 }
 
 extension RefRepositoryExtension on Ref {
+  T defaultModel<T>() => DefaultModelsRepository.get<T>();
+
   T? watchModel<T extends SerializableModel>(int id) =>
-      watch(modelProvider(T.toString())(id)) as T?;
+      id == DefaultModelsRepository.mockModelId
+          ? DefaultModelsRepository.get<T>()
+          : watch(modelProvider(T.toString())(id)) as T?;
   T? readModel<T extends SerializableModel>(int id) =>
-      read(modelProvider(T.toString())(id)) as T?;
+      id == DefaultModelsRepository.mockModelId
+          ? DefaultModelsRepository.get<T>()
+          : read(modelProvider(T.toString())(id)) as T?;
 
   Future<T> watchOrFetchModel<T extends SerializableModel>(int id) async {
     T? model = watchModel<T>(id);

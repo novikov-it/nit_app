@@ -7,8 +7,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/module.dart' as auth;
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 
-part 'nit_session_state.g.dart';
 part 'nit_session_state.freezed.dart';
+part 'nit_session_state.g.dart';
 
 late final auth.Caller? authModuleCaller;
 
@@ -95,9 +95,9 @@ class NitSessionState extends _$NitSessionState {
     }
 
     if (enableAppNotifications) {
-      ref.addUpdatesListener<nit_tools.AppNotification>(
-        (id, model) => ref.notifyUser<nit_tools.AppNotification>(
-          model as nit_tools.AppNotification,
+      ref.addUpdatesListener<nit_tools.NitAppNotification>(
+        (id, model) => ref.notifyUser<nit_tools.NitAppNotification>(
+          model as nit_tools.NitAppNotification,
         ),
       );
     }
