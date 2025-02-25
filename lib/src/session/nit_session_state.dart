@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/nit_app.dart';
@@ -28,10 +30,18 @@ class NitSessionState extends _$NitSessionState {
   StreamingConnectionHandler? _connectionHandler;
   late final SessionManager _sessionManager;
 
+  // StreamSubscription<SerializableModel>? _updatesSubscription;
   static late final String? vapidKey;
 
   @override
   NitSessionStateModel build() {
+    // ref.onDispose(
+    //   () async {
+    //     print("Cancelling subscription on dispose");
+    //     await _updatesSubscription?.cancel();
+    //   },
+    // );
+
     return NitSessionStateModel(
       serverpodSessionManager: null,
       signedInUserId: null, // _sessionManager?.signedInUser,
@@ -109,7 +119,7 @@ class NitSessionState extends _$NitSessionState {
 
       if (await _sessionManager.initialize()) {
         // if (nitToolsCaller != null) {
-        //   _openUpdatesStream();
+        //   await _openUpdatesStream();
         // }
 
         state = state.copyWith(
@@ -146,7 +156,7 @@ class NitSessionState extends _$NitSessionState {
     }
     if (_sessionManager.signedInUser?.id != state.signedInUserId) {
       // if (nitToolsCaller != null) {
-      //   _openUpdatesStream();
+      //   await _openUpdatesStream();
       // }
       state = NitSessionStateModel(
         serverpodSessionManager: _sessionManager,
@@ -161,10 +171,35 @@ class NitSessionState extends _$NitSessionState {
     }
   }
 
-  // _openUpdatesStream() {
-  //   var outStream = nitToolsCaller!.crud.updatesStream();
+  Future<void> _listenToUpdates() async {
+    nitToolsCaller!.nitUpdates.resetStream();
 
-  //   outStream.listen(
+    // final t = nitToolsCaller!.nitCrud.stream.listen(onData)
+
+    await for (var update in nitToolsCaller!.nitUpdates.stream) {
+      if (update is nit_tools.ObjectWrapper) {
+        print("Received ${update.className} with id ${update.modelId}");
+        ref.notifyUser(update.model);
+        ref.updateFromStream(update);
+      }
+
+      // May be useful for debug
+      // ref.notifyUser(
+      //   NitNotification.warning(
+      //     update.toString(),
+      //   ),
+      // );
+    }
+  }
+
+  // _openUpdatesStream() async {
+  //   await _updatesSubscription?.cancel();
+
+  //   print("Subscribing to updates");
+
+  //   _updatesSubscription = nitToolsCaller!.crud
+  //       .updatesStream(StreamController<SerializableModel>().stream)
+  //       .listen(
   //     (update) {
   //       if (update is nit_tools.ObjectWrapper) {
   //         ref.notifyUser(update.model);
@@ -178,6 +213,8 @@ class NitSessionState extends _$NitSessionState {
   //         ),
   //       );
   //     },
+  //     onError: (Object error, StackTrace stackTrace) =>
+  //         debugPrint('$error\n$stackTrace'),
   //   );
   // }
 
@@ -221,23 +258,6 @@ class NitSessionState extends _$NitSessionState {
   //           ? await nitToolsCaller!.services.setFcmToken(fcmToken: token)
   //           : {},
   //     );
-
-  Future<void> _listenToUpdates() async {
-    nitToolsCaller!.crud.resetStream();
-    await for (var update in nitToolsCaller!.crud.stream) {
-      if (update is nit_tools.ObjectWrapper) {
-        ref.notifyUser(update.model);
-        ref.updateFromStream(update);
-      }
-
-      // May be useful for debug
-      // ref.notifyUser(
-      //   NitNotification.warning(
-      //     update.toString(),
-      //   ),
-      // );
-    }
-  }
 
   Future<bool> signOut() async {
     return await _sessionManager.signOut();

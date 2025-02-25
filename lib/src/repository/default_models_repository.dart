@@ -1,5 +1,5 @@
 class DefaultModelsRepository {
-  static const int mockModelId = -273;
+  static const int mockModelId = 0;
 
   static final repository = <String, dynamic>{};
 

@@ -32,7 +32,7 @@ class SingleItemCustomProviderState<T extends SerializableModel>
   ) async {
     debugPrint("Getting single ${T.toString()} with id $arg");
     // final res = await ref.getAll<T>();
-    return await nitToolsCaller!.crud
+    return await nitToolsCaller!.nitCrud
         .getOneCustom(
           className: T.toString(),
           filters: arg.backendFilters,

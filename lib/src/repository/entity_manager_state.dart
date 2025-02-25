@@ -40,7 +40,7 @@ class EntityManagerState<Entity extends SerializableModel>
     // TODO: Изменить, toString() не работает на Web release из-за minification
     debugPrint("Building state for ${Entity.toString()}");
 
-    final result = await nitToolsCaller!.crud
+    final result = await nitToolsCaller!.nitCrud
         // TODO: Изменить, toString() не работает на Web release из-за minification
         .getAll(
           className: Entity.toString(),
@@ -90,7 +90,7 @@ class EntityManagerState<Entity extends SerializableModel>
     bool andRemoveFromList = false,
   }) async {
     return await future.then(
-      (value) async => await nitToolsCaller!.crud
+      (value) async => await nitToolsCaller!.nitCrud
           .saveModel(
             wrappedModel: ObjectWrapper.wrap(model: model),
           )
@@ -113,7 +113,7 @@ class EntityManagerState<Entity extends SerializableModel>
   @override
   Future<bool> delete(int modelId) async {
     return await future.then(
-      (value) async => await nitToolsCaller!.crud
+      (value) async => await nitToolsCaller!.nitCrud
           .delete(
             // TODO: Изменить, toString() не работает на Web release из-за minification
             className: Entity.toString(), modelId: modelId,

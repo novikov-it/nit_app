@@ -100,7 +100,7 @@ extension WidgetRefRepositoryExtension on WidgetRef {
       );
 
   Future<int?> saveModel(SerializableModel model) async {
-    return await nitToolsCaller!.crud
+    return await nitToolsCaller!.nitCrud
         .saveModel(
           wrappedModel: ObjectWrapper.wrap(model: model),
         )
@@ -193,7 +193,7 @@ extension RefRepositoryExtension on Ref {
       );
 
   Future<int?> saveModel(SerializableModel model) async {
-    return await nitToolsCaller!.crud
+    return await nitToolsCaller!.nitCrud
         .saveModel(
           wrappedModel: ObjectWrapper.wrap(model: model),
         )
@@ -203,7 +203,7 @@ extension RefRepositoryExtension on Ref {
   }
 
   Future<List<int>?> saveModels(List<SerializableModel> models) async {
-    return await nitToolsCaller!.crud
+    return await nitToolsCaller!.nitCrud
         .saveModels(
           wrappedModels:
               models.map((model) => ObjectWrapper.wrap(model: model)).toList(),
@@ -256,6 +256,8 @@ extension RefRepositoryExtension on Ref {
 
   updateFromStream(ObjectWrapper update) {
     _updateRepository([update]);
+    print(update);
+    print(_updateListeners.keys);
     for (var listener in _updateListeners[update.nitMappingClassname] ?? []) {
       listener(update.modelId, update.model);
     }

@@ -53,6 +53,12 @@ dependencies:
   #     url: git@github.com:novikov-it/nit_riverpod_notifications.git
   #     ref: master
 
+  chatview: # ^2.2.0
+    # path: ../../nit_flutter_chatview
+    git:
+      url: git@github.com:novikov-it/nit_flutter_chatview.git
+      ref: main
+
   intl: ^0.19.0
   flutter_hooks: ^0.20.1
   hooks_riverpod: ^2.4.10

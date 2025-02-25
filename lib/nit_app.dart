@@ -4,6 +4,7 @@ export 'src/admin_panel/database_config.dart';
 export 'src/admin_panel/database_page/database_page.dart';
 export 'src/admin_panel/entity_manager_block.dart';
 export 'src/admin_panel/nit_generic_form.dart';
+export 'src/chats/state/nit_chat_view_state.dart';
 export 'src/generic_forms/generic_forms.dart';
 export 'src/nit_app.dart';
 export 'src/nit_app_widget_ref_extension.dart';

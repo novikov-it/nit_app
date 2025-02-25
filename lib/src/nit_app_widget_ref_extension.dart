@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_ui_kit/nit_ui_kit.dart';
+
 import 'nit_auth/phone_auth/phone_auth_widget.dart';
 
 extension NitAppWidgetRefExtension on WidgetRef {
@@ -39,7 +40,8 @@ extension NitAppWidgetRefExtension on WidgetRef {
   }) async {
     final byteData = ByteData.view(bytes.buffer);
 
-    var uploadDescription = await nitToolsCaller!.upload.getUploadDescription(
+    var uploadDescription =
+        await nitToolsCaller!.nitUpload.getUploadDescription(
       path: path,
     );
 
@@ -49,7 +51,7 @@ extension NitAppWidgetRefExtension on WidgetRef {
     debugPrint(uploadDescription);
     var uploader = FileUploader(uploadDescription);
     await uploader.uploadByteData(byteData);
-    var publicUrl = await nitToolsCaller!.upload.verifyUpload(
+    var publicUrl = await nitToolsCaller!.nitUpload.verifyUpload(
       path: path,
     );
 

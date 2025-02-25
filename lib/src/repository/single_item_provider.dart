@@ -28,7 +28,7 @@ class SingleItemProviderState<T extends SerializableModel>
     int arg,
   ) async {
     debugPrint("Getting single ${T.toString()} with id $arg");
-    return await nitToolsCaller!.crud
+    return await nitToolsCaller!.nitCrud
         .getOneById(
           className: T.toString(),
           id: arg,

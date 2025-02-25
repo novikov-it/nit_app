@@ -20,7 +20,7 @@ mixin _$NitSessionStateModel {
       throw _privateConstructorUsedError;
   int? get signedInUserId => throw _privateConstructorUsedError;
   List<String> get scopeNames => throw _privateConstructorUsedError;
-  nit_tools.StreamingConnectionStatus get websocketStatus =>
+  auth.StreamingConnectionStatus get websocketStatus =>
       throw _privateConstructorUsedError;
 
   /// Create a copy of NitSessionStateModel
@@ -40,7 +40,7 @@ abstract class $NitSessionStateModelCopyWith<$Res> {
       {SessionManager? serverpodSessionManager,
       int? signedInUserId,
       List<String> scopeNames,
-      nit_tools.StreamingConnectionStatus websocketStatus});
+      auth.StreamingConnectionStatus websocketStatus});
 }
 
 /// @nodoc
@@ -80,7 +80,7 @@ class _$NitSessionStateModelCopyWithImpl<$Res,
       websocketStatus: null == websocketStatus
           ? _value.websocketStatus
           : websocketStatus // ignore: cast_nullable_to_non_nullable
-              as nit_tools.StreamingConnectionStatus,
+              as auth.StreamingConnectionStatus,
     ) as $Val);
   }
 }
@@ -97,7 +97,7 @@ abstract class _$$NitSessionStateModelImplCopyWith<$Res>
       {SessionManager? serverpodSessionManager,
       int? signedInUserId,
       List<String> scopeNames,
-      nit_tools.StreamingConnectionStatus websocketStatus});
+      auth.StreamingConnectionStatus websocketStatus});
 }
 
 /// @nodoc
@@ -134,7 +134,7 @@ class __$$NitSessionStateModelImplCopyWithImpl<$Res>
       websocketStatus: null == websocketStatus
           ? _value.websocketStatus
           : websocketStatus // ignore: cast_nullable_to_non_nullable
-              as nit_tools.StreamingConnectionStatus,
+              as auth.StreamingConnectionStatus,
     ));
   }
 }
@@ -162,7 +162,7 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
   }
 
   @override
-  final nit_tools.StreamingConnectionStatus websocketStatus;
+  final auth.StreamingConnectionStatus websocketStatus;
 
   @override
   String toString() {
@@ -209,7 +209,7 @@ abstract class _NitSessionStateModel implements NitSessionStateModel {
           {required final SessionManager? serverpodSessionManager,
           required final int? signedInUserId,
           required final List<String> scopeNames,
-          required final nit_tools.StreamingConnectionStatus websocketStatus}) =
+          required final auth.StreamingConnectionStatus websocketStatus}) =
       _$NitSessionStateModelImpl;
 
   @override
@@ -219,7 +219,7 @@ abstract class _NitSessionStateModel implements NitSessionStateModel {
   @override
   List<String> get scopeNames;
   @override
-  nit_tools.StreamingConnectionStatus get websocketStatus;
+  auth.StreamingConnectionStatus get websocketStatus;
 
   /// Create a copy of NitSessionStateModel
   /// with the given fields replaced by the non-null parameter values.
