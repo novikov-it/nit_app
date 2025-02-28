@@ -21,7 +21,7 @@ abstract class NitChatViewStateModel with _$NitChatViewStateModel {
 extension on NitChatMessage {
   Message get toChatViewMessage => Message(
         message: text ?? '-',
-        createdAt: sentAt,
+        createdAt: sentAt.toLocal(),
         sentBy: userInfoId.toString(),
         status: MessageStatus.delivered,
       );

@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nit_app/src/nit_auth/config/nit_auth_config.dart';
+import 'package:nit_app/src/notifications/nit_firebase_notifications_state.dart';
 // import 'package:nit_app/src/chats/state/chat_controller_state.dart';
 import 'package:nit_app/src/utils/deeplinks.dart';
 // import 'package:nit_router/nit_router.dart';
@@ -44,7 +45,18 @@ class NitApp extends HookConsumerWidget {
 
     if (firebaseOptions != null) {
       await FirebaseInitializer.init(firebaseOptions);
-      NitSessionState.vapidKey = firebaseVapidKey;
+      NitFirebaseNotificationsState.vapidKey = firebaseVapidKey;
+
+      // // Handle when the app is in foreground
+      // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      //   print("📩 Foreground Notification: ${message.notification?.title}");
+      // });
+
+      // // Handle when the app is opened by clicking on a notification
+      // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      //   print("📩 Background Notification: ${message.notification?.title}");
+      //   // _handleMessageClick(message);
+      // });
     }
   }
 
@@ -165,7 +177,7 @@ class NitApp extends HookConsumerWidget {
                 return (authModuleCaller != null)
                     ? ref.read(nitSessionStateProvider.notifier).init(
                           client: client,
-                          enableAppNotifications: true,
+                          // enableAppNotifications: true,
                         )
                     : true;
               },

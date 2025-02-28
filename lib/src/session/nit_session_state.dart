@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/nit_app.dart';
-import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 import 'package:nit_tools_client/nit_tools_client.dart' as nit_tools;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/module.dart' as auth;
@@ -31,7 +30,6 @@ class NitSessionState extends _$NitSessionState {
   late final SessionManager _sessionManager;
 
   // StreamSubscription<SerializableModel>? _updatesSubscription;
-  static late final String? vapidKey;
 
   @override
   NitSessionStateModel build() {
@@ -89,7 +87,7 @@ class NitSessionState extends _$NitSessionState {
 
   Future<bool> init({
     required ServerpodClientShared? client,
-    required bool enableAppNotifications,
+    // required bool enableAppNotifications,
   }) async {
     if (client != null) {
       _connectionHandler = StreamingConnectionHandler(
@@ -104,14 +102,6 @@ class NitSessionState extends _$NitSessionState {
       _connectionHandler!.connect();
     }
 
-    if (enableAppNotifications) {
-      ref.addUpdatesListener<nit_tools.NitAppNotification>(
-        (id, model) => ref.notifyUser<nit_tools.NitAppNotification>(
-          model as nit_tools.NitAppNotification,
-        ),
-      );
-    }
-
     if (authModuleCaller != null) {
       _sessionManager = SessionManager(
         caller: authModuleCaller!,
@@ -122,14 +112,14 @@ class NitSessionState extends _$NitSessionState {
         //   await _openUpdatesStream();
         // }
 
+        // if (_sessionManager.isSignedIn) {
+        // _updateFcm();
+        // }
+
         state = state.copyWith(
           serverpodSessionManager: _sessionManager,
           signedInUserId: _sessionManager.signedInUser?.id,
           scopeNames: _sessionManager.signedInUser?.scopeNames ?? [],
-
-          // notificationsEnabled: await _checkNotificationsStatus(
-          //   refreshFcmToken: true,
-          // ),
         );
 
         _sessionManager.addListener(_refresh);
@@ -158,15 +148,14 @@ class NitSessionState extends _$NitSessionState {
       // if (nitToolsCaller != null) {
       //   await _openUpdatesStream();
       // }
+      // _updateFcm();
+
       state = NitSessionStateModel(
         serverpodSessionManager: _sessionManager,
         signedInUserId: _sessionManager.signedInUser?.id,
         scopeNames: _sessionManager.signedInUser?.scopeNames ?? [],
         websocketStatus: _connectionHandler?.status.status ??
             StreamingConnectionStatus.disconnected,
-        // notificationsEnabled: await _checkNotificationsStatus(
-        //     refreshFcmToken:
-        //         state.signedInUser?.id != _sessionManager?.signedInUser?.id),
       );
     }
   }
@@ -179,7 +168,7 @@ class NitSessionState extends _$NitSessionState {
     await for (var update in nitToolsCaller!.nitUpdates.stream) {
       if (update is nit_tools.ObjectWrapper) {
         print("Received ${update.className} with id ${update.modelId}");
-        ref.notifyUser(update.model);
+        // ref.notifyUser(update.model);
         ref.updateFromStream(update);
       }
 
@@ -217,47 +206,6 @@ class NitSessionState extends _$NitSessionState {
   //         debugPrint('$error\n$stackTrace'),
   //   );
   // }
-
-  // requestNotificationsPermission() async {
-  //   state = state.copyWith(
-  //     notificationsEnabled: await _checkNotificationsStatus(
-  //       refreshFcmToken: true,
-  //       requestPermission: true,
-  //     ),
-  //   );
-  // }
-
-  // Future<bool> _checkNotificationsStatus({
-  //   required bool refreshFcmToken,
-  //   bool requestPermission = false,
-  // }) async {
-  //   debugPrint("Updating Notifications Token");
-  //   final settings = requestPermission
-  //       ? await FirebaseMessaging.instance.requestPermission()
-  //       : await FirebaseMessaging.instance.getNotificationSettings();
-
-  //   if ([
-  //     AuthorizationStatus.authorized,
-  //     AuthorizationStatus.provisional,
-  //   ].contains(
-  //     settings.authorizationStatus,
-  //   )) {
-  //     if (refreshFcmToken) _updateFcm();
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
-  // _updateFcm() async => await FirebaseMessaging.instance
-  //     .getToken(
-  //       vapidKey: vapidKey,
-  //     )
-  //     .then(
-  //       (token) async => token != null
-  //           ? await nitToolsCaller!.services.setFcmToken(fcmToken: token)
-  //           : {},
-  //     );
 
   Future<bool> signOut() async {
     return await _sessionManager.signOut();
