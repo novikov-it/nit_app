@@ -31,7 +31,7 @@ dependencies:
     # path: ../nit_serverpod/modules/serverpod_auth/serverpod_auth_phone_flutter
     git:
         url: git@github.com:novikov-it/nit_serverpod.git
-        ref: main
+        ref: slb
         path: modules/serverpod_auth/serverpod_auth_phone_flutter
 
   nit_tools_client:
