@@ -10,15 +10,13 @@ part 'phone_auth_state.freezed.dart';
 
 @riverpod
 class PhoneAuthState extends _$PhoneAuthState {
-  // Map<String, String>? _extraParams;
-
   @override
   PhoneAuthStateModel build() {
     return PhoneAuthStateModel(
       otpRequested: false,
-      // everythingAccepted: false,
       phoneController: TextEditingController(),
       otpController: TextEditingController(),
+      userNameController: TextEditingController(),
     );
   }
 
@@ -27,58 +25,80 @@ class PhoneAuthState extends _$PhoneAuthState {
         allowHyphen: false,
       );
 
-  // toggleAcceptance() {
-  //   state = state.copyWith(everythingAccepted: !state.everythingAccepted);
-  // }
-
-  requestOtp({
+  Future<bool> requestOtp({
     Map<String, String>? extraParams,
   }) async {
     debugPrint("requesting OTP");
-    // if (!state.everythingAccepted) {
-    //   ref.notifyUser(
-    //     NitNotification.error(
-    //       'Примите соглашение, чтобы продолжить',
-    //     ),
-    //   );
 
-    //   return;
-    // }
-
-    await PhoneAuthController(
+    return await PhoneAuthController(
             ref.read(nitSessionStateProvider).serverpodSessionManager!)
         .sendOTP(
       _phone,
       extraParams: extraParams,
     )
-        .then((response) {
-      if (response.success) {
-        debugPrint("OTP requested");
-        state = state.copyWith(
-          otpRequested: true,
-          otpRequestTimer: 60,
-        );
-      } else {}
-    });
+        .then(
+      (response) {
+        if (response.success) {
+          debugPrint("OTP requested");
+          state = state.copyWith(
+            otpRequested: true,
+            otpRequestTimer: 60,
+          );
+        }
+        return response.success;
+      },
+      onError: (_) => false,
+    );
   }
 
   Future<bool> verifyOtp() async {
-    // return null !=
+    String? userName = state.userNameController.text;
+
+    if (userName.isEmpty) {
+      userName = null;
+    }
+
     final res = await PhoneAuthController(
             ref.read(nitSessionStateProvider).serverpodSessionManager!)
         .verifyOTP(
       _phone,
       state.otpController.text,
+      userName,
     );
 
     debugPrint(res.toString());
 
     return res != null;
-    // .then((userInfo) {
-    //   if(userInfo == null) {
+  }
 
-    //   }
-    // });
+  Future<bool> resendOTP({
+    Map<String, String>? extraParams,
+  }) async {
+    debugPrint("requesting OTP");
+
+    return await PhoneAuthController(
+            ref.read(nitSessionStateProvider).serverpodSessionManager!)
+        .resendOTP(
+      _phone,
+      extraParams: extraParams,
+    )
+        .then(
+      (response) {
+        if (response.success) {
+          debugPrint("OTP requested");
+          state = state.copyWith(
+            otpRequested: true,
+            otpRequestTimer: 60,
+          );
+        }
+        return response.success;
+      },
+      onError: (_) => false,
+    );
+  }
+
+  Future<bool> isUserByIdentifierExists() async {
+    return await authModuleCaller!.user.isUserByIdentifierExists(_phone);
   }
 }
 
@@ -86,9 +106,9 @@ class PhoneAuthState extends _$PhoneAuthState {
 class PhoneAuthStateModel with _$PhoneAuthStateModel {
   const factory PhoneAuthStateModel({
     required bool otpRequested,
-    // required bool everythingAccepted,
     required TextEditingController phoneController,
     required TextEditingController otpController,
+    required TextEditingController userNameController,
     int? otpRequestTimer,
   }) = _PhoneAuthStateModel;
 }

@@ -16,11 +16,12 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$PhoneAuthStateModel {
-  bool get otpRequested =>
-      throw _privateConstructorUsedError; // required bool everythingAccepted,
+  bool get otpRequested => throw _privateConstructorUsedError;
   TextEditingController get phoneController =>
       throw _privateConstructorUsedError;
   TextEditingController get otpController => throw _privateConstructorUsedError;
+  TextEditingController get userNameController =>
+      throw _privateConstructorUsedError;
   int? get otpRequestTimer => throw _privateConstructorUsedError;
 
   /// Create a copy of PhoneAuthStateModel
@@ -40,6 +41,7 @@ abstract class $PhoneAuthStateModelCopyWith<$Res> {
       {bool otpRequested,
       TextEditingController phoneController,
       TextEditingController otpController,
+      TextEditingController userNameController,
       int? otpRequestTimer});
 }
 
@@ -61,6 +63,7 @@ class _$PhoneAuthStateModelCopyWithImpl<$Res, $Val extends PhoneAuthStateModel>
     Object? otpRequested = null,
     Object? phoneController = null,
     Object? otpController = null,
+    Object? userNameController = null,
     Object? otpRequestTimer = freezed,
   }) {
     return _then(_value.copyWith(
@@ -75,6 +78,10 @@ class _$PhoneAuthStateModelCopyWithImpl<$Res, $Val extends PhoneAuthStateModel>
       otpController: null == otpController
           ? _value.otpController
           : otpController // ignore: cast_nullable_to_non_nullable
+              as TextEditingController,
+      userNameController: null == userNameController
+          ? _value.userNameController
+          : userNameController // ignore: cast_nullable_to_non_nullable
               as TextEditingController,
       otpRequestTimer: freezed == otpRequestTimer
           ? _value.otpRequestTimer
@@ -96,6 +103,7 @@ abstract class _$$PhoneAuthStateModelImplCopyWith<$Res>
       {bool otpRequested,
       TextEditingController phoneController,
       TextEditingController otpController,
+      TextEditingController userNameController,
       int? otpRequestTimer});
 }
 
@@ -115,6 +123,7 @@ class __$$PhoneAuthStateModelImplCopyWithImpl<$Res>
     Object? otpRequested = null,
     Object? phoneController = null,
     Object? otpController = null,
+    Object? userNameController = null,
     Object? otpRequestTimer = freezed,
   }) {
     return _then(_$PhoneAuthStateModelImpl(
@@ -129,6 +138,10 @@ class __$$PhoneAuthStateModelImplCopyWithImpl<$Res>
       otpController: null == otpController
           ? _value.otpController
           : otpController // ignore: cast_nullable_to_non_nullable
+              as TextEditingController,
+      userNameController: null == userNameController
+          ? _value.userNameController
+          : userNameController // ignore: cast_nullable_to_non_nullable
               as TextEditingController,
       otpRequestTimer: freezed == otpRequestTimer
           ? _value.otpRequestTimer
@@ -145,21 +158,23 @@ class _$PhoneAuthStateModelImpl implements _PhoneAuthStateModel {
       {required this.otpRequested,
       required this.phoneController,
       required this.otpController,
+      required this.userNameController,
       this.otpRequestTimer});
 
   @override
   final bool otpRequested;
-// required bool everythingAccepted,
   @override
   final TextEditingController phoneController;
   @override
   final TextEditingController otpController;
   @override
+  final TextEditingController userNameController;
+  @override
   final int? otpRequestTimer;
 
   @override
   String toString() {
-    return 'PhoneAuthStateModel(otpRequested: $otpRequested, phoneController: $phoneController, otpController: $otpController, otpRequestTimer: $otpRequestTimer)';
+    return 'PhoneAuthStateModel(otpRequested: $otpRequested, phoneController: $phoneController, otpController: $otpController, userNameController: $userNameController, otpRequestTimer: $otpRequestTimer)';
   }
 
   @override
@@ -173,13 +188,15 @@ class _$PhoneAuthStateModelImpl implements _PhoneAuthStateModel {
                 other.phoneController == phoneController) &&
             (identical(other.otpController, otpController) ||
                 other.otpController == otpController) &&
+            (identical(other.userNameController, userNameController) ||
+                other.userNameController == userNameController) &&
             (identical(other.otpRequestTimer, otpRequestTimer) ||
                 other.otpRequestTimer == otpRequestTimer));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, otpRequested, phoneController,
-      otpController, otpRequestTimer);
+      otpController, userNameController, otpRequestTimer);
 
   /// Create a copy of PhoneAuthStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -196,14 +213,17 @@ abstract class _PhoneAuthStateModel implements PhoneAuthStateModel {
       {required final bool otpRequested,
       required final TextEditingController phoneController,
       required final TextEditingController otpController,
+      required final TextEditingController userNameController,
       final int? otpRequestTimer}) = _$PhoneAuthStateModelImpl;
 
   @override
-  bool get otpRequested; // required bool everythingAccepted,
+  bool get otpRequested;
   @override
   TextEditingController get phoneController;
   @override
   TextEditingController get otpController;
+  @override
+  TextEditingController get userNameController;
   @override
   int? get otpRequestTimer;
 

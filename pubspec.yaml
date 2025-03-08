@@ -31,7 +31,7 @@ dependencies:
     # path: ../nit_serverpod/modules/serverpod_auth/serverpod_auth_phone_flutter
     git:
         url: git@github.com:novikov-it/nit_serverpod.git
-        ref: main
+        ref: slb
         path: modules/serverpod_auth/serverpod_auth_phone_flutter
 
   nit_tools_client:
@@ -108,7 +108,7 @@ dependency_overrides:
     git:
       url: git@github.com:novikov-it/nit_serverpod.git
       path: modules/serverpod_auth/serverpod_auth_client
-      ref: main
+      ref: slb
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
