@@ -96,6 +96,10 @@ class PhoneAuthState extends _$PhoneAuthState {
       onError: (_) => false,
     );
   }
+
+  Future<bool> isUserByIdentifierExists() async {
+    return await authModuleCaller!.user.isUserByIdentifierExists(_phone);
+  }
 }
 
 @freezed
