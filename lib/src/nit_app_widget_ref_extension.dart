@@ -34,7 +34,20 @@ extension NitAppWidgetRefExtension on WidgetRef {
     if (userLoggedIn && thenAction != null) thenAction();
   }
 
-  Future<String?> uploadFileToServer({
+  static String Function(XFile file) defaultUploadNameTemplate = (XFile file) =>
+      '${DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())}-${file.name}';
+
+  Future<String> uploadXFileToServer({
+    required XFile xFile,
+  }) async =>
+      uploadBytesToServer(
+        bytes: await xFile.readAsBytes(),
+        path: defaultUploadNameTemplate(
+          xFile,
+        ),
+      );
+
+  Future<String> uploadBytesToServer({
     required Uint8List bytes,
     required String path,
   }) async {
@@ -46,7 +59,7 @@ extension NitAppWidgetRefExtension on WidgetRef {
     );
 
     if (uploadDescription == null) {
-      return null;
+      throw Exception("Не удалось инициализировать загрузку файла");
     }
     debugPrint(uploadDescription);
     var uploader = FileUploader(uploadDescription);
@@ -55,25 +68,27 @@ extension NitAppWidgetRefExtension on WidgetRef {
       path: path,
     );
 
-    debugPrint('$publicUrl');
+    if (publicUrl == null) {
+      throw Exception("Не удалось загрузить файл");
+    }
+
+    debugPrint(publicUrl);
 
     return publicUrl;
   }
 
-  Future<String?> pickImage() async {
-    return ImagePicker().pickImage(source: ImageSource.gallery).then(
-      (image) async {
-        if (image == null) {
-          debugPrint('no image');
-          return null;
-        }
+  Future<String?> pickAndUploadImage({
+    ImageSource imageSource = ImageSource.gallery,
+  }) async {
+    final file = await ImagePicker().pickImage(source: imageSource);
 
-        return uploadFileToServer(
-          bytes: await image.readAsBytes(),
-          path:
-              '${DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())}-${image.name}',
-        );
-      },
+    if (file == null) {
+      debugPrint('no image');
+      return null;
+    }
+
+    return await uploadXFileToServer(
+      xFile: file,
     );
   }
 }

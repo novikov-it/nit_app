@@ -38,7 +38,7 @@ class NitMediaPickerField extends NitFormField<List<String>> {
               child: CarouselView(
                 itemExtent: 150,
                 onTap: (index) async {
-                  final publicUrl = await ref.pickImage();
+                  final publicUrl = await ref.pickAndUploadImage();
 
                   final newValue = index == fieldState.value!.length
                       ? [

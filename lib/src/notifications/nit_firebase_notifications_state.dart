@@ -44,31 +44,30 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
   }
 
   Future<bool> updateFcm() async {
-    return await future.then(
-      (currentState) async {
-        if (currentState.notificationsAllowed) {
-          try {
-            await FirebaseMessaging.instance
-                .getToken(
-                  vapidKey: vapidKey,
-                )
-                .then(
-                  (token) async => token != null
-                      ? await nitToolsCaller!.services
-                          .setFcmToken(fcmToken: token)
-                      : {},
-                );
-            return true;
-          } catch (e) {
-            debugPrint(e.toString());
-            ref.notifyUser(NitNotification.error(e.toString()));
-            return false;
-          }
-        } else {
-          return false;
-        }
-      },
-    );
+    // return await future.then(
+    //   (currentState) async {
+    //     if (currentState.notificationsAllowed) {
+    try {
+      await FirebaseMessaging.instance
+          .getToken(
+            vapidKey: vapidKey,
+          )
+          .then(
+            (token) async => token != null
+                ? await nitToolsCaller!.services.setFcmToken(fcmToken: token)
+                : {},
+          );
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      ref.notifyUser(NitNotification.error(e.toString()));
+      return false;
+    }
+    // } else {
+    //   return false;
+    // }
+    //   },
+    // );
   }
 
   Future<NitFirebaseNotificationsStateModel> _checkNotificationsStatus({
@@ -78,6 +77,10 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
     final settings = requestPermission
         ? await FirebaseMessaging.instance.requestPermission()
         : await FirebaseMessaging.instance.getNotificationSettings();
+
+    if (requestPermission &&
+        [AuthorizationStatus.authorized, AuthorizationStatus.provisional]
+            .contains(settings.authorizationStatus)) updateFcm();
 
     return switch (settings.authorizationStatus) {
       AuthorizationStatus.authorized ||

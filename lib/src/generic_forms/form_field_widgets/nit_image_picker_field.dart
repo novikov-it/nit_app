@@ -37,7 +37,7 @@ class NitImagePickerField extends NitFormField<String> {
               ),
             InkWell(
               onTap: () async {
-                final publicUrl = await ref.pickImage();
+                final publicUrl = await ref.pickAndUploadImage();
 
                 if (context.mounted) {
                   onChangedAction(context)(publicUrl);
