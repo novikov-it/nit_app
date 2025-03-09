@@ -74,8 +74,9 @@ class NitChatViewState extends _$NitChatViewState {
           // if (state.viewState != ChatViewState.loading) {
           state.controller.addMessage(update.toChatViewMessage);
 
-          if (state.viewState == ChatViewState.noData)
+          if (state.viewState == ChatViewState.noData) {
             state = state.copyWith(viewState: ChatViewState.hasMessages);
+          }
           // }
         }
 
@@ -83,7 +84,7 @@ class NitChatViewState extends _$NitChatViewState {
       },
       onError: (Object error, StackTrace stackTrace) =>
           debugPrint('$error\n$stackTrace'),
-      onDone: () => print("Chat Channel $chatId subscription done"),
+      onDone: () => debugPrint("Chat Channel $chatId subscription done"),
     );
 
     // final config = EntityListConfig(
