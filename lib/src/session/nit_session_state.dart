@@ -1,17 +1,15 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_tools_client/nit_tools_client.dart' as nit_tools;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/module.dart' as auth;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart';
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 
 part 'nit_session_state.freezed.dart';
 part 'nit_session_state.g.dart';
-
-late final auth.Caller? authModuleCaller;
 
 @freezed
 class NitSessionStateModel with _$NitSessionStateModel {
@@ -29,106 +27,72 @@ class NitSessionState extends _$NitSessionState {
   StreamingConnectionHandler? _connectionHandler;
   late final SessionManager _sessionManager;
 
-  // StreamSubscription<SerializableModel>? _updatesSubscription;
-
   @override
   NitSessionStateModel build() {
-    // ref.onDispose(
-    //   () async {
-    //     print("Cancelling subscription on dispose");
-    //     await _updatesSubscription?.cancel();
-    //   },
-    // );
-
     return NitSessionStateModel(
       serverpodSessionManager: null,
-      signedInUserId: null, // _sessionManager?.signedInUser,
+      signedInUserId: null,
       scopeNames: [],
       websocketStatus: StreamingConnectionStatus.disconnected,
       // notificationsEnabled: false,
     );
   }
 
-  // May be useful for debug
-  // toggleSocket() {
-  //   if (_connectionHandler?.status.status ==
-  //       StreamingConnectionStatus.disconnected) {
-  //     _connectionHandler!.connect();
-  //   }
-
-  //   if (_connectionHandler?.status.status ==
-  //       StreamingConnectionStatus.connected) {
-  //     _connectionHandler!.close();
-  //   }
-  // }
-
-  // int? _previousServerpodUserId;
-  // Future<int?> get _getUserId async {
-  //   final serverpodUserId = _sessionManager.signedInUser?.id;
-  //   if (serverpodUserId == _previousServerpodUserId) {
-  //     return state.signedInUserId;
-  //   }
-
-  //   _previousServerpodUserId = serverpodUserId;
-
-  //   if (serverpodUserId == null) return null;
-
-  //   return await nitToolsCaller!.crud
-  //       .getOneCustom(
-  //         className: 'User',
-  //         filters: [
-  //           NitBackendFilter(
-  //               fieldName: 'userInfoId', equalsTo: serverpodUserId.toString())
-  //         ],
-  //       )
-  //       .then((response) => ref.processApiResponse<int>(response))
-  //       .then((res) => res);
-  // }
-
   Future<bool> init({
-    required ServerpodClientShared? client,
-    // required bool enableAppNotifications,
+    // required ServerpodClientShared? client,
+    required auth.Caller authModuleCaller,
   }) async {
-    if (client != null) {
-      _connectionHandler = StreamingConnectionHandler(
-        client: client,
-        retryEverySeconds: 1,
-        listener: (connectionState) async {
-          debugPrint('listener called ${connectionState.status}');
-          _refresh();
-        },
-      );
+    // if (client != null) {
+    //   _connectionHandler = StreamingConnectionHandler(
+    //     client: client,
+    //     retryEverySeconds: 1,
+    //     listener: (connectionState) async {
+    //       debugPrint('listener called ${connectionState.status}');
+    //       _refresh();
+    //     },
+    //   );
 
-      _connectionHandler!.connect();
-    }
+    //   _connectionHandler!.connect();
+    // }
 
-    if (authModuleCaller != null) {
-      _sessionManager = SessionManager(
-        caller: authModuleCaller!,
-      );
+    // if (authModuleCaller != null) {
+    _sessionManager = SessionManager(
+      caller: authModuleCaller,
+    );
 
-      if (await _sessionManager.initialize()) {
-        // if (nitToolsCaller != null) {
-        //   await _openUpdatesStream();
-        // }
+    if (!await _sessionManager.initialize()) return false;
 
-        // if (_sessionManager.isSignedIn) {
-        // _updateFcm();
-        // }
+    if (_sessionManager.signedInUser != null) await _updateRepository();
 
-        state = state.copyWith(
-          serverpodSessionManager: _sessionManager,
-          signedInUserId: _sessionManager.signedInUser?.id,
-          scopeNames: _sessionManager.signedInUser?.scopeNames ?? [],
-        );
+    state = state.copyWith(
+      serverpodSessionManager: _sessionManager,
+      signedInUserId: _sessionManager.signedInUser?.id,
+      scopeNames: _sessionManager.signedInUser?.scopeNames ?? [],
+    );
 
-        _sessionManager.addListener(_refresh);
+    _sessionManager.addListener(_refresh);
 
-        return true;
-      }
-      return false;
-    }
     return true;
+
+    // return true;
+  }
+
+  _updateRepository() async {
+    await nitToolsCaller!.nitCrud.getOneCustom(
+      className: 'UserProfile',
+      filters: [
+        NitBackendFilter(
+          fieldName: 'userId',
+          equalsTo: _sessionManager.signedInUser!.id!.toString(),
+        )
+      ],
+    ).then(
+      (response) => ref.processApiResponse<int>(response),
+    );
+    // ref.manualUpdate<UserInfo>(
+    //   _sessionManager.signedInUser!.id!,
+    //   _sessionManager.signedInUser!,
+    // );
   }
 
   _refresh() async {
@@ -149,6 +113,8 @@ class NitSessionState extends _$NitSessionState {
       //   await _openUpdatesStream();
       // }
       // _updateFcm();
+
+      if (_sessionManager.signedInUser != null) await _updateRepository();
 
       state = NitSessionStateModel(
         serverpodSessionManager: _sessionManager,

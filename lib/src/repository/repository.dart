@@ -1,25 +1,20 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nit_app/src/repository/default_models_repository.dart';
+import 'package:nit_app/nit_app.dart';
 import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
-import 'package:nit_tools_client/nit_tools_client.dart';
-
-import 'entity_list_config.dart';
-import 'entity_manager_state.dart';
-import 'single_item_custom_provider.dart';
-import 'single_item_custom_provider_config.dart';
-import 'single_item_provider.dart';
 
 final Map<String, StateProviderFamily<SerializableModel?, int>> _repository =
     {};
 final Map<String, List<Function(int, SerializableModel)>> _updateListeners = {};
 
 StateProviderFamily<SerializableModel?, int> initRepository(String className) {
-  _repository[className] =
+  debugPrint("Initializing repo for $className");
+  return _repository[className] =
       StateProvider.family<SerializableModel?, int>((ref, id) => null);
-
-  return _repository[className] as StateProviderFamily<SerializableModel?, int>;
 }
+
+//   return _repository[className] as StateProviderFamily<SerializableModel?, int>;
+// }
 
 StateProviderFamily<SerializableModel?, int> modelProvider(String className) {
   final rep = _repository[className];
@@ -34,6 +29,13 @@ _filter<T>(T? model, bool Function(T model) filter) =>
 
 extension WidgetRefRepositoryExtension on WidgetRef {
   T defaultModel<T>() => DefaultModelsRepository.get<T>();
+
+  T? watchModelCustom<T extends SerializableModel>(
+    int foreignKey,
+    RepositoryDescriptor descriptor,
+  ) =>
+      watch(RepositoryDescriptor.customModelProvider(descriptor)(foreignKey))
+          as T?;
 
   T? watchModel<T extends SerializableModel>(int id) => id ==
           DefaultModelsRepository.mockModelId
@@ -125,20 +127,37 @@ extension WidgetRefRepositoryExtension on WidgetRef {
     return response.value;
   }
 
-  _updateRepository(List<ObjectWrapper> newModels) {
-    for (var e in newModels) {
-      if (_repository[e.nitMappingClassname] == null) {
-        debugPrint("Initializing repo for ${e.nitMappingClassname}");
-        initRepository(e.nitMappingClassname);
+  _updateRepository(List<ObjectWrapper> wrappedModels) {
+    for (var wrapper in wrappedModels) {
+      if (_repository[wrapper.nitMappingClassname] == null) {
+        initRepository(wrapper.nitMappingClassname);
       }
-      read(_repository[e.nitMappingClassname]!(e.modelId!).notifier).state =
-          e.model;
+      read(_repository[wrapper.nitMappingClassname]!(wrapper.modelId!).notifier)
+          .state = wrapper.model;
+
+      for (var descriptor in RepositoryDescriptor.getCustomDescriptors(
+        wrapper.nitMappingClassname,
+      )) {
+        if (wrapper.foreignKeys.containsKey(descriptor.fieldName)) {
+          read(RepositoryDescriptor.getCustomRepository(descriptor)(
+                      wrapper.foreignKeys[descriptor.fieldName]!)
+                  .notifier)
+              .state = wrapper.model;
+        }
+      }
     }
   }
 }
 
 extension RefRepositoryExtension on Ref {
   T defaultModel<T>() => DefaultModelsRepository.get<T>();
+
+  T? watchModelCustom<T extends SerializableModel>(
+    int foreignKey,
+    RepositoryDescriptor descriptor,
+  ) =>
+      watch(RepositoryDescriptor.customModelProvider(descriptor)(foreignKey))
+          as T?;
 
   T? watchModel<T extends SerializableModel>(int id) =>
       id == DefaultModelsRepository.mockModelId
@@ -213,14 +232,36 @@ extension RefRepositoryExtension on Ref {
         );
   }
 
-  _updateRepository(List<ObjectWrapper> newModels) {
-    for (var e in newModels) {
-      if (_repository[e.nitMappingClassname] == null) {
-        debugPrint("Initializing repo for ${e.nitMappingClassname}");
-        initRepository(e.nitMappingClassname);
+  // _updateRepository(List<ObjectWrapper> newModels) {
+  //   for (var e in newModels) {
+  //     if (_repository[e.nitMappingClassname] == null) {
+  //       debugPrint("Initializing repo for ${e.nitMappingClassname}");
+  //       initRepository(e.nitMappingClassname);
+  //     }
+  //     read(_repository[e.nitMappingClassname]!(e.modelId!).notifier).state =
+  //         e.model;
+  //   }
+
+  // }
+
+  _updateRepository(List<ObjectWrapper> wrappedModels) {
+    for (var wrapper in wrappedModels) {
+      if (_repository[wrapper.nitMappingClassname] == null) {
+        initRepository(wrapper.nitMappingClassname);
       }
-      read(_repository[e.nitMappingClassname]!(e.modelId!).notifier).state =
-          e.model;
+      read(_repository[wrapper.nitMappingClassname]!(wrapper.modelId!).notifier)
+          .state = wrapper.model;
+
+      for (var descriptor in RepositoryDescriptor.getCustomDescriptors(
+        wrapper.nitMappingClassname,
+      )) {
+        if (wrapper.foreignKeys.containsKey(descriptor.fieldName)) {
+          read(RepositoryDescriptor.getCustomRepository(descriptor)(
+                      wrapper.foreignKeys[descriptor.fieldName]!)
+                  .notifier)
+              .state = wrapper.model;
+        }
+      }
     }
   }
 

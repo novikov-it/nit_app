@@ -156,9 +156,14 @@ class NitApp extends HookConsumerWidget {
                 final authCaller = client!.moduleLookup.values
                     .firstWhereOrNull((e) => e is auth.Caller);
 
-                if (authCaller != null) {
-                  authModuleCaller = authCaller as auth.Caller;
+                if (authCaller == null) {
+                  throw Exception(
+                      'Auth module not enabled, can not init session. Add serverpod_auth module to the client');
                 }
+
+                // if (authCaller != null) {
+                //   authModuleCaller = authCaller as auth.Caller;
+                // }
 
                 // authModuleCaller = client!.moduleLookup.values
                 //     .firstWhereOrNull((e) => e is auth.Caller) as auth.Caller;
@@ -174,12 +179,10 @@ class NitApp extends HookConsumerWidget {
 
                 NitToolsClient.protocol = client!.serializationManager;
 
-                return (authModuleCaller != null)
-                    ? ref.read(nitSessionStateProvider.notifier).init(
-                          client: client,
-                          // enableAppNotifications: true,
-                        )
-                    : true;
+                return ref.read(nitSessionStateProvider.notifier).init(
+                      authModuleCaller: authCaller as auth.Caller,
+                      // enableAppNotifications: true,
+                    );
               },
             if (nitAuthConfig != null)
               () async {

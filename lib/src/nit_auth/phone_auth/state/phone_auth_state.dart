@@ -25,6 +25,11 @@ class PhoneAuthState extends _$PhoneAuthState {
         allowHyphen: false,
       );
 
+  String get _otp => toNumericString(
+        state.otpController.text,
+        allowHyphen: false,
+      );
+
   Future<bool> requestOtp({
     Map<String, String>? extraParams,
   }) async {
@@ -60,7 +65,7 @@ class PhoneAuthState extends _$PhoneAuthState {
             ref.read(nitSessionStateProvider).serverpodSessionManager!)
         .verifyOTP(
       _phone,
-      state.otpController.text,
+      _otp,
       userName,
     );
 
@@ -91,9 +96,9 @@ class PhoneAuthState extends _$PhoneAuthState {
     return response.success;
   }
 
-  Future<bool> isUserByIdentifierExists() async {
-    return await authModuleCaller!.user.isUserByIdentifierExists(_phone);
-  }
+  // Future<bool> isUserByIdentifierExists() async {
+  //   return await authModuleCaller!.user.isUserByIdentifierExists(_phone);
+  // }
 }
 
 @freezed

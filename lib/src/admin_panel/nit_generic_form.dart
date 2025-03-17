@@ -76,7 +76,7 @@ class NitFormState<StateEntity extends SerializableModel,
 
     // if (widget.modelId != null) {
     model = widget.modelId != null
-        ? ref.readModel(
+        ? ref.readModel<StateEntity>(
             widget.modelId!,
           )
         : null;
@@ -113,23 +113,23 @@ class NitFormState<StateEntity extends SerializableModel,
         child: NitDialogLayout(
           title: widget.title,
           buttons: [
-            if (widget.modelId != null &&
-                widget.entityManager != null &&
-                widget.allowDelete)
-              IconButton(
-                onPressed: () => widget.entityManager!
-                    .delete(widget.modelId!)
-                    .then(context.popOnTrue),
-                icon: const Icon(Icons.delete_forever),
-              ),
-            ElevatedButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text(
-                'Сбросить',
-              ),
-            ),
+            // if (widget.modelId != null &&
+            //     widget.entityManager != null &&
+            //     widget.allowDelete)
+            //   IconButton(
+            //     onPressed: () => widget.entityManager!
+            //         .delete(widget.modelId!)
+            //         .then(context.popOnTrue),
+            //     icon: const Icon(Icons.delete_forever),
+            //   ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     context.pop();
+            //   },
+            //   child: const Text(
+            //     'Сбросить',
+            //   ),
+            // ),
             ElevatedButton(
               onPressed: () async {
                 if (_formKey.currentState?.validate() != false) {
