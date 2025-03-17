@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nit_app/src/repository/repository.dart';
 import 'package:nit_ui_kit/nit_ui_kit.dart';
 // import 'package:nit_app/nit_app.dart';
@@ -28,7 +27,7 @@ class NitGenericForm<Entity extends SerializableModel,
   final String title;
   final int? modelId;
   final List<FormDescriptor> fields;
-  final Function(Entity? model)? customOnSaveAction;
+  final Function(int? modelId)? customOnSaveAction;
   final EntityManagerInterface? entityManager;
   final bool allowDelete;
 
@@ -150,7 +149,9 @@ class NitFormState<StateEntity extends SerializableModel,
                             ? widget.entityManager!
                                 .save(updatedModel as StateEntity)
                             : ref.saveModel(updatedModel))
-                        .then(context.popIfNotNull);
+                        .then(widget.customOnSaveAction != null
+                            ? widget.customOnSaveAction!
+                            : context.popIfNotNull);
                   }
                 }
               },
