@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nit_app/src/repository/repository.dart';
 import 'package:nit_ui_kit/nit_ui_kit.dart';
 // import 'package:nit_app/nit_app.dart';
@@ -20,6 +21,7 @@ class NitGenericForm<Entity extends SerializableModel,
     this.modelId,
     // this.initialModel,
     this.customOnSaveAction,
+    this.customLayout,
     this.allowDelete = true,
   });
 
@@ -28,6 +30,10 @@ class NitGenericForm<Entity extends SerializableModel,
   final int? modelId;
   final List<FormDescriptor> fields;
   final Function(int? modelId)? customOnSaveAction;
+  final Widget Function(
+    Function() submitAction,
+    Widget fieldsListView,
+  )? customLayout;
   final EntityManagerInterface? entityManager;
   final bool allowDelete;
 
@@ -101,76 +107,75 @@ class NitFormState<StateEntity extends SerializableModel,
 
   @override
   Widget build(BuildContext context) {
-    // final model = widget.modelId != null
-    //     ? ref.read(modelProvider<Entity>()(widget.modelId!))
-    //     : null;
+    submitAction() async {
+      if (_formKey.currentState?.validate() != false) {
+        final updatedModel = widget.fields.first.save(
+          model,
+          values,
+        );
+
+        if (updatedModel != null) {
+          await (widget.entityManager != null
+                  ? widget.entityManager!.save(updatedModel as StateEntity)
+                  : ref.saveModel(updatedModel))
+              .then(
+            widget.customOnSaveAction != null
+                ? widget.customOnSaveAction!
+                : context.popIfNotNull,
+          );
+        }
+      }
+    }
+
+    final fieldsListView = ListView.separated(
+      shrinkWrap: true,
+      itemCount: visibleFields.length,
+      itemBuilder: (context, index) => visibleFields[index]
+          .inputDescriptor
+          .prepareWidget(visibleFields[index]),
+      // .prepareField()
+      // .prepareFormWidget(ref, widget.model),
+      separatorBuilder: (context, index) => const Gap(8),
+    );
 
     return _NitFormScope(
       formState: this,
       child: Form(
         key: _formKey,
-        child: NitDialogLayout(
-          title: widget.title,
-          buttons: [
-            // if (widget.modelId != null &&
-            //     widget.entityManager != null &&
-            //     widget.allowDelete)
-            //   IconButton(
-            //     onPressed: () => widget.entityManager!
-            //         .delete(widget.modelId!)
-            //         .then(context.popOnTrue),
-            //     icon: const Icon(Icons.delete_forever),
-            //   ),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     context.pop();
-            //   },
-            //   child: const Text(
-            //     'Сбросить',
-            //   ),
-            // ),
-            ElevatedButton(
-              onPressed: () async {
-                if (_formKey.currentState?.validate() != false) {
-                  // Вызывает срабатывание
-                  // _formKey.currentState?.save();
-
-                  // final updatedModel = ref
-                  //     .read(nitFormStateProvider(_formKey).notifier)
-                  //     .prepareUpdatedModel();
-
-                  final updatedModel = widget.fields.first.save(
-                    model,
-                    values,
-                  );
-
-                  if (updatedModel != null) {
-                    await (widget.entityManager != null
-                            ? widget.entityManager!
-                                .save(updatedModel as StateEntity)
-                            : ref.saveModel(updatedModel))
-                        .then(widget.customOnSaveAction != null
-                            ? widget.customOnSaveAction!
-                            : context.popIfNotNull);
-                  }
-                }
-              },
-              child: const Text(
-                'Сохранить',
+        child: widget.customLayout != null
+            ? widget.customLayout!(
+                submitAction,
+                fieldsListView,
+              )
+            : NitDialogLayout(
+                title: widget.title,
+                buttons: [
+                  if (widget.modelId != null &&
+                      widget.entityManager != null &&
+                      widget.allowDelete)
+                    IconButton(
+                      onPressed: () => widget.entityManager!
+                          .delete(widget.modelId!)
+                          .then(context.popOnTrue),
+                      icon: const Icon(Icons.delete_forever),
+                    ),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.pop();
+                    },
+                    child: const Text(
+                      'Сбросить',
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: submitAction,
+                    child: const Text(
+                      'Сохранить',
+                    ),
+                  ),
+                ],
+                child: fieldsListView,
               ),
-            ),
-          ],
-          child: ListView.separated(
-            shrinkWrap: true,
-            itemCount: visibleFields.length,
-            itemBuilder: (context, index) => visibleFields[index]
-                .inputDescriptor
-                .prepareWidget(visibleFields[index]),
-            // .prepareField()
-            // .prepareFormWidget(ref, widget.model),
-            separatorBuilder: (context, index) => const Gap(8),
-          ),
-        ),
       ),
     );
   }
