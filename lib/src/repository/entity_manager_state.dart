@@ -58,7 +58,7 @@ class EntityManagerState<Entity extends SerializableModel>
     return result;
   }
 
-  void _updatesListener(int id, SerializableModel updatedEntity) async {
+  void _updatesListener(int id) async {
     return await future.then(
       (value) async {
         state = AsyncValue.data(

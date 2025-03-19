@@ -24,6 +24,21 @@ class NitDropdownFormField<ValueType> extends NitFormField<ValueType> {
   Widget build(BuildContext context, WidgetRef ref) {
     return DropdownButtonFormField<ValueType>(
       value: initialValue(context),
+      validator: (inputValue) {
+        if (inputDescriptor.isRequired &&
+            (inputValue == null ||
+                (inputValue is String && inputValue.isEmpty))) {
+          return "Обязательное поле";
+        }
+
+        // for (var validator in inputDescriptor.validators ?? <Validator>[]) {
+        //   final t = validator.validate(_fromString(inputValue));
+
+        //   if (t != null) return t;
+        // }
+
+        return null;
+      },
       items: [
         DropdownMenuItem<ValueType>(
           value: null,

@@ -5,12 +5,26 @@ import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 
 final Map<String, StateProviderFamily<SerializableModel?, int>> _repository =
     {};
-final Map<String, List<Function(int, SerializableModel)>> _updateListeners = {};
+final Map<String, List<Function(int)>> _updateListeners = {};
 
 StateProviderFamily<SerializableModel?, int> initRepository(String className) {
   debugPrint("Initializing repo for $className");
   return _repository[className] =
       StateProvider.family<SerializableModel?, int>((ref, id) => null);
+}
+
+_updateListeningStates({
+  required String className,
+  required int modelId,
+}) {
+  debugPrint(
+    'Updating Listening State. Active listeners: ${_updateListeners.keys}. Updated id - $modelId for class $className',
+  );
+  for (var listener in _updateListeners[className] ?? []) {
+    listener(
+      modelId,
+    );
+  }
 }
 
 //   return _repository[className] as StateProviderFamily<SerializableModel?, int>;
@@ -102,13 +116,21 @@ extension WidgetRefRepositoryExtension on WidgetRef {
       );
 
   Future<int?> saveModel(SerializableModel model) async {
-    return await nitToolsCaller!.nitCrud
-        .saveModel(
-          wrappedModel: ObjectWrapper.wrap(model: model),
-        )
-        .then(
-          (response) => _processApiResponse<int>(response),
-        );
+    final wrapper = ObjectWrapper.wrap(model: model);
+    final response = await nitToolsCaller!.nitCrud.saveModel(
+      wrappedModel: wrapper,
+    );
+
+    final id = _processApiResponse<int>(response);
+
+    if (id != null) {
+      _updateListeningStates(
+        className: wrapper.nitMappingClassname,
+        modelId: id,
+      );
+    }
+
+    return id;
   }
 
   K? _processApiResponse<K>(ApiResponse<K> response) {
@@ -212,13 +234,21 @@ extension RefRepositoryExtension on Ref {
       );
 
   Future<int?> saveModel(SerializableModel model) async {
-    return await nitToolsCaller!.nitCrud
-        .saveModel(
-          wrappedModel: ObjectWrapper.wrap(model: model),
-        )
-        .then(
-          (response) => processApiResponse<int>(response),
-        );
+    final wrapper = ObjectWrapper.wrap(model: model);
+    final response = await nitToolsCaller!.nitCrud.saveModel(
+      wrappedModel: wrapper,
+    );
+
+    final id = processApiResponse<int>(response);
+
+    if (id != null) {
+      _updateListeningStates(
+        className: wrapper.nitMappingClassname,
+        modelId: id,
+      );
+    }
+
+    return id;
   }
 
   Future<List<int>?> saveModels(List<SerializableModel> models) async {
@@ -297,17 +327,16 @@ extension RefRepositoryExtension on Ref {
 
   updateFromStream(ObjectWrapper update) {
     _updateRepository([update]);
-    print(update);
-    print(_updateListeners.keys);
-    for (var listener in _updateListeners[update.nitMappingClassname] ?? []) {
-      listener(update.modelId, update.model);
-    }
+
+    _updateListeningStates(
+      className: update.nitMappingClassname,
+      modelId: update.modelId!,
+    );
   }
 
   addUpdatesListener<T extends SerializableModel>(
       Function(
         int id,
-        SerializableModel entity,
       ) listener) {
     // TODO: Изменить, toString() не работает на Web release из-за minification
     if (_updateListeners[T.toString()] == null) {
@@ -319,7 +348,6 @@ extension RefRepositoryExtension on Ref {
   removeUpdatesListener<T>(
       Function(
         int id,
-        SerializableModel entity,
       ) listener) {
     // TODO: Изменить, toString() не работает на Web release из-за minification
     if (_updateListeners[T.toString()] != null) {
