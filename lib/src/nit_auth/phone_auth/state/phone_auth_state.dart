@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/src/session/nit_session_state.dart';
+import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_phone_flutter/serverpod_auth_phone_flutter.dart';
 
@@ -66,7 +67,6 @@ class PhoneAuthState extends _$PhoneAuthState {
         .verifyOTP(
       _phone,
       _otp,
-      userName,
     );
 
     debugPrint(res.toString());
@@ -86,7 +86,14 @@ class PhoneAuthState extends _$PhoneAuthState {
       extraParams: extraParams,
     );
 
-    if (response.success) {
+    // TODO: провести рефакторинг модуля в серверподе и это тоже поправить
+    if (!response.success) {
+      ref.notifyUser(
+        NitNotification.error(
+          response.failText ?? 'Не удалось отправить код подтверждения',
+        ),
+      );
+    } else {
       debugPrint("OTP requested");
       state = state.copyWith(
         otpRequested: true,

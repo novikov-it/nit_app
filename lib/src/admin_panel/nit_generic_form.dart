@@ -23,6 +23,7 @@ class NitGenericForm<Entity extends SerializableModel,
     this.customOnSaveAction,
     this.customLayout,
     this.allowDelete = true,
+    this.defaultValues,
   });
 
   // final NitGenericFormEnum
@@ -36,6 +37,7 @@ class NitGenericForm<Entity extends SerializableModel,
   )? customLayout;
   final EntityManagerInterface? entityManager;
   final bool allowDelete;
+  final Map<FormDescriptor, dynamic>? defaultValues;
 
   static NitFormState? maybeOf(BuildContext context) {
     final _NitFormScope? scope =
@@ -90,9 +92,10 @@ class NitFormState<StateEntity extends SerializableModel,
         (e) => MapEntry(
           e.name,
           e.initialValue(
-            ref,
-            model,
-          ),
+                ref,
+                model,
+              ) ??
+              widget.defaultValues?[e],
         ),
       ),
     );

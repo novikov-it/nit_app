@@ -21,6 +21,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
     // this.detailsRouteName,
     // this.detailsRoutePathParameter,
     this.customBackendConfig,
+    this.defaultValues,
     this.allowDelete = true,
   });
 
@@ -34,6 +35,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
   // final String? detailsRouteName;
   // final String? detailsRoutePathParameter;
   final EntityListConfig? customBackendConfig;
+  final Map<FormDescriptor, dynamic>? defaultValues;
   final bool allowDelete;
 
   Widget _addButton(
@@ -91,6 +93,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
                                     fields: fields,
                                     modelId: modelId,
                                     entityManager: entityManager,
+                                    defaultValues: defaultValues,
                                     allowDelete: allowDelete,
                                   ),
                                 ),
