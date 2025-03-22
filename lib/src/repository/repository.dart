@@ -133,6 +133,17 @@ extension WidgetRefRepositoryExtension on WidgetRef {
     return id;
   }
 
+  Future<List<int>?> saveModels(List<SerializableModel> models) async {
+    return await nitToolsCaller!.nitCrud
+        .saveModels(
+          wrappedModels:
+              models.map((model) => ObjectWrapper.wrap(model: model)).toList(),
+        )
+        .then(
+          (response) => _processApiResponse<List<int>>(response),
+        );
+  }
+
   K? _processApiResponse<K>(ApiResponse<K> response) {
     debugPrint(response.toJson().toString());
     if (response.error != null || response.warning != null) {
