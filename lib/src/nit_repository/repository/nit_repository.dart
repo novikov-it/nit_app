@@ -97,11 +97,17 @@ class NitRepository {
         if (_customRepositoryDescriptors
             .containsKey(wrapper.nitMappingClassname))
           ..._customRepositoryDescriptors[wrapper.nitMappingClassname]!
-      ].map((d) => _getRepository(d)(
-            d.fieldName == 'id'
-                ? wrapper.modelId
-                : wrapper.foreignKeys[d.fieldName],
-          ));
+      ]
+          .where((e) =>
+              null !=
+              (e.fieldName == 'id'
+                  ? wrapper.modelId
+                  : wrapper.foreignKeys[e.fieldName]))
+          .map((d) => _getRepository(d)(
+                d.fieldName == 'id'
+                    ? wrapper.modelId
+                    : wrapper.foreignKeys[d.fieldName],
+              ));
 
   static StateProvider<T?> getModelProvider<T extends SerializableModel, K>(
     K key, [
