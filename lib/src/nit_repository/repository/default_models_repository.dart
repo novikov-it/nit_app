@@ -1,4 +1,4 @@
-class DefaultModelsRepository {
+class NitDefaultModelsRepository {
   static const int mockModelId = 0;
 
   static final repository = <String, dynamic>{};

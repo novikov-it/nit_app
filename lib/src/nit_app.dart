@@ -122,7 +122,7 @@ class NitApp extends HookConsumerWidget {
   Future<bool> _futuresQueue(List<Future<bool> Function()> initializers) async {
     if (initializers.isEmpty) return true;
 
-    debugPrint('Running ${initializers.first.toString()}');
+    // debugPrint('Running ${initializers.first.toString()}');
     return await initializers.first().then(
       (value) async {
         return value &&

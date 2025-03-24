@@ -44,7 +44,7 @@ extension SignedInWidgetExtension on WidgetRef {
         ),
       );
 
-  bool hasAccess(String scopeName) =>
-      watch(nitSessionStateProvider.select((value) => value.scopeNames))
-          .contains(scopeName);
+  // bool hasAccess(String scopeName) =>
+  //     watch(nitSessionStateProvider.select((value) => value.scopeNames))
+  //         .contains(scopeName);
 }

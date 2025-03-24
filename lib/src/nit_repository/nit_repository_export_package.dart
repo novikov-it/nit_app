@@ -1,0 +1,9 @@
+export 'descriptor/nit_repository_descriptor.dart';
+export 'extensions/ref_entity_list_state_extension.dart';
+export 'extensions/ref_update_actions_extension.dart';
+export 'extensions/ref_watch_and_read_extension.dart';
+export 'extensions/widget_ref_entity_list_state_extension.dart';
+export 'extensions/widget_ref_update_actions_extension.dart';
+export 'extensions/widget_ref_watch_and_read_extension.dart';
+export 'repository/default_models_repository.dart';
+export 'repository/nit_repository.dart';

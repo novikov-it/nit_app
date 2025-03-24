@@ -22,7 +22,7 @@ extension on NitChatMessage {
   Message get toChatViewMessage => Message(
         message: text ?? '-',
         createdAt: sentAt.toLocal(),
-        sentBy: userInfoId.toString(),
+        sentBy: userId.toString(),
         status: MessageStatus.delivered,
       );
 }
@@ -137,7 +137,7 @@ class NitChatViewState extends _$NitChatViewState {
         //  participants
         //     .map((e) => ref
         //         .readModel<UserInfo>(
-        //             ref.readModel<NitChatParticipant>(e)!.userInfoId)!
+        //             ref.readModel<NitChatParticipant>(e)!.userId)!
         //         .toChatViewUser)
         //     .toList(), // participants.map((e) => ref.watchModel<ChatParticipant>(e)!),),
       ),
@@ -168,7 +168,7 @@ class NitChatViewState extends _$NitChatViewState {
     ref.saveModel(
       NitChatMessage(
         text: message,
-        userInfoId: ref.signedInUserId!,
+        userId: ref.signedInUserId!,
         chatChannelId: chatId,
         sentAt: DateTime.now(),
       ),

@@ -1,11 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nit_tools_client/nit_tools_client.dart';
+import 'package:nit_app/nit_app.dart';
 
-import 'entity_list_config.dart';
 import 'entity_manager_interface.dart';
-import 'repository.dart';
 
 late final Caller? nitToolsCaller;
 
@@ -32,10 +30,12 @@ class EntityManagerState<Entity extends SerializableModel>
   @override
   Future<List<int>> build(EntityListConfig config) async {
     ref.onDispose(
-      () => ref.removeUpdatesListener<Entity>(
+      () => NitRepository.removeUpdatesListener<Entity>(
         _updatesListener,
       ),
     );
+
+    NitRepository.ensureDefaultDescriptor<Entity>();
 
     // TODO: Изменить, toString() не работает на Web release из-за minification
     debugPrint("Building state for ${Entity.toString()}");
@@ -53,7 +53,7 @@ class EntityManagerState<Entity extends SerializableModel>
           (res) => res ?? <int>[],
         );
 
-    ref.addUpdatesListener<Entity>(_updatesListener);
+    NitRepository.addUpdatesListener<Entity>(_updatesListener);
 
     return result;
   }
@@ -71,18 +71,18 @@ class EntityManagerState<Entity extends SerializableModel>
     );
   }
 
-  void manualInsert(int modelId, Entity model) async {
-    return await future.then((value) async {
-      ref.manualUpdate(modelId, model);
+  // void manualInsert(int modelId, Entity model) async {
+  //   return await future.then((value) async {
+  //     ref.manualUpdate(modelId, model);
 
-      state = AsyncValue.data(
-        [
-          modelId,
-          ...value.whereNot((e) => e == modelId),
-        ],
-      );
-    });
-  }
+  //     state = AsyncValue.data(
+  //       [
+  //         modelId,
+  //         ...value.whereNot((e) => e == modelId),
+  //       ],
+  //     );
+  //   });
+  // }
 
   @override
   Future<int?> save(

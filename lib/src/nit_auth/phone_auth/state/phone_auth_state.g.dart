@@ -6,7 +6,7 @@ part of 'phone_auth_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$phoneAuthStateHash() => r'd22b6ad1ab5daa381e58cee8d7120e29ce365c70';
+String _$phoneAuthStateHash() => r'41872d0cacf8dad0b79e4b3f4c13d72843aecccd';
 
 /// See also [PhoneAuthState].
 @ProviderFor(PhoneAuthState)

@@ -52,11 +52,15 @@ class EntityDropdownInputDescriptor<Entity extends SerializableModel>
     super.nullLabel,
     // super.labelExtractor,
     required this.labelField,
+    this.secondaryLabelField,
+    this.valueField,
     this.filteringFields,
   });
 
   final List<ModelFieldDescriptor>? filteringFields;
   final ModelFieldDescriptor<Entity> labelField;
+  final ModelFieldDescriptor<Entity>? secondaryLabelField;
+  final ModelFieldDescriptor<Entity>? valueField;
 
   @override
   Widget prepareWidget(ModelFieldDescriptor fieldDescriptor) {

@@ -49,8 +49,13 @@ class NitEntityDropdownFormField<Entity extends SerializableModel>
             optionsMap: Map.fromEntries(
               data.map(
                 (e) => MapEntry(
-                  e.toJson()['id'],
-                  inputDescriptor.labelField.initialValue(ref, e),
+                  inputDescriptor.valueField != null
+                      ? inputDescriptor.valueField?.initialValue(ref, e)
+                      : e.toJson()['id'],
+                  inputDescriptor.labelField.initialValue(ref, e) ??
+                      inputDescriptor.secondaryLabelField
+                          ?.initialValue(ref, e) ??
+                      '???',
                   // e.toString(),
                 ),
               ),

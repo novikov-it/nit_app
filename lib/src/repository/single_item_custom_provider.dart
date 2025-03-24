@@ -1,10 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nit_tools_client/nit_tools_client.dart';
-
-import 'entity_manager_state.dart';
-import 'repository.dart';
-import 'single_item_custom_provider_config.dart';
+import 'package:nit_app/nit_app.dart';
 
 final singleItemCustomProviderFamilies = <Type,
     AsyncNotifierProviderFamily<SingleItemCustomProviderState, int?,
@@ -32,6 +28,8 @@ class SingleItemCustomProviderState<T extends SerializableModel>
   ) async {
     debugPrint("Getting single ${T.toString()} with id $arg");
     // final res = await ref.getAll<T>();
+    NitRepository.ensureDefaultDescriptor<T>();
+
     return await nitToolsCaller!.nitCrud
         .getOneCustom(
           className: T.toString(),
