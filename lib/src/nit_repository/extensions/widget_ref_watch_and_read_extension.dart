@@ -3,9 +3,9 @@ import 'package:nit_app/nit_app.dart';
 
 extension WidgetRefWatchAndReadExtension on WidgetRef {
   T readModel<T extends SerializableModel>(
-    int key, {
+    int key, [
     NitRepositoryDescriptor<T, int>? repositoryDescriptor,
-  }) =>
+  ]) =>
       readMaybeModel<T>(key, repositoryDescriptor)!;
 
   T? readMaybeModel<T extends SerializableModel>(
