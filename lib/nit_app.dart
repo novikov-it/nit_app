@@ -7,7 +7,7 @@ export 'src/admin_panel/nit_generic_form.dart';
 export 'src/chats/state/nit_chat_view_state.dart';
 export 'src/generic_forms/generic_forms.dart';
 export 'src/nit_app.dart';
-export 'src/nit_app_widget_ref_extension.dart';
+export 'src/ref_extension/nit_app_widget_ref_extension.dart';
 export 'src/nit_auth/nit_auth.dart';
 export 'src/nit_auth/phone_auth/state/phone_auth_state.dart';
 export 'src/nit_repository/nit_repository_export_package.dart';
