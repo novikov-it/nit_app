@@ -58,11 +58,13 @@ extension RefUpdateActionsExtension on Ref {
   }
 
   updateFromStream(ObjectWrapper update) {
-    _updateRepository([update]);
+    if (update.modelId != null) {
+      _updateRepository([update]);
 
-    NitRepository.updateListeningStates(
-      className: update.nitMappingClassname,
-      modelId: update.modelId!,
-    );
+      NitRepository.updateListeningStates(
+        className: update.nitMappingClassname,
+        modelId: update.modelId!,
+      );
+    }
   }
 }

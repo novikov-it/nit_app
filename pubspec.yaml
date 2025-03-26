@@ -69,16 +69,9 @@ dependencies:
 
   freezed_annotation: ^2.4.4
   riverpod_annotation: ^2.3.5
-  flutter_svg: ^2.0.10+1
   flutter_riverpod: ^2.5.3
   collection: ^1.18.0
-  image_picker: ^1.1.2
-  photo_view: ^0.15.0
-  # chatview: # ^2.2.0
-  #   # path: ../nit_flutter_chatview
-  #   git:
-  #     url: git@github.com:novikov-it/nit_flutter_chatview.git
-  #     ref: main
+
   app_links: ^6.3.2
   flutter_multi_formatter: ^2.13.0
 

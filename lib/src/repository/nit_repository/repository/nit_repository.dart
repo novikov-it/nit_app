@@ -6,6 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
 
 class NitRepository {
+  // static debug() {
+  //   for (var MapEntry(:key, :value) in _repositories.entries) {
+  //     print(key);
+  //     print(value);
+  //     continue;
+  //   }
+  // }
+
   static final Map<NitRepositoryDescriptor,
       StateProviderFamily<dynamic, dynamic>> _repositories = {};
   static final Map<String, List<NitRepositoryDescriptor>>

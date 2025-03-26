@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_ui_kit/nit_ui_kit.dart';
 
-import '../repository/entity_manager_interface.dart';
+import '../repository/serverpod_connectors/entity_manager_interface.dart';
 
 class NitGenericForm<Entity extends SerializableModel,
         FormDescriptor extends ModelFieldDescriptor<Entity>>

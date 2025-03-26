@@ -20,8 +20,6 @@ mixin _$NitSessionStateModel {
       throw _privateConstructorUsedError;
   int? get signedInUserId => throw _privateConstructorUsedError;
   List<String> get scopeNames => throw _privateConstructorUsedError;
-  nit_tools.StreamingConnectionStatus get websocketStatus =>
-      throw _privateConstructorUsedError;
 
   /// Create a copy of NitSessionStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -39,8 +37,7 @@ abstract class $NitSessionStateModelCopyWith<$Res> {
   $Res call(
       {SessionManager? serverpodSessionManager,
       int? signedInUserId,
-      List<String> scopeNames,
-      nit_tools.StreamingConnectionStatus websocketStatus});
+      List<String> scopeNames});
 }
 
 /// @nodoc
@@ -62,7 +59,6 @@ class _$NitSessionStateModelCopyWithImpl<$Res,
     Object? serverpodSessionManager = freezed,
     Object? signedInUserId = freezed,
     Object? scopeNames = null,
-    Object? websocketStatus = null,
   }) {
     return _then(_value.copyWith(
       serverpodSessionManager: freezed == serverpodSessionManager
@@ -77,10 +73,6 @@ class _$NitSessionStateModelCopyWithImpl<$Res,
           ? _value.scopeNames
           : scopeNames // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      websocketStatus: null == websocketStatus
-          ? _value.websocketStatus
-          : websocketStatus // ignore: cast_nullable_to_non_nullable
-              as nit_tools.StreamingConnectionStatus,
     ) as $Val);
   }
 }
@@ -96,8 +88,7 @@ abstract class _$$NitSessionStateModelImplCopyWith<$Res>
   $Res call(
       {SessionManager? serverpodSessionManager,
       int? signedInUserId,
-      List<String> scopeNames,
-      nit_tools.StreamingConnectionStatus websocketStatus});
+      List<String> scopeNames});
 }
 
 /// @nodoc
@@ -116,7 +107,6 @@ class __$$NitSessionStateModelImplCopyWithImpl<$Res>
     Object? serverpodSessionManager = freezed,
     Object? signedInUserId = freezed,
     Object? scopeNames = null,
-    Object? websocketStatus = null,
   }) {
     return _then(_$NitSessionStateModelImpl(
       serverpodSessionManager: freezed == serverpodSessionManager
@@ -131,10 +121,6 @@ class __$$NitSessionStateModelImplCopyWithImpl<$Res>
           ? _value._scopeNames
           : scopeNames // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      websocketStatus: null == websocketStatus
-          ? _value.websocketStatus
-          : websocketStatus // ignore: cast_nullable_to_non_nullable
-              as nit_tools.StreamingConnectionStatus,
     ));
   }
 }
@@ -145,8 +131,7 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
   const _$NitSessionStateModelImpl(
       {required this.serverpodSessionManager,
       required this.signedInUserId,
-      required final List<String> scopeNames,
-      required this.websocketStatus})
+      required final List<String> scopeNames})
       : _scopeNames = scopeNames;
 
   @override
@@ -162,11 +147,8 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
   }
 
   @override
-  final nit_tools.StreamingConnectionStatus websocketStatus;
-
-  @override
   String toString() {
-    return 'NitSessionStateModel(serverpodSessionManager: $serverpodSessionManager, signedInUserId: $signedInUserId, scopeNames: $scopeNames, websocketStatus: $websocketStatus)';
+    return 'NitSessionStateModel(serverpodSessionManager: $serverpodSessionManager, signedInUserId: $signedInUserId, scopeNames: $scopeNames)';
   }
 
   @override
@@ -180,18 +162,12 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
             (identical(other.signedInUserId, signedInUserId) ||
                 other.signedInUserId == signedInUserId) &&
             const DeepCollectionEquality()
-                .equals(other._scopeNames, _scopeNames) &&
-            (identical(other.websocketStatus, websocketStatus) ||
-                other.websocketStatus == websocketStatus));
+                .equals(other._scopeNames, _scopeNames));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      serverpodSessionManager,
-      signedInUserId,
-      const DeepCollectionEquality().hash(_scopeNames),
-      websocketStatus);
+  int get hashCode => Object.hash(runtimeType, serverpodSessionManager,
+      signedInUserId, const DeepCollectionEquality().hash(_scopeNames));
 
   /// Create a copy of NitSessionStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -206,11 +182,9 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
 
 abstract class _NitSessionStateModel implements NitSessionStateModel {
   const factory _NitSessionStateModel(
-          {required final SessionManager? serverpodSessionManager,
-          required final int? signedInUserId,
-          required final List<String> scopeNames,
-          required final nit_tools.StreamingConnectionStatus websocketStatus}) =
-      _$NitSessionStateModelImpl;
+      {required final SessionManager? serverpodSessionManager,
+      required final int? signedInUserId,
+      required final List<String> scopeNames}) = _$NitSessionStateModelImpl;
 
   @override
   SessionManager? get serverpodSessionManager;
@@ -218,8 +192,6 @@ abstract class _NitSessionStateModel implements NitSessionStateModel {
   int? get signedInUserId;
   @override
   List<String> get scopeNames;
-  @override
-  nit_tools.StreamingConnectionStatus get websocketStatus;
 
   /// Create a copy of NitSessionStateModel
   /// with the given fields replaced by the non-null parameter values.

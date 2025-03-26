@@ -10,7 +10,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nit_app/src/nit_auth/config/nit_auth_config.dart';
-import 'package:nit_app/src/notifications/nit_firebase_notifications_state.dart';
+import 'package:nit_app/src/session/nit_socket_state/nit_socket_state.dart';
+import 'package:nit_app/src/session/notifications/nit_firebase_notifications_state.dart';
 // import 'package:nit_app/src/chats/state/chat_controller_state.dart';
 import 'package:nit_app/src/utils/deeplinks.dart';
 // import 'package:nit_router/nit_router.dart';
@@ -19,8 +20,8 @@ import 'package:nit_tools_client/nit_tools_client.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as auth;
 
-import 'repository/entity_manager_state.dart';
-import 'session/nit_session_state.dart';
+import 'repository/serverpod_connectors/entity_manager_state.dart';
+import 'session/nit_session_state/nit_session_state.dart';
 import 'utils/firebase.dart';
 
 class NitApp extends HookConsumerWidget {
@@ -179,10 +180,14 @@ class NitApp extends HookConsumerWidget {
 
                 NitToolsClient.protocol = client!.serializationManager;
 
-                return ref.read(nitSessionStateProvider.notifier).init(
+                await ref.read(nitSessionStateProvider.notifier).init(
                       authModuleCaller: authCaller as auth.Caller,
                       // enableAppNotifications: true,
                     );
+
+                return ref
+                    .read(nitSocketStateProvider.notifier)
+                    .init(client: client!);
               },
             if (nitAuthConfig != null)
               () async {

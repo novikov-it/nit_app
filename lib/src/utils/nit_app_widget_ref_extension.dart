@@ -3,12 +3,11 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_ui_kit/nit_ui_kit.dart';
 
-import 'nit_auth/phone_auth/phone_auth_widget.dart';
+import '../nit_auth/phone_auth/phone_auth_widget.dart';
 
 extension NitAppWidgetRefExtension on WidgetRef {
   requireLogin({
