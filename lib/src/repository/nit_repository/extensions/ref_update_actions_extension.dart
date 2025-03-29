@@ -33,7 +33,7 @@ extension RefUpdateActionsExtension on Ref {
         );
   }
 
-  _updateRepository(List<ObjectWrapper> wrappedModels) {
+  updateRepository(List<ObjectWrapper> wrappedModels) {
     for (var wrapper in wrappedModels) {
       for (var repo in NitRepository.getAllModelProviders(wrapper)) {
         read(repo.notifier).state = wrapper.model;
@@ -52,14 +52,14 @@ extension RefUpdateActionsExtension on Ref {
     }
 
     if ((response.updatedEntities ?? []).isNotEmpty) {
-      _updateRepository(response.updatedEntities ?? []);
+      updateRepository(response.updatedEntities ?? []);
     }
     return response.value;
   }
 
   updateFromStream(ObjectWrapper update) {
     if (update.modelId != null) {
-      _updateRepository([update]);
+      updateRepository([update]);
 
       NitRepository.updateListeningStates(
         className: update.nitMappingClassname,

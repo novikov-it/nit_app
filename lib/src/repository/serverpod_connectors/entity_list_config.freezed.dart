@@ -18,6 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$EntityListConfig {
   List<NitBackendFilter>? get backendFilters =>
       throw _privateConstructorUsedError;
+  dynamic Function(int)? get customUpdatesListener =>
+      throw _privateConstructorUsedError;
 
   /// Create a copy of EntityListConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -32,7 +34,9 @@ abstract class $EntityListConfigCopyWith<$Res> {
           EntityListConfig value, $Res Function(EntityListConfig) then) =
       _$EntityListConfigCopyWithImpl<$Res, EntityListConfig>;
   @useResult
-  $Res call({List<NitBackendFilter>? backendFilters});
+  $Res call(
+      {List<NitBackendFilter>? backendFilters,
+      dynamic Function(int)? customUpdatesListener});
 }
 
 /// @nodoc
@@ -51,12 +55,17 @@ class _$EntityListConfigCopyWithImpl<$Res, $Val extends EntityListConfig>
   @override
   $Res call({
     Object? backendFilters = freezed,
+    Object? customUpdatesListener = freezed,
   }) {
     return _then(_value.copyWith(
       backendFilters: freezed == backendFilters
           ? _value.backendFilters
           : backendFilters // ignore: cast_nullable_to_non_nullable
               as List<NitBackendFilter>?,
+      customUpdatesListener: freezed == customUpdatesListener
+          ? _value.customUpdatesListener
+          : customUpdatesListener // ignore: cast_nullable_to_non_nullable
+              as dynamic Function(int)?,
     ) as $Val);
   }
 }
@@ -69,7 +78,9 @@ abstract class _$$EntityListConfigImplCopyWith<$Res>
       __$$EntityListConfigImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<NitBackendFilter>? backendFilters});
+  $Res call(
+      {List<NitBackendFilter>? backendFilters,
+      dynamic Function(int)? customUpdatesListener});
 }
 
 /// @nodoc
@@ -86,12 +97,17 @@ class __$$EntityListConfigImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? backendFilters = freezed,
+    Object? customUpdatesListener = freezed,
   }) {
     return _then(_$EntityListConfigImpl(
       backendFilters: freezed == backendFilters
           ? _value._backendFilters
           : backendFilters // ignore: cast_nullable_to_non_nullable
               as List<NitBackendFilter>?,
+      customUpdatesListener: freezed == customUpdatesListener
+          ? _value.customUpdatesListener
+          : customUpdatesListener // ignore: cast_nullable_to_non_nullable
+              as dynamic Function(int)?,
     ));
   }
 }
@@ -99,7 +115,9 @@ class __$$EntityListConfigImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$EntityListConfigImpl implements _EntityListConfig {
-  const _$EntityListConfigImpl({final List<NitBackendFilter>? backendFilters})
+  const _$EntityListConfigImpl(
+      {final List<NitBackendFilter>? backendFilters,
+      this.customUpdatesListener})
       : _backendFilters = backendFilters;
 
   final List<NitBackendFilter>? _backendFilters;
@@ -113,8 +131,11 @@ class _$EntityListConfigImpl implements _EntityListConfig {
   }
 
   @override
+  final dynamic Function(int)? customUpdatesListener;
+
+  @override
   String toString() {
-    return 'EntityListConfig(backendFilters: $backendFilters)';
+    return 'EntityListConfig(backendFilters: $backendFilters, customUpdatesListener: $customUpdatesListener)';
   }
 
   @override
@@ -123,12 +144,16 @@ class _$EntityListConfigImpl implements _EntityListConfig {
         (other.runtimeType == runtimeType &&
             other is _$EntityListConfigImpl &&
             const DeepCollectionEquality()
-                .equals(other._backendFilters, _backendFilters));
+                .equals(other._backendFilters, _backendFilters) &&
+            (identical(other.customUpdatesListener, customUpdatesListener) ||
+                other.customUpdatesListener == customUpdatesListener));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_backendFilters));
+      runtimeType,
+      const DeepCollectionEquality().hash(_backendFilters),
+      customUpdatesListener);
 
   /// Create a copy of EntityListConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -142,10 +167,14 @@ class _$EntityListConfigImpl implements _EntityListConfig {
 
 abstract class _EntityListConfig implements EntityListConfig {
   const factory _EntityListConfig(
-      {final List<NitBackendFilter>? backendFilters}) = _$EntityListConfigImpl;
+          {final List<NitBackendFilter>? backendFilters,
+          final dynamic Function(int)? customUpdatesListener}) =
+      _$EntityListConfigImpl;
 
   @override
   List<NitBackendFilter>? get backendFilters;
+  @override
+  dynamic Function(int)? get customUpdatesListener;
 
   /// Create a copy of EntityListConfig
   /// with the given fields replaced by the non-null parameter values.

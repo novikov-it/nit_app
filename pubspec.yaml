@@ -54,7 +54,7 @@ dependencies:
   #     ref: master
 
   chatview: # ^2.2.0
-    # path: ../../nit_flutter_chatview
+    # path: ../nit_flutter_chatview
     git:
       url: git@github.com:novikov-it/nit_flutter_chatview.git
       ref: main

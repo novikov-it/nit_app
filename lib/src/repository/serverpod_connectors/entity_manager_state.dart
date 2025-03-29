@@ -31,7 +31,7 @@ class EntityManagerState<Entity extends SerializableModel>
   Future<List<int>> build(EntityListConfig config) async {
     ref.onDispose(
       () => NitRepository.removeUpdatesListener<Entity>(
-        _updatesListener,
+        config.customUpdatesListener ?? _updatesListener,
       ),
     );
 
@@ -53,7 +53,8 @@ class EntityManagerState<Entity extends SerializableModel>
           (res) => res ?? <int>[],
         );
 
-    NitRepository.addUpdatesListener<Entity>(_updatesListener);
+    NitRepository.addUpdatesListener<Entity>(
+        config.customUpdatesListener ?? _updatesListener);
 
     return result;
   }

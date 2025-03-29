@@ -6,12 +6,12 @@ part of 'nit_socket_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$nitSocketStateHash() => r'890c5c6dcd21223e2adaaffcc7d3b6a5846431a3';
+String _$nitSocketStateHash() => r'7f9ce5a11255bfd118e6fc963f59d94c72125b6a';
 
 /// See also [NitSocketState].
 @ProviderFor(NitSocketState)
 final nitSocketStateProvider =
-    AutoDisposeNotifierProvider<NitSocketState, NitSocketStateModel>.internal(
+    NotifierProvider<NitSocketState, NitSocketStateModel>.internal(
   NitSocketState.new,
   name: r'nitSocketStateProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +21,6 @@ final nitSocketStateProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$NitSocketState = AutoDisposeNotifier<NitSocketStateModel>;
+typedef _$NitSocketState = Notifier<NitSocketStateModel>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
