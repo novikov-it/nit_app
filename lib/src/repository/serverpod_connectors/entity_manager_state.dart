@@ -54,7 +54,8 @@ class EntityManagerState<Entity extends SerializableModel>
         );
 
     NitRepository.addUpdatesListener<Entity>(
-        config.customUpdatesListener ?? _updatesListener);
+      config.customUpdatesListener ?? _updatesListener,
+    );
 
     return result;
   }

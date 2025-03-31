@@ -127,4 +127,36 @@ extension RefWatchAndReadExtension on Ref {
                 value,
               ),
       );
+
+  Future<T> watchModelCustom<T extends SerializableModel>(
+    SingleItemCustomProviderConfig config,
+  ) async =>
+      (await watchMaybeModelCustom<T>(config))!;
+
+  Future<T?> watchMaybeModelCustom<T extends SerializableModel>(
+    SingleItemCustomProviderConfig config,
+  ) async =>
+      watch(singleItemCustomProvider<T>()(config).future).then(
+        (value) => value == null
+            ? null
+            : watchModel<T>(
+                value,
+              ),
+      );
+
+  Future<T> readModelCustom<T extends SerializableModel>(
+    SingleItemCustomProviderConfig config,
+  ) async =>
+      (await readMaybeModelCustom<T>(config))!;
+
+  Future<T?> readMaybeModelCustom<T extends SerializableModel>(
+    SingleItemCustomProviderConfig config,
+  ) async =>
+      watch(singleItemCustomProvider<T>()(config).future).then(
+        (value) => value == null
+            ? null
+            : readModel<T>(
+                value,
+              ),
+      );
 }

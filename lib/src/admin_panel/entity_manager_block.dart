@@ -3,8 +3,42 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_ui_kit/nit_ui_kit.dart';
 
+extension GenericFormsExtension on WidgetRef {
+  NitGenericEntityManager<Entity>
+      nitGenericEntityManager<Entity extends SerializableModel>() =>
+          NitGenericEntityManager(
+            saveAction: (model) async => null != await saveModel<Entity>(model),
+          );
+
+  // NitGenericModelWrapper
+  //     nitGenericFormWrapper<Entity extends SerializableModel>(
+  //   Entity? model,
+  // ) {
+  //   final Map<String, dynamic> json = model?.toJson() ?? {};
+
+  //   return NitGenericModelWrapper(
+  //     initialData: json,
+  //     saveAction: (updatedData) async =>
+  //         null !=
+  //         await saveModel<Entity>(
+  //           NitToolsClient.protocol.deserializeByClassName(
+  //             {
+  //               'className': Entity.toString(),
+  //               'data': Map.fromEntries(
+  //                 [
+  //                   ...json.entries,
+  //                   ...updatedData.entries,
+  //                 ],
+  //               ),
+  //             },
+  //           ),
+  //         ),
+  //   );
+  // }
+}
+
 class EntityManagerBlock<Entity extends SerializableModel,
-        FormDescriptor extends ModelFieldDescriptor<Entity>>
+        FormDescriptor extends NitGenericFormsFieldsEnum<Entity>>
     extends ConsumerWidget {
   const EntityManagerBlock({
     super.key,
@@ -15,7 +49,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
     // this.detailsRouteName,
     // this.detailsRoutePathParameter,
     this.customBackendConfig,
-    this.defaultValues,
+    this.defaultValuesProvider,
     this.allowDelete = true,
   });
 
@@ -29,22 +63,9 @@ class EntityManagerBlock<Entity extends SerializableModel,
   // final String? detailsRouteName;
   // final String? detailsRoutePathParameter;
   final EntityListConfig? customBackendConfig;
-  final Map<FormDescriptor, dynamic>? defaultValues;
+  final Future<Map<FormDescriptor, dynamic>> Function(WidgetRef ref)?
+      defaultValuesProvider;
   final bool allowDelete;
-
-  Widget _addButton(
-          BuildContext context, EntityManagerState<Entity> entityManager) =>
-      FilledButton(
-        onPressed: () => context.showBottomSheetOrDialog<Entity>(
-          NitGenericForm<Entity, FormDescriptor>(
-            fields: fields,
-            entityManager: entityManager,
-            defaultValues: defaultValues,
-            // fields: (FormDescriptor as Enum).value,
-          ),
-        ),
-        child: const Text('Добавить'),
-      );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,6 +73,22 @@ class EntityManagerBlock<Entity extends SerializableModel,
     final backendConfig = customBackendConfig ?? EntityListConfig.defaultConfig;
     final entityManager =
         ref.read(entityManagerStateProvider<Entity>()(backendConfig).notifier);
+
+    Widget addButton(
+            BuildContext context, EntityManagerState<Entity> entityManager) =>
+        FilledButton(
+          onPressed: () async => context.showBottomSheetOrDialog<Entity>(
+            NitGenericForm<Entity, FormDescriptor>(
+              fields: fields,
+              // modelWrapper: ref.nitGenericFormWrapper<Entity>(null),
+              model: null,
+              entityManager: ref.nitGenericEntityManager<Entity>(),
+              defaultValues: await defaultValuesProvider?.call(ref),
+              // fields: (FormDescriptor as Enum).value,
+            ),
+          ),
+          child: const Text('Добавить'),
+        );
 
     return ref.watchEntityListState<Entity>(backendConfig: backendConfig).when(
           error: (error, stackTrace) =>
@@ -62,7 +99,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
                 ? CrossAxisAlignment.end
                 : CrossAxisAlignment.start,
             children: [
-              if (!context.isMobile) _addButton(context, entityManager),
+              if (!context.isMobile) addButton(context, entityManager),
               Expanded(
                 child: ListView(
                   children: data
@@ -71,7 +108,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
                           child: Row(
                             children: [
                               IconButton(
-                                onPressed: () =>
+                                onPressed: () async =>
                                     // detailsRouteName != null &&
                                     //         detailsRoutePathParameter != null
                                     //     ? context.pushNamed(
@@ -83,12 +120,12 @@ class EntityManagerBlock<Entity extends SerializableModel,
                                     //       )
                                     // additionalDetailsTabs != null ? Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsPage(scaffoldConstructor: sca,)))
                                     // :
-                                    context.showBottomSheetOrDialog(
+                                    await context.showBottomSheetOrDialog(
                                   NitGenericForm<Entity, FormDescriptor>(
                                     fields: fields,
-                                    modelId: modelId,
-                                    entityManager: entityManager,
-                                    allowDelete: allowDelete,
+                                    model: ref.readModel<Entity>(modelId),
+                                    entityManager:
+                                        ref.nitGenericEntityManager(),
                                   ),
                                 ),
                                 icon: const Icon(Icons.edit),
@@ -106,7 +143,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
                       .toList(),
                 ),
               ),
-              if (context.isMobile) _addButton(context, entityManager),
+              if (context.isMobile) addButton(context, entityManager),
             ],
           ),
         );

@@ -41,17 +41,20 @@ dependencies:
       path: nit_tools_client
       ref: master
 
-  nit_ui_kit:
+  nit_ui_kit: ^0.0.2
     # path: ../nit_ui_kit
-    git:
-      url: git@github.com:novikov-it/nit_ui_kit.git
-      ref: master
+    # git:
+    #   url: git@github.com:novikov-it/nit_ui_kit.git
+    #   ref: master
 
   nit_riverpod_notifications: ^0.0.1
   #   # path: ../nit_riverpod_notifications
   #   git:
   #     url: git@github.com:novikov-it/nit_riverpod_notifications.git
   #     ref: master
+
+  nit_generic_forms:
+    path: ../nit_generic_forms
 
   chatview: # ^2.2.0
     # path: ../nit_flutter_chatview
