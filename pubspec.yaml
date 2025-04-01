@@ -54,7 +54,10 @@ dependencies:
   #     ref: master
 
   nit_generic_forms:
-    path: ../nit_generic_forms
+    # path: ../nit_generic_forms
+    git:
+      url: git@github.com:novikov-it/nit_generic_forms.git
+      ref: master
 
   chatview: # ^2.2.0
     # path: ../nit_flutter_chatview
@@ -77,6 +80,10 @@ dependencies:
 
   app_links: ^6.3.2
   flutter_multi_formatter: ^2.13.0
+  heif_converter: ^1.0.1
+  image: ^4.5.4
+  path_provider: ^2.1.5
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:
