@@ -7,13 +7,14 @@ extension GenericFormsExtension on WidgetRef {
   NitGenericEntityManager<Entity>
       nitGenericEntityManager<Entity extends SerializableModel>() =>
           NitGenericEntityManager(
-            saveAction: (model) async => null != await saveModel<Entity>(model),
+            saveAction: (model) async => await saveModel<Entity>(model)
+                .then((id) => id != null ? readModel<Entity>(id) : null),
           );
 
   // NitGenericModelWrapper
   //     nitGenericFormWrapper<Entity extends SerializableModel>(
   //   Entity? model,
-  // ) {
+  // )
   //   final Map<String, dynamic> json = model?.toJson() ?? {};
 
   //   return NitGenericModelWrapper(

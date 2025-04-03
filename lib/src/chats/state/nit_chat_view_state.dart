@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:serverpod_auth_client/serverpod_auth_client.dart';
 
 part 'nit_chat_view_state.freezed.dart';
 part 'nit_chat_view_state.g.dart';
@@ -28,13 +27,13 @@ extension on NitChatMessage {
       );
 }
 
-extension on UserInfo {
-  ChatUser get toChatViewUser => ChatUser(
-        id: id.toString(),
-        name: userName ?? userIdentifier,
-        profilePhoto: imageUrl,
-      );
-}
+// extension on UserInfo {
+//   ChatUser get toChatViewUser => ChatUser(
+//         id: id.toString(),
+//         name: userName ?? userIdentifier,
+//         profilePhoto: imageUrl,
+//       );
+// }
 
 @riverpod
 class NitChatViewState extends _$NitChatViewState {
@@ -89,6 +88,7 @@ class NitChatViewState extends _$NitChatViewState {
       controller: ChatController(
         initialMessageList: [],
         scrollController: ScrollController(),
+        // TODO: доработать
         currentUser: ChatUser(
           id: ref.signedInUserId.toString(),
           name: 'Пользователь',
