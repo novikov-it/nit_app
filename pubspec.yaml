@@ -41,7 +41,7 @@ dependencies:
       path: nit_tools_client
       ref: master
 
-  nit_ui_kit: ^0.1.0
+  nit_ui_kit: ^0.1.1
     # path: ../nit_ui_kit
     # git:
     #   url: git@github.com:novikov-it/nit_ui_kit.git
