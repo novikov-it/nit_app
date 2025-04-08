@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$EntityListConfig {
   List<NitBackendFilter>? get backendFilters =>
       throw _privateConstructorUsedError;
-  dynamic Function(int)? get customUpdatesListener =>
+  dynamic Function(ObjectWrapper)? get customUpdatesListener =>
       throw _privateConstructorUsedError;
 
   /// Create a copy of EntityListConfig
@@ -36,7 +36,7 @@ abstract class $EntityListConfigCopyWith<$Res> {
   @useResult
   $Res call(
       {List<NitBackendFilter>? backendFilters,
-      dynamic Function(int)? customUpdatesListener});
+      dynamic Function(ObjectWrapper)? customUpdatesListener});
 }
 
 /// @nodoc
@@ -65,7 +65,7 @@ class _$EntityListConfigCopyWithImpl<$Res, $Val extends EntityListConfig>
       customUpdatesListener: freezed == customUpdatesListener
           ? _value.customUpdatesListener
           : customUpdatesListener // ignore: cast_nullable_to_non_nullable
-              as dynamic Function(int)?,
+              as dynamic Function(ObjectWrapper)?,
     ) as $Val);
   }
 }
@@ -80,7 +80,7 @@ abstract class _$$EntityListConfigImplCopyWith<$Res>
   @useResult
   $Res call(
       {List<NitBackendFilter>? backendFilters,
-      dynamic Function(int)? customUpdatesListener});
+      dynamic Function(ObjectWrapper)? customUpdatesListener});
 }
 
 /// @nodoc
@@ -107,7 +107,7 @@ class __$$EntityListConfigImplCopyWithImpl<$Res>
       customUpdatesListener: freezed == customUpdatesListener
           ? _value.customUpdatesListener
           : customUpdatesListener // ignore: cast_nullable_to_non_nullable
-              as dynamic Function(int)?,
+              as dynamic Function(ObjectWrapper)?,
     ));
   }
 }
@@ -131,7 +131,7 @@ class _$EntityListConfigImpl implements _EntityListConfig {
   }
 
   @override
-  final dynamic Function(int)? customUpdatesListener;
+  final dynamic Function(ObjectWrapper)? customUpdatesListener;
 
   @override
   String toString() {
@@ -168,13 +168,13 @@ class _$EntityListConfigImpl implements _EntityListConfig {
 abstract class _EntityListConfig implements EntityListConfig {
   const factory _EntityListConfig(
           {final List<NitBackendFilter>? backendFilters,
-          final dynamic Function(int)? customUpdatesListener}) =
+          final dynamic Function(ObjectWrapper)? customUpdatesListener}) =
       _$EntityListConfigImpl;
 
   @override
   List<NitBackendFilter>? get backendFilters;
   @override
-  dynamic Function(int)? get customUpdatesListener;
+  dynamic Function(ObjectWrapper)? get customUpdatesListener;
 
   /// Create a copy of EntityListConfig
   /// with the given fields replaced by the non-null parameter values.

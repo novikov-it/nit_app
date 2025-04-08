@@ -7,7 +7,7 @@ part 'entity_list_config.freezed.dart';
 class EntityListConfig with _$EntityListConfig {
   const factory EntityListConfig({
     List<NitBackendFilter>? backendFilters,
-    Function(int id)? customUpdatesListener,
+    Function(ObjectWrapper wrappedModel)? customUpdatesListener,
   }) = _EntityListConfig;
 
   static const defaultConfig = EntityListConfig();

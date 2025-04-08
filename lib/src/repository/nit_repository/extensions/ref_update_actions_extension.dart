@@ -5,21 +5,9 @@ import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 
 extension RefUpdateActionsExtension on Ref {
   Future<int?> saveModel<T extends SerializableModel>(T model) async {
-    final wrapper = ObjectWrapper.wrap(model: model);
-    final response = await nitToolsCaller!.nitCrud.saveModel(
-      wrappedModel: wrapper,
+    return saveModels([model]).then(
+      (ids) => ids?.first,
     );
-
-    final id = processApiResponse<int>(response);
-
-    if (id != null) {
-      NitRepository.updateListeningStates(
-        className: wrapper.nitMappingClassname,
-        modelId: id,
-      );
-    }
-
-    return id;
   }
 
   Future<List<int>?> saveModels(List<SerializableModel> models) async {
@@ -33,15 +21,47 @@ extension RefUpdateActionsExtension on Ref {
         );
   }
 
-  updateRepository(List<ObjectWrapper> wrappedModels) {
+  Future<bool> deleteModel<T extends SerializableModel>(T model) async {
+    // TODO: подумать, как сделать это получше, может апи поменять или засылать objectWrapper.deleted просто
+
+    final modelId = model.toJson()['id'];
+    if (modelId == null) {
+      // notifyUser(NitNotification.warning(
+      //   'Мое',
+      // ));
+      return true;
+    }
+    return await nitToolsCaller!.nitCrud
+        .delete(
+          className: ObjectWrapper.getClassNameForObject(model),
+          modelId: modelId,
+        )
+        .then(
+          (response) => processApiResponse<bool>(response) ?? false,
+        );
+  }
+
+  updateRepository(
+    List<ObjectWrapper> wrappedModels, {
+    bool updateListeners = true,
+  }) {
     for (var wrapper in wrappedModels) {
       for (var repo in NitRepository.getAllModelProviders(wrapper)) {
         read(repo.notifier).state = wrapper.model;
+
+        if (updateListeners) {
+          NitRepository.updateListeningStates(
+            wrappedModel: wrapper,
+          );
+        }
       }
     }
   }
 
-  K? processApiResponse<K>(ApiResponse<K> response) {
+  K? processApiResponse<K>(
+    ApiResponse<K> response, {
+    bool updateListeners = true,
+  }) {
     debugPrint(response.toJson().toString());
     if (response.error != null || response.warning != null) {
       notifyUser(
@@ -52,7 +72,8 @@ extension RefUpdateActionsExtension on Ref {
     }
 
     if ((response.updatedEntities ?? []).isNotEmpty) {
-      updateRepository(response.updatedEntities ?? []);
+      updateRepository(response.updatedEntities ?? [],
+          updateListeners: updateListeners);
     }
     return response.value;
   }
@@ -60,11 +81,6 @@ extension RefUpdateActionsExtension on Ref {
   updateFromStream(ObjectWrapper update) {
     if (update.modelId != null) {
       updateRepository([update]);
-
-      NitRepository.updateListeningStates(
-        className: update.nitMappingClassname,
-        modelId: update.modelId!,
-      );
     }
   }
 }

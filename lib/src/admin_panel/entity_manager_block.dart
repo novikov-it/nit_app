@@ -5,10 +5,15 @@ import 'package:nit_ui_kit/nit_ui_kit.dart';
 
 extension GenericFormsExtension on WidgetRef {
   NitGenericEntityManager<Entity>
-      nitGenericEntityManager<Entity extends SerializableModel>() =>
+      nitGenericEntityManager<Entity extends SerializableModel>({
+    bool allowDelete = false,
+  }) =>
           NitGenericEntityManager(
             saveAction: (model) async => await saveModel<Entity>(model)
                 .then((id) => id != null ? readModel<Entity>(id) : null),
+            deleteAction: allowDelete
+                ? (model) async => await deleteModel<Entity>(model)
+                : null,
           );
 
   // NitGenericModelWrapper
@@ -51,7 +56,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
     // this.detailsRoutePathParameter,
     this.customBackendConfig,
     this.defaultValuesProvider,
-    this.allowDelete = true,
+    required this.allowDelete,
   });
 
   // final String title;
@@ -75,17 +80,13 @@ class EntityManagerBlock<Entity extends SerializableModel,
     final entityManager =
         ref.read(entityManagerStateProvider<Entity>()(backendConfig).notifier);
 
-    Widget addButton(
-            BuildContext context, EntityManagerState<Entity> entityManager) =>
-        FilledButton(
+    Widget addButton(BuildContext context) => FilledButton(
           onPressed: () async => context.showBottomSheetOrDialog<Entity>(
             NitGenericForm<Entity, FormDescriptor>(
               fields: fields,
-              // modelWrapper: ref.nitGenericFormWrapper<Entity>(null),
               model: null,
               entityManager: ref.nitGenericEntityManager<Entity>(),
               defaultValues: await defaultValuesProvider?.call(ref),
-              // fields: (FormDescriptor as Enum).value,
             ),
           ),
           child: const Text('Добавить'),
@@ -100,7 +101,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
                 ? CrossAxisAlignment.end
                 : CrossAxisAlignment.start,
             children: [
-              if (!context.isMobile) addButton(context, entityManager),
+              if (!context.isMobile) addButton(context),
               Expanded(
                 child: ListView(
                   children: data
@@ -125,8 +126,9 @@ class EntityManagerBlock<Entity extends SerializableModel,
                                   NitGenericForm<Entity, FormDescriptor>(
                                     fields: fields,
                                     model: ref.readModel<Entity>(modelId),
-                                    entityManager:
-                                        ref.nitGenericEntityManager(),
+                                    entityManager: ref.nitGenericEntityManager(
+                                      allowDelete: allowDelete,
+                                    ),
                                   ),
                                 ),
                                 icon: const Icon(Icons.edit),
@@ -144,7 +146,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
                       .toList(),
                 ),
               ),
-              if (context.isMobile) addButton(context, entityManager),
+              if (context.isMobile) addButton(context),
             ],
           ),
         );

@@ -6,7 +6,7 @@ part of 'nit_socket_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$nitSocketStateHash() => r'7f9ce5a11255bfd118e6fc963f59d94c72125b6a';
+String _$nitSocketStateHash() => r'd555482b3c513ac82d11b67721feb51aaaf60fdc';
 
 /// See also [NitSocketState].
 @ProviderFor(NitSocketState)

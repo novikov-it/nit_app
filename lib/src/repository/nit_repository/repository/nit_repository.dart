@@ -18,7 +18,7 @@ class NitRepository {
       StateProviderFamily<dynamic, dynamic>> _repositories = {};
   static final Map<String, List<NitRepositoryDescriptor>>
       _customRepositoryDescriptors = {};
-  static final Map<String, List<Function(int)>> _updateListeners = {};
+  static final Map<String, List<Function(ObjectWrapper)>> _updateListeners = {};
 
   static final Map<String, NitRepositoryDescriptor> _defaultDescriptors = {};
 
@@ -62,7 +62,7 @@ class NitRepository {
 
   static addUpdatesListener<T extends SerializableModel>(
     Function(
-      int id,
+      ObjectWrapper wrappedModel,
     ) listener,
   ) {
     // TODO: Изменить, toString() не работает на Web release из-за minification
@@ -74,7 +74,7 @@ class NitRepository {
 
   static removeUpdatesListener<T>(
       Function(
-        int id,
+        ObjectWrapper wrappedModel,
       ) listener) {
     // TODO: Изменить, toString() не работает на Web release из-за minification
     if (_updateListeners[T.toString()] != null) {
@@ -83,15 +83,16 @@ class NitRepository {
   }
 
   static updateListeningStates({
-    required String className,
-    required int modelId,
+    required ObjectWrapper wrappedModel,
+    // required String className,
+    // required int modelId,
   }) {
     debugPrint(
-      'Updating Listening State. Active listeners: ${_updateListeners.keys}. Updated id - $modelId for class $className',
+      'Updating Listening State. Active listeners: ${_updateListeners.keys}. Updated id - ${wrappedModel.modelId} for class ${wrappedModel.className}',
     );
-    for (var listener in _updateListeners[className] ?? []) {
+    for (var listener in _updateListeners[wrappedModel.className] ?? []) {
       listener(
-        modelId,
+        wrappedModel,
       );
     }
   }

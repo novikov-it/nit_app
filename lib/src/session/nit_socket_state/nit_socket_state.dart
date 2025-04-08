@@ -20,13 +20,20 @@ class NitSocketState extends _$NitSocketState {
 
   @override
   NitSocketStateModel build() {
-    // ref.listen(
-    //   nitSessionStateProvider,
-    //   (previousState, nextState) {
+    ref.listen(
+      nitSessionStateProvider,
+      (previousState, nextState) {
+        if (nextState.signedInUserId != previousState?.signedInUserId
+            //  &&
+            //     _connectionHandler?.status.status ==
+            //         StreamingConnectionStatus.connected
+            ) {
+          _connectionHandler?.client.closeStreamingConnection();
+        }
+      },
+    );
 
-    //   }
-
-    // );
+    // final sessionState = ref.watch(nitSessionStateProvider);
 
     return NitSocketStateModel(
       websocketStatus: StreamingConnectionStatus.disconnected,
@@ -51,12 +58,6 @@ class NitSocketState extends _$NitSocketState {
   }
 
   _refresh() async {
-    // if (state.signedInUserId != _sessionManager.signedInUser?.id &&
-    //     _connectionHandler?.status.status ==
-    //         StreamingConnectionStatus.connected) {
-    //   _connectionHandler?.client.closeStreamingConnection();
-    // }
-
     if (nitToolsCaller != null &&
         state.websocketStatus != StreamingConnectionStatus.connected &&
         _connectionHandler?.status.status ==
