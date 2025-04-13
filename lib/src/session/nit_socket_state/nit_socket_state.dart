@@ -79,6 +79,19 @@ class NitSocketState extends _$NitSocketState {
     // }
   }
 
+  _proccessUpdate(ObjectWrapper update) {
+    print("Received ${update.className} with id ${update.modelId}");
+    if (update.model is NitAppNotification) {
+      ref.notifyUser(update.model as NitAppNotification);
+      for (var enclosedObject
+          in (update.model as NitAppNotification).updatedEntities ?? []) {
+        ref.updateFromStream(enclosedObject);
+      }
+    }
+
+    ref.updateFromStream(update);
+  }
+
   Future<void> _listenToUpdates() async {
     nitToolsCaller!.nitUpdates.resetStream();
 
@@ -86,16 +99,11 @@ class NitSocketState extends _$NitSocketState {
 
     await for (var update in nitToolsCaller!.nitUpdates.stream) {
       if (update is ObjectWrapper) {
-        print("Received ${update.className} with id ${update.modelId}");
-        if (update.model is NitAppNotification) {
-          ref.notifyUser(update.model as NitAppNotification);
-          for (var enclosedObject
-              in (update.model as NitAppNotification).updatedEntities ?? []) {
-            ref.updateFromStream(enclosedObject);
-          }
+        _proccessUpdate(update);
+      } else if (update is NitUpdatesTransport) {
+        for (var e in update.updatedEntities) {
+          _proccessUpdate(e);
         }
-
-        ref.updateFromStream(update);
       }
 
       // May be useful for debug
