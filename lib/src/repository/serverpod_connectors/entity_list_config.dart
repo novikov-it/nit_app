@@ -10,5 +10,5 @@ class EntityListConfig with _$EntityListConfig {
     Function(ObjectWrapper wrappedModel)? customUpdatesListener,
   }) = _EntityListConfig;
 
-  static const defaultConfig = EntityListConfig();
+  // static const defaultConfig = EntityListConfig();
 }

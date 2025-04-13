@@ -72,8 +72,10 @@ extension WidgetRefUpdateActionsExtension on WidgetRef {
     }
 
     if ((response.updatedEntities ?? []).isNotEmpty) {
-      updateRepository(response.updatedEntities ?? [],
-          updateListeners: updateListeners);
+      updateRepository(
+        response.updatedEntities ?? [],
+        updateListeners: updateListeners,
+      );
     }
     return response.value;
   }

@@ -16,17 +16,9 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
 
-  # nit_router:
-  #   # path: ../nit_router
-  #   git:
-  #     url: git@github.com:novikov-it/nit_router.git
-  #     ref: master
-
-  serverpod_client: ^2.1.1
-  serverpod_chat_client: ^2.1.1
-  serverpod_chat_flutter: ^2.1.1
-  serverpod_auth_client: ^2.1.1
-  serverpod_auth_shared_flutter: ^2.1.1
+  serverpod_client: 2.1.5
+  serverpod_auth_client: 2.1.5
+  serverpod_auth_shared_flutter: 2.1.5
   serverpod_auth_phone_flutter:
     # path: ../nit_serverpod/modules/serverpod_auth/serverpod_auth_phone_flutter
     git:
@@ -53,11 +45,11 @@ dependencies:
   #     url: git@github.com:novikov-it/nit_riverpod_notifications.git
   #     ref: master
 
-  nit_generic_forms:
+  nit_generic_forms: ^0.0.1
     # path: ../nit_generic_forms
-    git:
-      url: git@github.com:novikov-it/nit_generic_forms.git
-      ref: master
+    # git:
+    #   url: git@github.com:novikov-it/nit_generic_forms.git
+    #   ref: master
 
   chatview: # ^2.2.0
     # path: ../nit_flutter_chatview

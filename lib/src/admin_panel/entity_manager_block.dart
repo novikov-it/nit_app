@@ -15,33 +15,33 @@ extension GenericFormsExtension on WidgetRef {
                 ? (model) async => await deleteModel<Entity>(model)
                 : null,
           );
-
-  // NitGenericModelWrapper
-  //     nitGenericFormWrapper<Entity extends SerializableModel>(
-  //   Entity? model,
-  // )
-  //   final Map<String, dynamic> json = model?.toJson() ?? {};
-
-  //   return NitGenericModelWrapper(
-  //     initialData: json,
-  //     saveAction: (updatedData) async =>
-  //         null !=
-  //         await saveModel<Entity>(
-  //           NitToolsClient.protocol.deserializeByClassName(
-  //             {
-  //               'className': Entity.toString(),
-  //               'data': Map.fromEntries(
-  //                 [
-  //                   ...json.entries,
-  //                   ...updatedData.entries,
-  //                 ],
-  //               ),
-  //             },
-  //           ),
-  //         ),
-  //   );
-  // }
 }
+// NitGenericModelWrapper
+//     nitGenericFormWrapper<Entity extends SerializableModel>(
+//   Entity? model,
+// )
+//   final Map<String, dynamic> json = model?.toJson() ?? {};
+
+//   return NitGenericModelWrapper(
+//     initialData: json,
+//     saveAction: (updatedData) async =>
+//         null !=
+//         await saveModel<Entity>(
+//           NitToolsClient.protocol.deserializeByClassName(
+//             {
+//               'className': Entity.toString(),
+//               'data': Map.fromEntries(
+//                 [
+//                   ...json.entries,
+//                   ...updatedData.entries,
+//                 ],
+//               ),
+//             },
+//           ),
+//         ),
+//   );
+// }
+// }
 
 class EntityManagerBlock<Entity extends SerializableModel,
         FormDescriptor extends NitGenericFormsFieldsEnum<Entity>>
@@ -76,9 +76,9 @@ class EntityManagerBlock<Entity extends SerializableModel,
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // return ref.read(entityManagerStateProvider<Entity>()).when(
-    final backendConfig = customBackendConfig ?? EntityListConfig.defaultConfig;
-    final entityManager =
-        ref.read(entityManagerStateProvider<Entity>()(backendConfig).notifier);
+    // final backendConfig = customBackendConfig ?? EntityListConfig.defaultConfig;
+    // final entityManager =
+    //     ref.read(entityManagerStateProvider<Entity>()(backendConfig).notifier);
 
     Widget addButton(BuildContext context) => FilledButton(
           onPressed: () async => context.showBottomSheetOrDialog<Entity>(
@@ -92,7 +92,10 @@ class EntityManagerBlock<Entity extends SerializableModel,
           child: const Text('Добавить'),
         );
 
-    return ref.watchEntityListState<Entity>(backendConfig: backendConfig).when(
+    return ref
+        .watchEntityListState<Entity>(
+            backendConfig: customBackendConfig ?? const EntityListConfig())
+        .when(
           error: (error, stackTrace) =>
               const Text("Не удалось подгрузить данные"),
           loading: () => const CircularProgressIndicator(),
