@@ -31,7 +31,7 @@ extension WidgetRefEntityListStateExtensions on WidgetRef {
   }) =>
       watch(
         entityListStateProvider<T>()(
-          backendConfig,
+          backendConfig ?? const EntityListConfig(),
         ),
       ).whenData(
         (data) => frontendFilter == null

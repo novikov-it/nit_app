@@ -7,19 +7,19 @@ late final Caller? nitToolsCaller;
 
 final entityListStateProviders = <Type,
     AsyncNotifierProviderFamily<EntityListState, List<dynamic>,
-        EntityListConfig?>>{};
+        EntityListConfig>>{};
 
-AsyncNotifierProviderFamily<EntityListState<T>, List<T>, EntityListConfig?>
+AsyncNotifierProviderFamily<EntityListState<T>, List<T>, EntityListConfig>
     entityListStateProvider<T extends SerializableModel>() {
   if (entityListStateProviders[T] == null) {
     entityListStateProviders[T] = AsyncNotifierProviderFamily<
-        EntityListState<T>, List<T>, EntityListConfig?>(
+        EntityListState<T>, List<T>, EntityListConfig>(
       EntityListState<T>.new,
     );
   }
 
   return entityListStateProviders[T] as AsyncNotifierProviderFamily<
-      EntityListState<T>, List<T>, EntityListConfig?>;
+      EntityListState<T>, List<T>, EntityListConfig>;
 }
 
 class EntityListState<Entity extends SerializableModel>
@@ -27,10 +27,10 @@ class EntityListState<Entity extends SerializableModel>
 // implements EntityManagerInterface<Entity>
 {
   @override
-  Future<List<Entity>> build(EntityListConfig? config) async {
+  Future<List<Entity>> build(EntityListConfig config) async {
     ref.onDispose(
       () => NitRepository.removeUpdatesListener<Entity>(
-        config?.customUpdatesListener ?? _updatesListener,
+        config.customUpdatesListener ?? _updatesListener,
       ),
     );
 
@@ -43,7 +43,7 @@ class EntityListState<Entity extends SerializableModel>
         // TODO: Изменить, toString() не работает на Web release из-за minification
         .getEntityList(
           className: Entity.toString(),
-          filters: config?.backendFilters,
+          filters: config.backendFilters,
         )
         .then(
           (response) => ref.processApiResponse<List<ObjectWrapper>>(
@@ -57,7 +57,7 @@ class EntityListState<Entity extends SerializableModel>
     ref.updateRepository(result, updateListeners: false);
 
     NitRepository.addUpdatesListener<Entity>(
-      config?.customUpdatesListener ?? _updatesListener,
+      config.customUpdatesListener ?? _updatesListener,
     );
 
     return result.map((e) => e.model as Entity).toList();
