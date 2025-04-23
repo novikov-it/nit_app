@@ -3,8 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
 
-late final Caller? nitToolsCaller;
-
 final entityListStateProviders = <Type,
     AsyncNotifierProviderFamily<EntityListState, List<dynamic>,
         EntityListConfig>>{};
