@@ -47,7 +47,7 @@ extension RefUpdateActionsExtension on Ref {
   }) {
     for (var wrapper in wrappedModels) {
       for (var repo in NitRepository.getAllModelProviders(wrapper)) {
-        read(repo.notifier).state = wrapper.model;
+        read(repo.notifier).state = wrapper.isDeleted ? null : wrapper.model;
 
         if (updateListeners) {
           NitRepository.updateListeningStates(

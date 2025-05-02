@@ -18,6 +18,12 @@ class FileUploaderHandler {
   ) =>
       '${DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())}-${file.name}$extension';
 
+  static Future<String?> pickAndUploadImageUrl({
+    ImageSource imageSource = ImageSource.gallery,
+  }) async =>
+      pickAndUploadImage(imageSource: imageSource)
+          .then((media) => media?.publicUrl);
+
   static Future<NitMedia?> pickAndUploadImage({
     ImageSource imageSource = ImageSource.gallery,
   }) async {
@@ -32,6 +38,13 @@ class FileUploaderHandler {
       xFile: file,
     );
   }
+
+  static Future<String?> uploadXFileToServerUrl({
+    required XFile xFile,
+    String? path,
+  }) async =>
+      uploadXFileToServer(xFile: xFile, path: path)
+          .then((media) => media.publicUrl);
 
   static Future<NitMedia> uploadXFileToServer({
     required XFile xFile,
@@ -54,6 +67,17 @@ class FileUploaderHandler {
       path: uploadPath,
     );
   }
+
+  static Future<String?> uploadBytesToServerUrl({
+    required Uint8List bytes,
+    required String path,
+  }) async =>
+      uploadBytesToServer(
+        bytes: bytes,
+        path: path,
+      ).then(
+        (media) => media.publicUrl,
+      );
 
   static Future<NitMedia> uploadBytesToServer({
     required Uint8List bytes,
