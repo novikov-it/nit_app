@@ -68,7 +68,9 @@ class EntityManagerState<Entity extends SerializableModel>
         state = AsyncValue.data(
           [
             if (!wrappedModel.isDeleted) wrappedModel.modelId!,
-            ...value.whereNot((e) => e == wrappedModel.modelId!),
+            ...value.whereNot(
+              (e) => e == wrappedModel.modelId!,
+            ),
           ],
         );
       },
