@@ -12,7 +12,8 @@ class NitDefaultModelsRepository {
   // }
 
   static String _setupRepository<T extends SerializableModel>(T object) {
-    final className = NitToolsClient.protocol.getClassNameForObject(object)!;
+    final className =
+        NitToolsClient.protocol.getClassNameForObject(object)!.split('.').last;
     NitRepository.setupRepository<T>(className);
     return className;
   }

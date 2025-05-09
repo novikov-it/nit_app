@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -12,8 +11,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nit_app/src/nit_auth/config/nit_auth_config.dart';
 import 'package:nit_app/src/session/notifications/nit_firebase_notifications_state.dart';
-// import 'package:nit_app/src/chats/state/chat_controller_state.dart';
-import 'package:nit_app/src/utils/deeplinks.dart';
 import 'package:nit_tools_client/nit_tools_client.dart';
 import 'package:oktoast/oktoast.dart';
 
@@ -64,7 +61,7 @@ class NitApp extends HookConsumerWidget {
     // this.redirectProvider,
     this.client,
     this.nitAuthConfig,
-    this.deeplinkHandler,
+    // this.deeplinkHandler,
     this.initializers,
     this.loadingScreen = const Center(
       child: CircularProgressIndicator(),
@@ -105,7 +102,7 @@ class NitApp extends HookConsumerWidget {
 
   final ServerpodClientShared? client;
   final NitAuthConfig? nitAuthConfig;
-  final void Function(WidgetRef, String)? deeplinkHandler;
+  // final void Function(WidgetRef, String)? deeplinkHandler;
 
   final List<FutureOr<bool> Function()>? initializers;
   final Widget loadingScreen;
@@ -141,8 +138,8 @@ class NitApp extends HookConsumerWidget {
               return true;
             },
             ...(initializers?.map((e) => () async => e()) ?? []),
-            if (!kIsWeb && deeplinkHandler != null)
-              () => ref.handleDeeplinks(deeplinkHandler),
+            // if (!kIsWeb && deeplinkHandler != null)
+            //   () => ref.handleDeeplinks(deeplinkHandler),
           ],
         ),
       ),
