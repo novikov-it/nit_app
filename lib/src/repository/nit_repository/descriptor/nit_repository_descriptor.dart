@@ -14,8 +14,8 @@ class NitRepositoryDescriptor<T extends SerializableModel, K> {
     required this.fieldName,
   });
 
-  String get className => T.toString();
+  String get className => NitRepository.typeName<T>();
   final String fieldName;
 
-  init() => NitRepository.addRepositoryDescriptor<T, K>(this);
+  bool init() => NitRepository.addRepositoryDescriptor<T, K>(this);
 }

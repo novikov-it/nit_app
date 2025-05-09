@@ -1,4 +1,5 @@
-import 'package:collection/collection.dart';
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -10,18 +11,12 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nit_app/src/nit_auth/config/nit_auth_config.dart';
-import 'package:nit_app/src/session/nit_socket_state/nit_socket_state.dart';
 import 'package:nit_app/src/session/notifications/nit_firebase_notifications_state.dart';
 // import 'package:nit_app/src/chats/state/chat_controller_state.dart';
 import 'package:nit_app/src/utils/deeplinks.dart';
-// import 'package:nit_router/nit_router.dart';
-import 'package:nit_tools_client/nit_tools_client.dart' as nit_tools;
 import 'package:nit_tools_client/nit_tools_client.dart';
 import 'package:oktoast/oktoast.dart';
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as auth;
 
-import 'repository/serverpod_connectors/entity_manager_state.dart';
-import 'session/nit_session_state/nit_session_state.dart';
 import 'utils/firebase.dart';
 
 class NitApp extends HookConsumerWidget {
@@ -112,7 +107,7 @@ class NitApp extends HookConsumerWidget {
   final NitAuthConfig? nitAuthConfig;
   final void Function(WidgetRef, String)? deeplinkHandler;
 
-  final List<Future<bool> Function()>? initializers;
+  final List<FutureOr<bool> Function()>? initializers;
   final Widget loadingScreen;
   final Widget loadingFailedScreen;
 
@@ -145,72 +140,7 @@ class NitApp extends HookConsumerWidget {
 
               return true;
             },
-            if (client != null)
-              () async {
-                final nitTools = client!.moduleLookup.values
-                    .firstWhereOrNull((e) => e is nit_tools.Caller);
-
-                if (nitTools != null) {
-                  nitToolsCaller = nitTools as nit_tools.Caller;
-                }
-
-                final authCaller = client!.moduleLookup.values
-                    .firstWhereOrNull((e) => e is auth.Caller);
-
-                if (authCaller == null) {
-                  throw Exception(
-                      'Auth module not enabled, can not init session. Add serverpod_auth module to the client');
-                }
-
-                // if (authCaller != null) {
-                //   authModuleCaller = authCaller as auth.Caller;
-                // }
-
-                // authModuleCaller = client!.moduleLookup.values
-                //     .firstWhereOrNull((e) => e is auth.Caller) as auth.Caller;
-
-                // final chatsCaller = client!.moduleLookup.values
-                //     .firstWhereOrNull((e) => e is chats.Caller);
-
-                // if (chatsCaller != null) {
-                //   chatsModuleCaller = chatsCaller as chats.Caller;
-                // }
-                // chatsModuleCaller = client!.moduleLookup.values
-                //     .firstWhereOrNull((e) => e is chats.Caller) as chats.Caller;
-
-                NitToolsClient.protocol = client!.serializationManager;
-
-                await ref.read(nitSessionStateProvider.notifier).init(
-                      authModuleCaller: authCaller as auth.Caller,
-                      // enableAppNotifications: true,
-                    );
-
-                return ref
-                    .read(nitSocketStateProvider.notifier)
-                    .init(client: client!);
-              },
-            if (nitAuthConfig != null)
-              () async {
-                NitAuthConfig.config = nitAuthConfig!;
-                return true;
-              },
-            ...(initializers ?? []),
-            // () async {
-            //   if (routerProvider != null) {
-            //     _router = ref.watch(routerProvider!);
-            //   } else {
-            //     _router = NitRouter.prepareRouter(
-            //       navigationZones: navigationZones!,
-            //       refreshListenable: authModuleCaller != null
-            //           ? ref
-            //               .read(nitSessionStateProvider)
-            //               .serverpodSessionManager
-            //           : null,
-            //       redirect: null,
-            //     );
-            //   }
-            //   return true;
-            // },
+            ...(initializers?.map((e) => () async => e()) ?? []),
             if (!kIsWeb && deeplinkHandler != null)
               () => ref.handleDeeplinks(deeplinkHandler),
           ],

@@ -9,14 +9,9 @@ class NitSerializableModelDropdownFieldWidget<Entity extends SerializableModel>
     super.key,
     required super.formField,
     required this.fieldDescriptor,
-    // required this.initialValue,
-    // required this.onSaved,
   });
 
   final NitSerializableModelDropdownFieldDescriptor<Entity> fieldDescriptor;
-  // final Entity? initialValue;
-  // final Function(Entity? value) Function(BuildContext context) onSaved;
-  // final List<Entity> optionsList;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,14 +22,11 @@ class NitSerializableModelDropdownFieldWidget<Entity extends SerializableModel>
                   ?.map(
                     (e) => NitBackendFilter(
                       fieldName: e.name,
-                      equalsTo:
-                          formStateProvider(context).values[e.name].toString(),
+                      equalsTo: formStateProvider(context).values[e].toString(),
                     ),
                   )
                   .toList()),
         )
-        // .whenData((data) =>
-        //     data.map((e) => ref.readModel<Entity>(e)).whereNotNull().toList())
         .nitWhen(
           errorWidget: const Text('Не удалось подгрузить опции'),
           loadingValue: [NitDefaultModelsRepository.mockModelId],

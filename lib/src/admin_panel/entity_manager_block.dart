@@ -16,58 +16,24 @@ extension GenericFormsExtension on WidgetRef {
                 : null,
           );
 }
-// NitGenericModelWrapper
-//     nitGenericFormWrapper<Entity extends SerializableModel>(
-//   Entity? model,
-// )
-//   final Map<String, dynamic> json = model?.toJson() ?? {};
-
-//   return NitGenericModelWrapper(
-//     initialData: json,
-//     saveAction: (updatedData) async =>
-//         null !=
-//         await saveModel<Entity>(
-//           NitToolsClient.protocol.deserializeByClassName(
-//             {
-//               'className': Entity.toString(),
-//               'data': Map.fromEntries(
-//                 [
-//                   ...json.entries,
-//                   ...updatedData.entries,
-//                 ],
-//               ),
-//             },
-//           ),
-//         ),
-//   );
-// }
-// }
 
 class EntityManagerBlock<Entity extends SerializableModel,
         FormDescriptor extends NitGenericFormsFieldsEnum<Entity>>
     extends ConsumerWidget {
   const EntityManagerBlock({
     super.key,
-    // required this.title,
     required this.fields,
     required this.listViewBuilder,
-    // this.additionalDetailsTabs,
-    // this.detailsRouteName,
-    // this.detailsRoutePathParameter,
     this.customBackendConfig,
     this.defaultValuesProvider,
     required this.allowDelete,
   });
 
-  // final String title;
   final List<FormDescriptor> fields;
   final Widget Function({
-    // Key? key,
     required int modelId,
   }) listViewBuilder;
-  // final List<Widget>? additionalDetailsTabs;
-  // final String? detailsRouteName;
-  // final String? detailsRoutePathParameter;
+
   final EntityListConfig? customBackendConfig;
   final Future<Map<FormDescriptor, dynamic>> Function(WidgetRef ref)?
       defaultValuesProvider;
@@ -75,11 +41,6 @@ class EntityManagerBlock<Entity extends SerializableModel,
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // return ref.read(entityManagerStateProvider<Entity>()).when(
-    // final backendConfig = customBackendConfig ?? EntityListConfig.defaultConfig;
-    // final entityManager =
-    //     ref.read(entityManagerStateProvider<Entity>()(backendConfig).notifier);
-
     Widget addButton(BuildContext context) => FilledButton(
           onPressed: () async => context.showBottomSheetOrDialog<Entity>(
             NitGenericForm<Entity, FormDescriptor>(
@@ -114,17 +75,6 @@ class EntityManagerBlock<Entity extends SerializableModel,
                             children: [
                               IconButton(
                                 onPressed: () async =>
-                                    // detailsRouteName != null &&
-                                    //         detailsRoutePathParameter != null
-                                    //     ? context.pushNamed(
-                                    //         detailsRouteName!,
-                                    //         pathParameters: {
-                                    //           detailsRoutePathParameter!:
-                                    //               modelId.toString()
-                                    //         },
-                                    //       )
-                                    // additionalDetailsTabs != null ? Navigator.push(context, MaterialPageRoute(builder: (context) => DetailsPage(scaffoldConstructor: sca,)))
-                                    // :
                                     await context.showBottomSheetOrDialog(
                                   NitGenericForm<Entity, FormDescriptor>(
                                     fields: fields,

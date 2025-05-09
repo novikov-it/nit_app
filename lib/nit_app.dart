@@ -9,6 +9,7 @@ export 'src/nit_app.dart';
 export 'src/nit_auth/nit_auth.dart';
 export 'src/nit_auth/phone_auth/state/phone_auth_state.dart';
 export 'src/nit_generic_forms_adapter/entity_dropdown/nit_serializable_model_dropdown_field_descriptor.dart';
+export 'src/nit_serverpod_tools_flutter.dart';
 export 'src/ref_extension/file_upload_handler.dart';
 export 'src/ref_extension/nit_app_ref_extension.dart';
 export 'src/ref_extension/nit_app_widget_ref_extension.dart';

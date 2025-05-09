@@ -34,15 +34,15 @@ class EntityManagerState<Entity extends SerializableModel>
       ),
     );
 
-    NitRepository.ensureDefaultDescriptor<Entity>();
+    // NitRepository.ensureDefaultDescriptor<Entity>();
 
     // TODO: Изменить, toString() не работает на Web release из-за minification
-    debugPrint("Building state for ${Entity.toString()}");
+    debugPrint("Building state for ${NitRepository.typeName<Entity>()}");
 
     final result = await nitToolsCaller!.nitCrud
         // TODO: Изменить, toString() не работает на Web release из-за minification
         .getAll(
-          className: Entity.toString(),
+          className: NitRepository.typeName<Entity>(),
           filters: config.backendFilters,
         )
         .then(

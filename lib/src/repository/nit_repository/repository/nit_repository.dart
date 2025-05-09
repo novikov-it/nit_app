@@ -14,6 +14,13 @@ class NitRepository {
   //   }
   // }
 
+  static final Map<Type, String> _typeNamesMapping = {};
+
+  static String typeName<T extends SerializableModel>() =>
+      _typeNamesMapping[T]!;
+
+  static String? maybeTypeName<T>() => _typeNamesMapping[T];
+
   static final Map<NitRepositoryDescriptor,
       StateProviderFamily<dynamic, dynamic>> _repositories = {};
   static final Map<String, List<NitRepositoryDescriptor>>
@@ -22,13 +29,16 @@ class NitRepository {
 
   static final Map<String, NitRepositoryDescriptor> _defaultDescriptors = {};
 
-  static ensureDefaultDescriptor<T extends SerializableModel>() {
+  static setupRepository<T extends SerializableModel>(
+    String mappingClassName,
+  ) {
+    _typeNamesMapping[T] = mappingClassName;
     _defaultDescriptor<T>();
   }
 
   static NitRepositoryDescriptor<T, int>
       _defaultDescriptor<T extends SerializableModel>() {
-    final className = T.toString();
+    final className = NitRepository.typeName<T>();
 
     if (_defaultDescriptors.containsKey(className)) {
       return _defaultDescriptors[className] as NitRepositoryDescriptor<T, int>;
@@ -45,7 +55,7 @@ class NitRepository {
     return _defaultDescriptors[className] = descriptor;
   }
 
-  static addRepositoryDescriptor<T extends SerializableModel, K>(
+  static bool addRepositoryDescriptor<T extends SerializableModel, K>(
     NitRepositoryDescriptor<T, K> descriptor,
   ) {
     // for (var d in descriptors) {
@@ -58,6 +68,8 @@ class NitRepository {
     );
 
     _customRepositoryDescriptors[descriptor.className]!.add(descriptor);
+
+    return true;
   }
 
   static addUpdatesListener<T extends SerializableModel>(
@@ -66,19 +78,19 @@ class NitRepository {
     ) listener,
   ) {
     // TODO: Изменить, toString() не работает на Web release из-за minification
-    if (_updateListeners[T.toString()] == null) {
-      _updateListeners[T.toString()] = [];
+    if (_updateListeners[NitRepository.typeName<T>()] == null) {
+      _updateListeners[NitRepository.typeName<T>()] = [];
     }
-    _updateListeners[T.toString()]!.add(listener);
+    _updateListeners[NitRepository.typeName<T>()]!.add(listener);
   }
 
-  static removeUpdatesListener<T>(
+  static removeUpdatesListener<T extends SerializableModel>(
       Function(
         ObjectWrapper wrappedModel,
       ) listener) {
     // TODO: Изменить, toString() не работает на Web release из-за minification
-    if (_updateListeners[T.toString()] != null) {
-      _updateListeners[T.toString()]!.remove(listener);
+    if (_updateListeners[NitRepository.typeName<T>()] != null) {
+      _updateListeners[NitRepository.typeName<T>()]!.remove(listener);
     }
   }
 

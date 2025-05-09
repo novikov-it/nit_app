@@ -26,13 +26,13 @@ class SingleItemCustomProviderState<T extends SerializableModel>
   Future<int?> build(
     SingleItemCustomProviderConfig arg,
   ) async {
-    debugPrint("Getting single ${T.toString()} with id $arg");
+    debugPrint("Getting single ${NitRepository.typeName<T>()} with id $arg");
     // final res = await ref.getAll<T>();
-    NitRepository.ensureDefaultDescriptor<T>();
+    // NitRepository.ensureDefaultDescriptor<T>();
 
     return await nitToolsCaller!.nitCrud
         .getOneCustom(
-          className: T.toString(),
+          className: NitRepository.typeName<T>(),
           filters: arg.backendFilters,
         )
         .then((response) => ref.processApiResponse<int>(response))

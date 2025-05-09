@@ -1,3 +1,5 @@
+import 'package:nit_app/nit_app.dart';
+
 class NitDefaultModelsRepository {
   static const int mockModelId = 0;
 
@@ -9,10 +11,22 @@ class NitDefaultModelsRepository {
   //   }
   // }
 
-  static put<T>(T model) => repository[T.toString()] = model;
+  static String _setupRepository<T extends SerializableModel>(T object) {
+    final className = NitToolsClient.protocol.getClassNameForObject(object)!;
+    NitRepository.setupRepository<T>(className);
+    return className;
+  }
+
+  static putSerializableModel<T extends SerializableModel>(T model) =>
+      repository[_setupRepository(model)] = model;
+
+  static putOtherObject<T>(T model) {
+    assert(model is! SerializableModel);
+    return repository[T.toString()] = model;
+  }
 
   static T get<T>() {
-    final t = repository[T.toString()];
+    final t = repository[NitRepository.maybeTypeName<T>() ?? T.toString()];
     if (t == null) {
       throw UnimplementedError(
           "Default Models Repository doesn't contain a model of type $T");
