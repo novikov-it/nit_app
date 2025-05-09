@@ -102,7 +102,8 @@ class NitRepository {
     debugPrint(
       'Updating Listening State. Active listeners: ${_updateListeners.keys}. Updated id - ${wrappedModel.modelId} for class ${wrappedModel.className}',
     );
-    for (var listener in _updateListeners[wrappedModel.className] ?? []) {
+    for (var listener
+        in _updateListeners[wrappedModel.nitMappingClassname] ?? []) {
       listener(
         wrappedModel,
       );
