@@ -9,7 +9,7 @@ import 'file_upload_handler.dart';
 extension NitAppRefExtension on Ref {
   Future<NitMedia> uploadXFileToServer({
     required XFile xFile,
-    required String path,
+    String? path,
   }) async =>
       await FileUploaderHandler.uploadXFileToServer(xFile: xFile, path: path);
   Future<NitMedia> uploadBytesToServer({
