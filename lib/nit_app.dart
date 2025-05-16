@@ -25,3 +25,4 @@ export 'src/utils/alerting.dart';
 export 'src/zarchive/generic_forms/generic_forms.dart';
 export 'src/zarchive/nit_generic_form.dart';
 export 'src/zarchive/serverpod_chats/nit_chats.dart';
+export 'src/chats/UI/nit_chat_view.dart';
