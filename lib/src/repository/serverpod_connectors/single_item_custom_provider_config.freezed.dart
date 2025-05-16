@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$SingleItemCustomProviderConfig {
-  List<NitBackendFilter> get backendFilters =>
+  NitBackendFilter<dynamic> get backendFilter =>
       throw _privateConstructorUsedError;
 
   /// Create a copy of SingleItemCustomProviderConfig
@@ -34,7 +34,7 @@ abstract class $SingleItemCustomProviderConfigCopyWith<$Res> {
       _$SingleItemCustomProviderConfigCopyWithImpl<$Res,
           SingleItemCustomProviderConfig>;
   @useResult
-  $Res call({List<NitBackendFilter> backendFilters});
+  $Res call({NitBackendFilter<dynamic> backendFilter});
 }
 
 /// @nodoc
@@ -53,13 +53,13 @@ class _$SingleItemCustomProviderConfigCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? backendFilters = null,
+    Object? backendFilter = null,
   }) {
     return _then(_value.copyWith(
-      backendFilters: null == backendFilters
-          ? _value.backendFilters
-          : backendFilters // ignore: cast_nullable_to_non_nullable
-              as List<NitBackendFilter>,
+      backendFilter: null == backendFilter
+          ? _value.backendFilter
+          : backendFilter // ignore: cast_nullable_to_non_nullable
+              as NitBackendFilter<dynamic>,
     ) as $Val);
   }
 }
@@ -73,7 +73,7 @@ abstract class _$$SingleItemCustomProviderConfigImplCopyWith<$Res>
       __$$SingleItemCustomProviderConfigImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<NitBackendFilter> backendFilters});
+  $Res call({NitBackendFilter<dynamic> backendFilter});
 }
 
 /// @nodoc
@@ -91,13 +91,13 @@ class __$$SingleItemCustomProviderConfigImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? backendFilters = null,
+    Object? backendFilter = null,
   }) {
     return _then(_$SingleItemCustomProviderConfigImpl(
-      backendFilters: null == backendFilters
-          ? _value._backendFilters
-          : backendFilters // ignore: cast_nullable_to_non_nullable
-              as List<NitBackendFilter>,
+      backendFilter: null == backendFilter
+          ? _value.backendFilter
+          : backendFilter // ignore: cast_nullable_to_non_nullable
+              as NitBackendFilter<dynamic>,
     ));
   }
 }
@@ -106,21 +106,14 @@ class __$$SingleItemCustomProviderConfigImplCopyWithImpl<$Res>
 
 class _$SingleItemCustomProviderConfigImpl
     implements _SingleItemCustomProviderConfig {
-  const _$SingleItemCustomProviderConfigImpl(
-      {required final List<NitBackendFilter> backendFilters})
-      : _backendFilters = backendFilters;
+  const _$SingleItemCustomProviderConfigImpl({required this.backendFilter});
 
-  final List<NitBackendFilter> _backendFilters;
   @override
-  List<NitBackendFilter> get backendFilters {
-    if (_backendFilters is EqualUnmodifiableListView) return _backendFilters;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_backendFilters);
-  }
+  final NitBackendFilter<dynamic> backendFilter;
 
   @override
   String toString() {
-    return 'SingleItemCustomProviderConfig(backendFilters: $backendFilters)';
+    return 'SingleItemCustomProviderConfig(backendFilter: $backendFilter)';
   }
 
   @override
@@ -128,13 +121,12 @@ class _$SingleItemCustomProviderConfigImpl
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SingleItemCustomProviderConfigImpl &&
-            const DeepCollectionEquality()
-                .equals(other._backendFilters, _backendFilters));
+            (identical(other.backendFilter, backendFilter) ||
+                other.backendFilter == backendFilter));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_backendFilters));
+  int get hashCode => Object.hash(runtimeType, backendFilter);
 
   /// Create a copy of SingleItemCustomProviderConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -150,11 +142,11 @@ class _$SingleItemCustomProviderConfigImpl
 abstract class _SingleItemCustomProviderConfig
     implements SingleItemCustomProviderConfig {
   const factory _SingleItemCustomProviderConfig(
-          {required final List<NitBackendFilter> backendFilters}) =
+          {required final NitBackendFilter<dynamic> backendFilter}) =
       _$SingleItemCustomProviderConfigImpl;
 
   @override
-  List<NitBackendFilter> get backendFilters;
+  NitBackendFilter<dynamic> get backendFilter;
 
   /// Create a copy of SingleItemCustomProviderConfig
   /// with the given fields replaced by the non-null parameter values.

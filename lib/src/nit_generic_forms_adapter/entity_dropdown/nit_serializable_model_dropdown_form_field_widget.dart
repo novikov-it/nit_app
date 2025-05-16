@@ -16,17 +16,17 @@ class NitSerializableModelDropdownFieldWidget<Entity extends SerializableModel>
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ref
-        .watchEntityListState<Entity>(
-          backendConfig: EntityListConfig(
-              backendFilters: fieldDescriptor.filteringFields
-                  ?.map(
-                    (e) => NitBackendFilter(
-                      fieldName: e.name,
-                      equalsTo: formStateProvider(context).values[e].toString(),
-                    ),
-                  )
-                  .toList()),
-        )
+        .watchEntityListIdsAsync<Entity>(
+            // TODO: вернуть фильтры
+            // backendFilter: fieldDescriptor.filteringFields
+            //     ?.map(
+            //       (e) => NitBackendFilter<String>.equals(
+            //         fieldName: e.name,
+            //         equalsTo: formStateProvider(context).values[e].toString(),
+            //       ),
+            //     )
+            //     .toList(),
+            )
         .nitWhen(
           errorWidget: const Text('Не удалось подгрузить опции'),
           loadingValue: [NitDefaultModelsRepository.mockModelId],

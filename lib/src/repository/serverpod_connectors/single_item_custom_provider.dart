@@ -33,7 +33,7 @@ class SingleItemCustomProviderState<T extends SerializableModel>
     return await nitToolsCaller!.nitCrud
         .getOneCustom(
           className: NitRepository.typeName<T>(),
-          filters: arg.backendFilters,
+          filter: arg.backendFilter,
         )
         .then((response) => ref.processApiResponse<int>(response))
         .then((res) => res);

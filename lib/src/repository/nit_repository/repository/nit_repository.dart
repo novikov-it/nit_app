@@ -147,12 +147,10 @@ class NitRepository {
   ]) =>
           singleItemCustomProvider<T>()(
             SingleItemCustomProviderConfig(
-              backendFilters: [
-                NitBackendFilter(
-                  fieldName: (descriptor ?? _defaultDescriptor<T>()).fieldName,
-                  equalsTo: key.toString(),
-                )
-              ],
+              backendFilter: NitBackendFilter<K>.equals(
+                fieldName: (descriptor ?? _defaultDescriptor<T>()).fieldName,
+                equalsTo: key,
+              ),
             ),
           );
 

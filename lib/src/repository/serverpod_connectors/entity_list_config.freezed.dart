@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$EntityListConfig {
-  List<NitBackendFilter>? get backendFilters =>
+  NitBackendFilter<dynamic>? get backendFilter =>
       throw _privateConstructorUsedError;
   dynamic Function(ObjectWrapper)? get customUpdatesListener =>
       throw _privateConstructorUsedError;
@@ -35,7 +35,7 @@ abstract class $EntityListConfigCopyWith<$Res> {
       _$EntityListConfigCopyWithImpl<$Res, EntityListConfig>;
   @useResult
   $Res call(
-      {List<NitBackendFilter>? backendFilters,
+      {NitBackendFilter<dynamic>? backendFilter,
       dynamic Function(ObjectWrapper)? customUpdatesListener});
 }
 
@@ -54,14 +54,14 @@ class _$EntityListConfigCopyWithImpl<$Res, $Val extends EntityListConfig>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? backendFilters = freezed,
+    Object? backendFilter = freezed,
     Object? customUpdatesListener = freezed,
   }) {
     return _then(_value.copyWith(
-      backendFilters: freezed == backendFilters
-          ? _value.backendFilters
-          : backendFilters // ignore: cast_nullable_to_non_nullable
-              as List<NitBackendFilter>?,
+      backendFilter: freezed == backendFilter
+          ? _value.backendFilter
+          : backendFilter // ignore: cast_nullable_to_non_nullable
+              as NitBackendFilter<dynamic>?,
       customUpdatesListener: freezed == customUpdatesListener
           ? _value.customUpdatesListener
           : customUpdatesListener // ignore: cast_nullable_to_non_nullable
@@ -79,7 +79,7 @@ abstract class _$$EntityListConfigImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<NitBackendFilter>? backendFilters,
+      {NitBackendFilter<dynamic>? backendFilter,
       dynamic Function(ObjectWrapper)? customUpdatesListener});
 }
 
@@ -96,14 +96,14 @@ class __$$EntityListConfigImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? backendFilters = freezed,
+    Object? backendFilter = freezed,
     Object? customUpdatesListener = freezed,
   }) {
     return _then(_$EntityListConfigImpl(
-      backendFilters: freezed == backendFilters
-          ? _value._backendFilters
-          : backendFilters // ignore: cast_nullable_to_non_nullable
-              as List<NitBackendFilter>?,
+      backendFilter: freezed == backendFilter
+          ? _value.backendFilter
+          : backendFilter // ignore: cast_nullable_to_non_nullable
+              as NitBackendFilter<dynamic>?,
       customUpdatesListener: freezed == customUpdatesListener
           ? _value.customUpdatesListener
           : customUpdatesListener // ignore: cast_nullable_to_non_nullable
@@ -116,26 +116,16 @@ class __$$EntityListConfigImplCopyWithImpl<$Res>
 
 class _$EntityListConfigImpl implements _EntityListConfig {
   const _$EntityListConfigImpl(
-      {final List<NitBackendFilter>? backendFilters,
-      this.customUpdatesListener})
-      : _backendFilters = backendFilters;
+      {this.backendFilter, this.customUpdatesListener});
 
-  final List<NitBackendFilter>? _backendFilters;
   @override
-  List<NitBackendFilter>? get backendFilters {
-    final value = _backendFilters;
-    if (value == null) return null;
-    if (_backendFilters is EqualUnmodifiableListView) return _backendFilters;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
+  final NitBackendFilter<dynamic>? backendFilter;
   @override
   final dynamic Function(ObjectWrapper)? customUpdatesListener;
 
   @override
   String toString() {
-    return 'EntityListConfig(backendFilters: $backendFilters, customUpdatesListener: $customUpdatesListener)';
+    return 'EntityListConfig(backendFilter: $backendFilter, customUpdatesListener: $customUpdatesListener)';
   }
 
   @override
@@ -143,17 +133,15 @@ class _$EntityListConfigImpl implements _EntityListConfig {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$EntityListConfigImpl &&
-            const DeepCollectionEquality()
-                .equals(other._backendFilters, _backendFilters) &&
+            (identical(other.backendFilter, backendFilter) ||
+                other.backendFilter == backendFilter) &&
             (identical(other.customUpdatesListener, customUpdatesListener) ||
                 other.customUpdatesListener == customUpdatesListener));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_backendFilters),
-      customUpdatesListener);
+  int get hashCode =>
+      Object.hash(runtimeType, backendFilter, customUpdatesListener);
 
   /// Create a copy of EntityListConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -167,12 +155,12 @@ class _$EntityListConfigImpl implements _EntityListConfig {
 
 abstract class _EntityListConfig implements EntityListConfig {
   const factory _EntityListConfig(
-          {final List<NitBackendFilter>? backendFilters,
+          {final NitBackendFilter<dynamic>? backendFilter,
           final dynamic Function(ObjectWrapper)? customUpdatesListener}) =
       _$EntityListConfigImpl;
 
   @override
-  List<NitBackendFilter>? get backendFilters;
+  NitBackendFilter<dynamic>? get backendFilter;
   @override
   dynamic Function(ObjectWrapper)? get customUpdatesListener;
 

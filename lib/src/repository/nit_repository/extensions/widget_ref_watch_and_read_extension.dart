@@ -112,15 +112,18 @@ extension WidgetRefWatchAndReadExtension on WidgetRef {
           );
   }
 
-  AsyncValue<T> watchModelCustomAsync<T extends SerializableModel>(
-    SingleItemCustomProviderConfig config,
-  ) =>
-      watchMaybeModelCustomAsync<T>(config).whenData((res) => res!);
+  AsyncValue<T> watchModelCustomAsync<T extends SerializableModel>({
+    required NitBackendFilter backendFilter,
+  }) =>
+      watchMaybeModelCustomAsync<T>(backendFilter: backendFilter)
+          .whenData((res) => res!);
 
-  AsyncValue<T?> watchMaybeModelCustomAsync<T extends SerializableModel>(
-    SingleItemCustomProviderConfig config,
-  ) =>
-      watch(singleItemCustomProvider<T>()(config)).whenData(
+  AsyncValue<T?> watchMaybeModelCustomAsync<T extends SerializableModel>({
+    required NitBackendFilter backendFilter,
+  }) =>
+      watch(singleItemCustomProvider<T>()(
+              SingleItemCustomProviderConfig(backendFilter: backendFilter)))
+          .whenData(
         (value) => value == null
             ? null
             : watchModel<T>(
@@ -128,34 +131,40 @@ extension WidgetRefWatchAndReadExtension on WidgetRef {
               ),
       );
 
-  Future<T> readModelCustom<T extends SerializableModel>(
-    SingleItemCustomProviderConfig config,
-  ) async =>
-      (await readMaybeModelCustom<T>(config))!;
+  Future<T> watchModelCustom<T extends SerializableModel>({
+    required NitBackendFilter backendFilter,
+  }) async =>
+      (await watchMaybeModelCustom<T>(backendFilter: backendFilter))!;
 
-  Future<T?> readMaybeModelCustom<T extends SerializableModel>(
-    SingleItemCustomProviderConfig config,
-  ) async =>
-      watch(singleItemCustomProvider<T>()(config).future).then(
+  Future<T?> watchMaybeModelCustom<T extends SerializableModel>({
+    required NitBackendFilter backendFilter,
+  }) async =>
+      watch(singleItemCustomProvider<T>()(
+                  SingleItemCustomProviderConfig(backendFilter: backendFilter))
+              .future)
+          .then(
+        (value) => value == null
+            ? null
+            : watchModel<T>(
+                value,
+              ),
+      );
+
+  Future<T> readModelCustom<T extends SerializableModel>({
+    required NitBackendFilter backendFilter,
+  }) async =>
+      (await readMaybeModelCustom<T>(backendFilter: backendFilter))!;
+
+  Future<T?> readMaybeModelCustom<T extends SerializableModel>({
+    required NitBackendFilter backendFilter,
+  }) async =>
+      watch(singleItemCustomProvider<T>()(
+                  SingleItemCustomProviderConfig(backendFilter: backendFilter))
+              .future)
+          .then(
         (value) => value == null
             ? null
             : readModel<T>(
-                value,
-              ),
-      );
-
-  Future<T> watchModelCustom<T extends SerializableModel>(
-    SingleItemCustomProviderConfig config,
-  ) async =>
-      (await watchMaybeModelCustom<T>(config))!;
-
-  Future<T?> watchMaybeModelCustom<T extends SerializableModel>(
-    SingleItemCustomProviderConfig config,
-  ) async =>
-      watch(singleItemCustomProvider<T>()(config).future).then(
-        (value) => value == null
-            ? null
-            : watchModel<T>(
                 value,
               ),
       );

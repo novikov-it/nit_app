@@ -6,6 +6,6 @@ part 'single_item_custom_provider_config.freezed.dart';
 @freezed
 class SingleItemCustomProviderConfig with _$SingleItemCustomProviderConfig {
   const factory SingleItemCustomProviderConfig({
-    required List<NitBackendFilter> backendFilters,
+    required NitBackendFilter backendFilter,
   }) = _SingleItemCustomProviderConfig;
 }

@@ -83,10 +83,10 @@ class NitSocketState extends _$NitSocketState {
     print("Received ${update.className} with id ${update.modelId}");
     if (update.model is NitAppNotification) {
       ref.notifyUser(update.model as NitAppNotification);
-      for (var enclosedObject
-          in (update.model as NitAppNotification).updatedEntities ?? []) {
-        ref.updateFromStream(enclosedObject);
-      }
+      // for (var enclosedObject
+      //     in (update.model as NitAppNotification).updatedEntities ?? []) {
+      //   ref.updateFromStream(enclosedObject);
+      // }
     }
 
     ref.updateFromStream(update);

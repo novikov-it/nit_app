@@ -24,7 +24,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
     super.key,
     required this.fields,
     required this.listViewBuilder,
-    this.customBackendConfig,
+    this.customBackendFilter,
     this.defaultValuesProvider,
     required this.allowDelete,
   });
@@ -34,7 +34,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
     required int modelId,
   }) listViewBuilder;
 
-  final EntityListConfig? customBackendConfig;
+  final NitBackendFilter? customBackendFilter;
   final Future<Map<FormDescriptor, dynamic>> Function(WidgetRef ref)?
       defaultValuesProvider;
   final bool allowDelete;
@@ -54,8 +54,7 @@ class EntityManagerBlock<Entity extends SerializableModel,
         );
 
     return ref
-        .watchEntityListState<Entity>(
-            backendConfig: customBackendConfig ?? const EntityListConfig())
+        .watchEntityListIdsAsync<Entity>(backendFilter: customBackendFilter)
         .when(
           error: (error, stackTrace) =>
               const Text("Не удалось подгрузить данные"),

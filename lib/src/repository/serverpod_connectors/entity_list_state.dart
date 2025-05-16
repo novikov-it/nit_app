@@ -41,7 +41,7 @@ class EntityListState<Entity extends SerializableModel>
         // TODO: Изменить, toString() не работает на Web release из-за minification
         .getEntityList(
           className: NitRepository.typeName<Entity>(),
-          filters: config.backendFilters,
+          filter: config.backendFilter,
         )
         .then(
           (response) => ref.processApiResponse<List<ObjectWrapper>>(
