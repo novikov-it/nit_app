@@ -23,27 +23,21 @@ AsyncNotifierProviderFamily<EntityManagerState<T>, List<int>, EntityListConfig>
 }
 
 class EntityManagerState<Entity extends SerializableModel>
-    extends FamilyAsyncNotifier<List<int>, EntityListConfig>
-// implements EntityManagerInterface<Entity>
-{
+    extends FamilyAsyncNotifier<List<int>, EntityListConfig> {
   @override
-  Future<List<int>> build(EntityListConfig config) async {
+  Future<List<int>> build(EntityListConfig arg) async {
     ref.onDispose(
       () => NitRepository.removeUpdatesListener<Entity>(
-        config.customUpdatesListener ?? _updatesListener,
+        arg.customUpdatesListener ?? _updatesListener,
       ),
     );
 
-    // NitRepository.ensureDefaultDescriptor<Entity>();
-
-    // TODO: Изменить, toString() не работает на Web release из-за minification
     debugPrint("Building state for ${NitRepository.typeName<Entity>()}");
 
     final result = await nitToolsCaller!.nitCrud
-        // TODO: Изменить, toString() не работает на Web release из-за minification
         .getAll(
           className: NitRepository.typeName<Entity>(),
-          filters: config.backendFilters,
+          filter: arg.backendFilter,
         )
         .then(
           (response) => ref.processApiResponse<List<int>>(
@@ -56,7 +50,7 @@ class EntityManagerState<Entity extends SerializableModel>
         );
 
     NitRepository.addUpdatesListener<Entity>(
-      config.customUpdatesListener ?? _updatesListener,
+      arg.customUpdatesListener ?? _updatesListener,
     );
 
     return result;
@@ -76,64 +70,4 @@ class EntityManagerState<Entity extends SerializableModel>
       },
     );
   }
-
-  // void manualInsert(int modelId, Entity model) async {
-  //   return await future.then((value) async {
-  //     ref.manualUpdate(modelId, model);
-
-  //     state = AsyncValue.data(
-  //       [
-  //         modelId,
-  //         ...value.whereNot((e) => e == modelId),
-  //       ],
-  //     );
-  //   });
-  // }
-
-  // @override
-  // Future<int?> save(
-  //   Entity model, {
-  //   bool andRemoveFromList = false,
-  // }) async {
-  //   return await future.then(
-  //     (value) async => await nitToolsCaller!.nitCrud
-  //         .saveModel(
-  //           wrappedModel: ObjectWrapper.wrap(model: model),
-  //         )
-  //         .then((response) => ref.processApiResponse<int>(response))
-  //         .then(
-  //       (res) {
-  //         if (res == null) return null;
-
-  //         state = AsyncValue.data([
-  //           if (!andRemoveFromList) res,
-  //           ...value.whereNot((e) => e == res)
-  //         ]);
-  //         debugPrint("Updated value = ${state.value}");
-  //         return res;
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // @override
-  // Future<bool> delete(int modelId) async {
-  //   return await future.then(
-  //     (value) async => await nitToolsCaller!.nitCrud
-  //         .delete(
-  //           // TODO: Изменить, toString() не работает на Web release из-за minification
-  //           className: Entity.toString(), modelId: modelId,
-  //         )
-  //         .then((response) => ref.processApiResponse<bool>(response))
-  //         .then(
-  //       (res) {
-  //         if (res == true) {
-  //           state = AsyncValue.data([...value.whereNot((e) => e == modelId)]);
-  //           debugPrint("Updated value = ${state.value}");
-  //         }
-  //         return res ?? false;
-  //       },
-  //     ),
-  //   );
-  // }
 }

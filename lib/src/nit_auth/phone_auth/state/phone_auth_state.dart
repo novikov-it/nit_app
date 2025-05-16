@@ -35,13 +35,9 @@ class PhoneAuthState extends _$PhoneAuthState {
   Future<bool> userExists() async {
     return null !=
         await ref.readMaybeModelCustom<UserInfo>(
-          SingleItemCustomProviderConfig(
-            backendFilters: [
-              NitBackendFilter(
-                fieldName: 'userIdentifier',
-                equalsTo: _phone,
-              ),
-            ],
+          backendFilter: NitBackendFilter<String>.equals(
+            fieldName: 'userIdentifier',
+            equalsTo: _phone,
           ),
         );
   }

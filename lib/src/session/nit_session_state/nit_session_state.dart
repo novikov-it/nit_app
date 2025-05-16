@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:nit_app/nit_app.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/module.dart' as auth;
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
@@ -21,6 +20,7 @@ class NitSessionStateModel with _$NitSessionStateModel {
 @Riverpod(keepAlive: true)
 class NitSessionState extends _$NitSessionState {
   late final SessionManager _sessionManager;
+  late final Function(int? userId)? _onSessionUpdatePreloadActions;
   // Future<void> Function(int? userId)? _preloadActions;
 
   @override
@@ -34,16 +34,17 @@ class NitSessionState extends _$NitSessionState {
 
   Future<bool> init({
     required auth.Caller authModuleCaller,
-    // Future<void> Function(int? userId)? preloadActions,
+    Function(int? userId)? onSessionUpdatePreloadActions,
   }) async {
     // _preloadActions = preloadActions;
     _sessionManager = SessionManager(
       caller: authModuleCaller,
     );
+    _onSessionUpdatePreloadActions = onSessionUpdatePreloadActions;
 
     if (!await _sessionManager.initialize()) return false;
 
-    if (_sessionManager.signedInUser != null) await _updateRepository();
+    await _triggerPreloadActions();
 
     state = state.copyWith(
       serverpodSessionManager: _sessionManager,
@@ -60,21 +61,13 @@ class NitSessionState extends _$NitSessionState {
     return await _sessionManager.signOut();
   }
 
-  _updateRepository() async {
-    // if (_preloadActions != null) {
-    //   await _preloadActions!(_sessionManager.signedInUser?.id);
+  _triggerPreloadActions() async {
+    // if (
+    //     // _sessionManager.signedInUser != null &&
+    //     _onSessionUpdatePreloadActions != null) {
+    await _onSessionUpdatePreloadActions
+        ?.call(_sessionManager.signedInUser?.id);
     // }
-    await nitToolsCaller!.nitCrud.getOneCustom(
-      className: 'UserProfile',
-      filters: [
-        NitBackendFilter(
-          fieldName: 'userId',
-          equalsTo: _sessionManager.signedInUser!.id!.toString(),
-        )
-      ],
-    ).then(
-      (response) => ref.processApiResponse<int>(response),
-    );
   }
 
   _refresh() async {
@@ -96,7 +89,7 @@ class NitSessionState extends _$NitSessionState {
       // }
       // _updateFcm();
 
-      if (_sessionManager.signedInUser != null) await _updateRepository();
+      await _triggerPreloadActions();
 
       state = NitSessionStateModel(
         serverpodSessionManager: _sessionManager,

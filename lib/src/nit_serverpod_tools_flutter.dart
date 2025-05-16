@@ -54,7 +54,21 @@ extension NitServerpodToolsExtension on WidgetRef {
 
     await read(nitSessionStateProvider.notifier).init(
       authModuleCaller: authCaller as auth.Caller,
-      // enableAppNotifications: true,
+      onSessionUpdatePreloadActions: (userId) async {
+        if (userId != null) {
+          await nitToolsCaller!.nitCrud
+              .getOneCustom(
+                className: 'UserProfile',
+                filter: NitBackendFilter<int>.equals(
+                  fieldName: 'userId',
+                  equalsTo: userId,
+                ),
+              )
+              .then(
+                (response) => processApiResponse<int>(response),
+              );
+        }
+      },
     );
 
     if (nitAuthConfig != null) NitAuthConfig.config = nitAuthConfig;
