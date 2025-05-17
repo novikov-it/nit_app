@@ -59,9 +59,10 @@ extension NitServerpodToolsExtension on WidgetRef {
           await nitToolsCaller!.nitCrud
               .getOneCustom(
                 className: 'UserProfile',
-                filter: NitBackendFilter<int>.equals(
+                filter: NitBackendFilter<int>.value(
+                  type: NitBackendFilterType.equals,
                   fieldName: 'userId',
-                  equalsTo: userId,
+                  fieldValue: userId,
                 ),
               )
               .then(
