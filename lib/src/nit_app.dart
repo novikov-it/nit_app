@@ -57,10 +57,6 @@ class NitApp extends HookConsumerWidget {
     super.key,
     required this.title,
     required this.routerProvider,
-    // this.navigationZones,
-    // this.redirectProvider,
-    this.client,
-    this.nitAuthConfig,
     // this.deeplinkHandler,
     this.initializers,
     this.loadingScreen = const Center(
@@ -100,8 +96,6 @@ class NitApp extends HookConsumerWidget {
 
   // Provider<NitRedirectsStateModel>? redirectProvider;
 
-  final ServerpodClientShared? client;
-  final NitAuthConfig? nitAuthConfig;
   // final void Function(WidgetRef, String)? deeplinkHandler;
 
   final List<FutureOr<bool> Function()>? initializers;
