@@ -7,6 +7,7 @@ part 'entity_list_config.freezed.dart';
 class EntityListConfig with _$EntityListConfig {
   const factory EntityListConfig({
     NitBackendFilter? backendFilter,
+    int? pageSize,
     Function(ObjectWrapper wrappedModel)? customUpdatesListener,
   }) = _EntityListConfig;
 

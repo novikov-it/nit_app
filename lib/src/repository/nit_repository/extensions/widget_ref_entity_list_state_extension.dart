@@ -73,4 +73,27 @@ extension WidgetRefEntityListStateExtensions on WidgetRef {
             ? data
             : data.where((e) => _filter(e, frontendFilter)).toList(),
       );
+
+  AsyncValue<List<T>>
+      watchEntityListCustomizedAsync<T extends SerializableModel>({
+    required EntityListConfig entityListConfig,
+    bool Function(T model)? frontendFilter,
+  }) =>
+          watch(
+            entityListStateProvider<T>()(
+              entityListConfig,
+            ),
+          ).whenData(
+            (data) => frontendFilter == null
+                ? data
+                : data.where((e) => _filter(e, frontendFilter)).toList(),
+          );
+
+  loadNextPageForCustomizedEntityListMore<T extends SerializableModel>({
+    required EntityListConfig entityListConfig,
+  }) =>
+      read(entityListStateProvider<T>()(
+        entityListConfig,
+      ).notifier)
+          .loadNextPage();
 }

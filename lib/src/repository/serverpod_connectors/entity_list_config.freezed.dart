@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$EntityListConfig {
   NitBackendFilter<dynamic>? get backendFilter =>
       throw _privateConstructorUsedError;
+  int? get pageSize => throw _privateConstructorUsedError;
   dynamic Function(ObjectWrapper)? get customUpdatesListener =>
       throw _privateConstructorUsedError;
 
@@ -36,6 +37,7 @@ abstract class $EntityListConfigCopyWith<$Res> {
   @useResult
   $Res call(
       {NitBackendFilter<dynamic>? backendFilter,
+      int? pageSize,
       dynamic Function(ObjectWrapper)? customUpdatesListener});
 }
 
@@ -55,6 +57,7 @@ class _$EntityListConfigCopyWithImpl<$Res, $Val extends EntityListConfig>
   @override
   $Res call({
     Object? backendFilter = freezed,
+    Object? pageSize = freezed,
     Object? customUpdatesListener = freezed,
   }) {
     return _then(_value.copyWith(
@@ -62,6 +65,10 @@ class _$EntityListConfigCopyWithImpl<$Res, $Val extends EntityListConfig>
           ? _value.backendFilter
           : backendFilter // ignore: cast_nullable_to_non_nullable
               as NitBackendFilter<dynamic>?,
+      pageSize: freezed == pageSize
+          ? _value.pageSize
+          : pageSize // ignore: cast_nullable_to_non_nullable
+              as int?,
       customUpdatesListener: freezed == customUpdatesListener
           ? _value.customUpdatesListener
           : customUpdatesListener // ignore: cast_nullable_to_non_nullable
@@ -80,6 +87,7 @@ abstract class _$$EntityListConfigImplCopyWith<$Res>
   @useResult
   $Res call(
       {NitBackendFilter<dynamic>? backendFilter,
+      int? pageSize,
       dynamic Function(ObjectWrapper)? customUpdatesListener});
 }
 
@@ -97,6 +105,7 @@ class __$$EntityListConfigImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? backendFilter = freezed,
+    Object? pageSize = freezed,
     Object? customUpdatesListener = freezed,
   }) {
     return _then(_$EntityListConfigImpl(
@@ -104,6 +113,10 @@ class __$$EntityListConfigImplCopyWithImpl<$Res>
           ? _value.backendFilter
           : backendFilter // ignore: cast_nullable_to_non_nullable
               as NitBackendFilter<dynamic>?,
+      pageSize: freezed == pageSize
+          ? _value.pageSize
+          : pageSize // ignore: cast_nullable_to_non_nullable
+              as int?,
       customUpdatesListener: freezed == customUpdatesListener
           ? _value.customUpdatesListener
           : customUpdatesListener // ignore: cast_nullable_to_non_nullable
@@ -116,16 +129,18 @@ class __$$EntityListConfigImplCopyWithImpl<$Res>
 
 class _$EntityListConfigImpl implements _EntityListConfig {
   const _$EntityListConfigImpl(
-      {this.backendFilter, this.customUpdatesListener});
+      {this.backendFilter, this.pageSize, this.customUpdatesListener});
 
   @override
   final NitBackendFilter<dynamic>? backendFilter;
+  @override
+  final int? pageSize;
   @override
   final dynamic Function(ObjectWrapper)? customUpdatesListener;
 
   @override
   String toString() {
-    return 'EntityListConfig(backendFilter: $backendFilter, customUpdatesListener: $customUpdatesListener)';
+    return 'EntityListConfig(backendFilter: $backendFilter, pageSize: $pageSize, customUpdatesListener: $customUpdatesListener)';
   }
 
   @override
@@ -135,13 +150,15 @@ class _$EntityListConfigImpl implements _EntityListConfig {
             other is _$EntityListConfigImpl &&
             (identical(other.backendFilter, backendFilter) ||
                 other.backendFilter == backendFilter) &&
+            (identical(other.pageSize, pageSize) ||
+                other.pageSize == pageSize) &&
             (identical(other.customUpdatesListener, customUpdatesListener) ||
                 other.customUpdatesListener == customUpdatesListener));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, backendFilter, customUpdatesListener);
+      Object.hash(runtimeType, backendFilter, pageSize, customUpdatesListener);
 
   /// Create a copy of EntityListConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -156,11 +173,14 @@ class _$EntityListConfigImpl implements _EntityListConfig {
 abstract class _EntityListConfig implements EntityListConfig {
   const factory _EntityListConfig(
           {final NitBackendFilter<dynamic>? backendFilter,
+          final int? pageSize,
           final dynamic Function(ObjectWrapper)? customUpdatesListener}) =
       _$EntityListConfigImpl;
 
   @override
   NitBackendFilter<dynamic>? get backendFilter;
+  @override
+  int? get pageSize;
   @override
   dynamic Function(ObjectWrapper)? get customUpdatesListener;
 
