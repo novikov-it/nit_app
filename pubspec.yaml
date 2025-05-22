@@ -24,14 +24,12 @@ dependencies:
     git:
         url: git@github.com:novikov-it/nit_serverpod.git
         path: modules/serverpod_auth/serverpod_auth_phone_flutter
-        ref: main
 
   nit_tools_client:
     # path: ../nit_tools/nit_tools_client
     git:
       url: git@github.com:novikov-it/nit_tools.git
       path: nit_tools_client
-      ref: master
 
   nit_ui_kit: ^0.1.1
     # path: ../nit_ui_kit
@@ -55,7 +53,6 @@ dependencies:
     # path: ../nit_flutter_chatview
     git:
       url: git@github.com:novikov-it/nit_flutter_chatview.git
-      ref: main
 
   intl: ^0.19.0
   flutter_hooks: ^0.20.1
@@ -104,7 +101,6 @@ dependency_overrides:
     git:
       url: git@github.com:novikov-it/nit_serverpod.git
       path: modules/serverpod_auth/serverpod_auth_client
-      ref: main
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
