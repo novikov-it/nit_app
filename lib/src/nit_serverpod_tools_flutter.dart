@@ -5,10 +5,16 @@ import 'package:nit_app/src/session/nit_socket_state/nit_socket_state.dart';
 import 'package:nit_tools_client/nit_tools_client.dart' as nit_tools;
 import 'package:serverpod_auth_client/serverpod_auth_client.dart' as auth;
 
+enum UserIdMode {
+  userProfileId,
+  userInfoId;
+}
+
 extension NitServerpodToolsExtension on WidgetRef {
   Future<bool> initNitServerpodApp({
     required ServerpodClientShared client,
     required Function() initRepositoryFunction,
+    UserIdMode userIdMode = UserIdMode.userInfoId,
     List<NitRepositoryDescriptor>? customRepositoryDescriptors,
     NitAuthConfig? nitAuthConfig,
   }) async {
@@ -54,21 +60,26 @@ extension NitServerpodToolsExtension on WidgetRef {
 
     await read(nitSessionStateProvider.notifier).init(
       authModuleCaller: authCaller as auth.Caller,
-      onSessionUpdatePreloadActions: (userId) async {
-        if (userId != null) {
-          await nitToolsCaller!.nitCrud
+      signedInUserIdPreloadProcessing: (serverpodUserInfoId) async {
+        if (serverpodUserInfoId != null) {
+          final profileId = await nitToolsCaller!.nitCrud
               .getOneCustom(
                 className: 'UserProfile',
                 filter: NitBackendFilter<int>.value(
                   type: NitBackendFilterType.equals,
                   fieldName: 'userId',
-                  fieldValue: userId,
+                  fieldValue: serverpodUserInfoId,
                 ),
               )
               .then(
                 (response) => processApiResponse<int>(response),
               );
+
+          return userIdMode == UserIdMode.userProfileId
+              ? profileId
+              : serverpodUserInfoId;
         }
+        return null;
       },
     );
 
