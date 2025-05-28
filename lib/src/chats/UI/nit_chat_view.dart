@@ -8,9 +8,13 @@ import 'package:nit_app/src/chats/UI/widget/nit_chat_widgets.dart';
 
 class NitChatView extends HookConsumerWidget {
   final int chatId;
+  final Map<String, Widget Function(NitChatMessage message)>?
+      customMessageBuilders;
+
   const NitChatView({
     super.key,
     required this.chatId,
+    this.customMessageBuilders,
   });
 
   @override
@@ -41,7 +45,10 @@ class NitChatView extends HookConsumerWidget {
               itemCount: chatState.messages.length,
               itemBuilder: (context, index) {
                 final msg = chatState.messages[index];
-                return MessageBubble(message: msg);
+                return MessageBubble(
+                  message: msg,
+                  customMessageBuilders: customMessageBuilders,
+                );
               },
             ),
           ),

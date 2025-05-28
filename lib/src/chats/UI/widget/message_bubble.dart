@@ -6,14 +6,20 @@ class MessageBubble extends HookConsumerWidget {
   const MessageBubble({
     super.key,
     required this.message,
+    this.customMessageBuilders,
   });
+
+  final Map<String, Widget Function(NitChatMessage)>? customMessageBuilders;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final debounce = useRef<Timer?>(null);
 
     final isMe = message.userId == ref.signedInUserId;
-    final bubble = _MessageBubbleItem(message: message);
+    final bubble = _MessageBubbleItem(
+      message: message,
+      customMessageBuilders: customMessageBuilders,
+    );
 
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -42,9 +48,11 @@ class MessageBubble extends HookConsumerWidget {
 class _MessageBubbleItem extends ConsumerWidget {
   const _MessageBubbleItem({
     required this.message,
+    this.customMessageBuilders,
   });
 
   final NitChatMessage message;
+  final Map<String, Widget Function(NitChatMessage)>? customMessageBuilders;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -61,41 +69,45 @@ class _MessageBubbleItem extends ConsumerWidget {
           color: isMe ? theme.primaryColor : Colors.grey[300],
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Column(
-          crossAxisAlignment:
-              isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (message.attachmentIds != null &&
-                message.attachmentIds!.isNotEmpty) ...[
-              MediaGrid(
-                message: message,
-              ),
-              const SizedBox(height: 8),
-            ],
-            Text(
-              message.text ?? '',
-              style: TextStyle(
-                color: isMe ? Colors.white : Colors.black,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  '${message.sentAt.toLocal().hour}:${message.sentAt.toLocal().minute.toString().padLeft(2, '0')}',
-                  style: TextStyle(
-                    color: isMe ? Colors.white70 : Colors.black54,
-                    fontSize: 12,
+        child: customMessageBuilders != null &&
+                customMessageBuilders!
+                    .containsKey(message.customMessageType?.type)
+            ? customMessageBuilders![message.customMessageType!.type]!(message)
+            : Column(
+                crossAxisAlignment:
+                    isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (message.attachmentIds != null &&
+                      message.attachmentIds!.isNotEmpty) ...[
+                    MediaGrid(
+                      message: message,
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                  Text(
+                    message.text ?? '',
+                    style: TextStyle(
+                      color: isMe ? Colors.white : Colors.black,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 4),
-                ReadIndicator(message: message),
-              ],
-            ),
-          ],
-        ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '${message.sentAt.toLocal().hour}:${message.sentAt.toLocal().minute.toString().padLeft(2, '0')}',
+                        style: TextStyle(
+                          color: isMe ? Colors.white70 : Colors.black54,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      ReadIndicator(message: message),
+                    ],
+                  ),
+                ],
+              ),
       ),
     );
   }

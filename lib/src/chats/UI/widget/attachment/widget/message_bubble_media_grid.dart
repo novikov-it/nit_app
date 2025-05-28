@@ -2,7 +2,7 @@
 part of '../../nit_chat_widgets.dart';
 
 /// Grid widget to display message attachments as images
-class MediaGrid extends HookConsumerWidget {
+class MediaGrid extends ConsumerWidget {
   final NitChatMessage message;
 
   const MediaGrid({
@@ -10,57 +10,68 @@ class MediaGrid extends HookConsumerWidget {
     required this.message,
   });
 
+  Future<List<String>> _loadImages(WidgetRef ref) async {
+    if (message.attachmentIds == null || message.attachmentIds!.isEmpty) {
+      return [];
+    }
+    final futures = message.attachmentIds!
+        .map((e) async =>
+            ref.readOrFetchModel<NitMedia>(e).then((m) => m.publicUrl))
+        .toList();
+    return Future.wait(futures);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final images = useState<List<String>>([]);
-
-    useEffect(() {
-      images.value = message.attachmentIds!
-          .map((e) => ref.readModel<NitMedia>(e).publicUrl)
-          .toList();
-      return null;
-    }, [message]);
-
-    if (images.value.isEmpty) return const SizedBox.shrink();
-
-    if (images.value.length < 3) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(images.value.length, (index) {
-          return Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: index == 1 ? 4 : 0),
+    return FutureBuilder<List<String>>(
+      future: _loadImages(ref),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const SizedBox.shrink();
+        }
+        final images = snapshot.data!;
+        if (images.length < 3) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(images.length, (index) {
+              return Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(left: index == 1 ? 4 : 0),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: MessageBubbleImageTile(
+                      images: images,
+                      index: index,
+                    ),
+                  ),
+                ),
+              );
+            }),
+          );
+        }
+        return GridView.count(
+          crossAxisCount: 3,
+          mainAxisSpacing: 4,
+          crossAxisSpacing: 4,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: List.generate(images.length, (index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2.0),
               child: AspectRatio(
-                aspectRatio: 1,
+                aspectRatio: 1.2,
                 child: MessageBubbleImageTile(
-                  images: images.value,
+                  images: images,
                   index: index,
                 ),
               ),
-            ),
-          );
-        }),
-      );
-    }
-
-    return GridView.count(
-      crossAxisCount: 3,
-      mainAxisSpacing: 4,
-      crossAxisSpacing: 4,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      children: List.generate(images.value.length, (index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2.0),
-          child: AspectRatio(
-            aspectRatio: 1.2,
-            child: MessageBubbleImageTile(
-              images: images.value,
-              index: index,
-            ),
-          ),
+            );
+          }),
         );
-      }),
+      },
     );
   }
 }
