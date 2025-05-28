@@ -27,11 +27,11 @@ dependencies:
         ref: main
 
   nit_tools_client:
-    path: ../nit_tools/nit_tools_client
-    # git:
-    #   url: git@github.com:novikov-it/nit_tools.git
-    #   path: nit_tools_client
-    #   ref: master
+    # path: ../nit_tools/nit_tools_client
+    git:
+      url: git@github.com:novikov-it/nit_tools.git
+      path: nit_tools_client
+      ref: chat
 
   nit_ui_kit: ^0.1.1
     # path: ../nit_ui_kit
