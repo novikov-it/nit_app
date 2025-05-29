@@ -49,6 +49,8 @@ dependencies:
     # path: ../nit_generic_forms
     # git:
     #   url: git@github.com:novikov-it/nit_generic_forms.git
+    
+  scrollview_observer: ^1.26.1
     #   ref: master
 
   # chatview: # ^2.2.0

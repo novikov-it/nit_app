@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'nit_chat_view_state.dart';
+part of 'chat_ui_state.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$nitChatViewStateHash() => r'afa9b6a293c49ef418c6326759795d09c175a807';
+String _$chatUIStateHash() => r'ef664210d5cc55437ecc4d683ed78c4fee74ad74';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,36 +29,36 @@ class _SystemHash {
   }
 }
 
-abstract class _$NitChatViewState
-    extends BuildlessAutoDisposeNotifier<NitChatViewStateModel> {
+abstract class _$ChatUIState
+    extends BuildlessAutoDisposeNotifier<ChatUIStateModel> {
   late final int chatId;
 
-  NitChatViewStateModel build(
+  ChatUIStateModel build(
     int chatId,
   );
 }
 
-/// See also [NitChatViewState].
-@ProviderFor(NitChatViewState)
-const nitChatViewStateProvider = NitChatViewStateFamily();
+/// See also [ChatUIState].
+@ProviderFor(ChatUIState)
+const chatUIStateProvider = ChatUIStateFamily();
 
-/// See also [NitChatViewState].
-class NitChatViewStateFamily extends Family<NitChatViewStateModel> {
-  /// See also [NitChatViewState].
-  const NitChatViewStateFamily();
+/// See also [ChatUIState].
+class ChatUIStateFamily extends Family<ChatUIStateModel> {
+  /// See also [ChatUIState].
+  const ChatUIStateFamily();
 
-  /// See also [NitChatViewState].
-  NitChatViewStateProvider call(
+  /// See also [ChatUIState].
+  ChatUIStateProvider call(
     int chatId,
   ) {
-    return NitChatViewStateProvider(
+    return ChatUIStateProvider(
       chatId,
     );
   }
 
   @override
-  NitChatViewStateProvider getProviderOverride(
-    covariant NitChatViewStateProvider provider,
+  ChatUIStateProvider getProviderOverride(
+    covariant ChatUIStateProvider provider,
   ) {
     return call(
       provider.chatId,
@@ -77,30 +77,30 @@ class NitChatViewStateFamily extends Family<NitChatViewStateModel> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'nitChatViewStateProvider';
+  String? get name => r'chatUIStateProvider';
 }
 
-/// See also [NitChatViewState].
-class NitChatViewStateProvider extends AutoDisposeNotifierProviderImpl<
-    NitChatViewState, NitChatViewStateModel> {
-  /// See also [NitChatViewState].
-  NitChatViewStateProvider(
+/// See also [ChatUIState].
+class ChatUIStateProvider
+    extends AutoDisposeNotifierProviderImpl<ChatUIState, ChatUIStateModel> {
+  /// See also [ChatUIState].
+  ChatUIStateProvider(
     int chatId,
   ) : this._internal(
-          () => NitChatViewState()..chatId = chatId,
-          from: nitChatViewStateProvider,
-          name: r'nitChatViewStateProvider',
+          () => ChatUIState()..chatId = chatId,
+          from: chatUIStateProvider,
+          name: r'chatUIStateProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$nitChatViewStateHash,
-          dependencies: NitChatViewStateFamily._dependencies,
+                  : _$chatUIStateHash,
+          dependencies: ChatUIStateFamily._dependencies,
           allTransitiveDependencies:
-              NitChatViewStateFamily._allTransitiveDependencies,
+              ChatUIStateFamily._allTransitiveDependencies,
           chatId: chatId,
         );
 
-  NitChatViewStateProvider._internal(
+  ChatUIStateProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -113,8 +113,8 @@ class NitChatViewStateProvider extends AutoDisposeNotifierProviderImpl<
   final int chatId;
 
   @override
-  NitChatViewStateModel runNotifierBuild(
-    covariant NitChatViewState notifier,
+  ChatUIStateModel runNotifierBuild(
+    covariant ChatUIState notifier,
   ) {
     return notifier.build(
       chatId,
@@ -122,10 +122,10 @@ class NitChatViewStateProvider extends AutoDisposeNotifierProviderImpl<
   }
 
   @override
-  Override overrideWith(NitChatViewState Function() create) {
+  Override overrideWith(ChatUIState Function() create) {
     return ProviderOverride(
       origin: this,
-      override: NitChatViewStateProvider._internal(
+      override: ChatUIStateProvider._internal(
         () => create()..chatId = chatId,
         from: from,
         name: null,
@@ -138,14 +138,14 @@ class NitChatViewStateProvider extends AutoDisposeNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeNotifierProviderElement<NitChatViewState, NitChatViewStateModel>
+  AutoDisposeNotifierProviderElement<ChatUIState, ChatUIStateModel>
       createElement() {
-    return _NitChatViewStateProviderElement(this);
+    return _ChatUIStateProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is NitChatViewStateProvider && other.chatId == chatId;
+    return other is ChatUIStateProvider && other.chatId == chatId;
   }
 
   @override
@@ -159,19 +159,18 @@ class NitChatViewStateProvider extends AutoDisposeNotifierProviderImpl<
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin NitChatViewStateRef
-    on AutoDisposeNotifierProviderRef<NitChatViewStateModel> {
+mixin ChatUIStateRef on AutoDisposeNotifierProviderRef<ChatUIStateModel> {
   /// The parameter `chatId` of this provider.
   int get chatId;
 }
 
-class _NitChatViewStateProviderElement
-    extends AutoDisposeNotifierProviderElement<NitChatViewState,
-        NitChatViewStateModel> with NitChatViewStateRef {
-  _NitChatViewStateProviderElement(super.provider);
+class _ChatUIStateProviderElement
+    extends AutoDisposeNotifierProviderElement<ChatUIState, ChatUIStateModel>
+    with ChatUIStateRef {
+  _ChatUIStateProviderElement(super.provider);
 
   @override
-  int get chatId => (origin as NitChatViewStateProvider).chatId;
+  int get chatId => (origin as ChatUIStateProvider).chatId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,120 +1,168 @@
 part of 'nit_chat_widgets.dart';
 
 class ChatInputWidget extends HookConsumerWidget {
+  final int chatId;
+
   const ChatInputWidget({
     super.key,
     required this.chatId,
   });
 
-  final int chatId;
-
-  void sendMessage(
-    ValueNotifier<bool> notifier,
-    Future<void> Function() future,
-  ) async {
-    notifier.value = true;
-    try {
-      await future();
-    } finally {
-      notifier.value = false;
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = nitChatViewStateProvider(chatId);
-    // final chatState = ref.watch(provider);
     final controller = useTextEditingController();
-    final isFieldLoading = useState(false);
-
+    final focusNode = useFocusNode();
+    final chatNotifier = ref.read(chatStateProvider(chatId).notifier);
+    final isSending = useState(false);
+    final isTyping = useState(false);
+    final typingTimer = useRef<Timer?>(null);
     useEffect(() {
-      Timer? typingTimer;
-      bool wasTyping = false;
-      void listener() {
-        final isTyping = controller.text.isNotEmpty;
-        if (isTyping && !wasTyping) {
-          ref.read(provider.notifier).typingToggle(true);
-          wasTyping = true;
-        }
-        typingTimer?.cancel();
-        if (isTyping) {
-          typingTimer = Timer(const Duration(seconds: 2), () {
-            ref.read(provider.notifier).typingToggle(false);
-            wasTyping = false;
+      void onTextChanged() {
+        final hasText = controller.text.trim().isNotEmpty;
+
+        if (hasText) {
+          if (!isTyping.value) {
+            isTyping.value = true;
+            chatNotifier.typingToggle(true);
+          }
+          typingTimer.value?.cancel();
+          typingTimer.value = Timer(const Duration(seconds: 2), () {
+            if (isTyping.value) {
+              isTyping.value = false;
+              chatNotifier.typingToggle(false);
+            }
           });
         } else {
-          ref.read(provider.notifier).typingToggle(false);
-          wasTyping = false;
+          if (isTyping.value) {
+            isTyping.value = false;
+            chatNotifier.typingToggle(false);
+          }
+          typingTimer.value?.cancel();
         }
       }
 
-      controller.addListener(listener);
+      controller.addListener(onTextChanged);
+
       return () {
-        controller.removeListener(listener);
-        typingTimer?.cancel();
+        controller.removeListener(onTextChanged);
+        typingTimer.value?.cancel();
+        if (isTyping.value) {
+          chatNotifier.typingToggle(false);
+        }
       };
     }, [controller]);
 
+    useEffect(() {
+      void onFocusChanged() {
+        if (!focusNode.hasFocus && isTyping.value) {
+          isTyping.value = false;
+          chatNotifier.typingToggle(false);
+          typingTimer.value?.cancel();
+        }
+      }
+
+      focusNode.addListener(onFocusChanged);
+      return () => focusNode.removeListener(onFocusChanged);
+    }, [focusNode]);
+
+    Future<void> sendMessage() async {
+      final text = controller.text.trim();
+      if (text.isEmpty || isSending.value) return;
+
+      try {
+        isSending.value = true;
+
+        if (isTyping.value) {
+          isTyping.value = false;
+          chatNotifier.typingToggle(false);
+        }
+        typingTimer.value?.cancel();
+
+        controller.clear();
+
+        await chatNotifier.sendMessage(text);
+      } finally {
+        isSending.value = false;
+      }
+    }
+
     return Container(
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).dividerColor),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IgnorePointer(
-            ignoring: isFieldLoading.value,
-            child: AttachmentList(),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        border: Border(
+          top: BorderSide(
+            color: Theme.of(context).dividerColor,
+            width: 0.5,
           ),
-          Row(
-            children: [
-              AddAttachmentButton(),
-              Expanded(
-                child: TextField(
-                  readOnly: isFieldLoading.value,
-                  controller: controller,
-                  keyboardType: TextInputType.multiline,
-                  minLines: 1,
-                  maxLines: 3,
-                  decoration: InputDecoration.collapsed(
-                    hintText: 'Введите сообщение',
-                  ),
-                  onSubmitted: (value) {
-                    if (value.isNotEmpty) {
-                      sendMessage(
-                        isFieldLoading,
-                        () async {
-                          await ref.read(provider.notifier).onMessageTap(value);
-                          controller.clear();
-                        },
-                      );
-                    }
-                  },
-                  style: const TextStyle(fontSize: 16),
-                  textInputAction: TextInputAction.send,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          AddAttachmentButton(),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: Theme.of(context).dividerColor,
+                  width: 1,
                 ),
               ),
-              if (isFieldLoading.value)
-                const CircularProgressIndicator()
-              else
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () async {
-                    final value = controller.text;
-                    if (value.isNotEmpty) {
-                      sendMessage(
-                        isFieldLoading,
-                        () async {
-                          await ref.read(provider.notifier).onMessageTap(value);
-                          controller.clear();
-                        },
-                      );
-                    }
-                  },
+              child: TextField(
+                controller: controller,
+                focusNode: focusNode,
+                maxLines: 5,
+                minLines: 1,
+                decoration: InputDecoration(
+                  hintText: 'Введите сообщение...',
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  hintStyle: TextStyle(
+                    color: isTyping.value
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).hintColor,
+                  ),
                 ),
-            ],
+                onSubmitted: (_) => sendMessage(),
+                textInputAction: TextInputAction.send,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            child: FloatingActionButton.small(
+              onPressed: isSending.value ? null : sendMessage,
+              backgroundColor: controller.text.trim().isEmpty
+                  ? Colors.grey
+                  : Theme.of(context).primaryColor,
+              child: isSending.value
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Icon(
+                      isTyping.value ? Icons.edit : Icons.send,
+                      color: Colors.white,
+                    ),
+            ),
           ),
         ],
       ),

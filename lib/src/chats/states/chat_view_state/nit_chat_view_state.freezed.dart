@@ -15,61 +15,63 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$NitChatViewStateModel {
-  ScrollController get scrollController => throw _privateConstructorUsedError;
+mixin _$ChatStateModel {
   ChatViewState get viewState => throw _privateConstructorUsedError;
   List<NitChatMessage> get messages => throw _privateConstructorUsedError;
   int? get lastReadMessageId => throw _privateConstructorUsedError;
   bool get isTyping => throw _privateConstructorUsedError;
+  ScrollController get scrollController => throw _privateConstructorUsedError;
+  ListObserverController get observerController =>
+      throw _privateConstructorUsedError;
+  ChatScrollObserver get chatObserver => throw _privateConstructorUsedError;
 
-  /// Create a copy of NitChatViewStateModel
+  /// Create a copy of ChatStateModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $NitChatViewStateModelCopyWith<NitChatViewStateModel> get copyWith =>
+  $ChatStateModelCopyWith<ChatStateModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $NitChatViewStateModelCopyWith<$Res> {
-  factory $NitChatViewStateModelCopyWith(NitChatViewStateModel value,
-          $Res Function(NitChatViewStateModel) then) =
-      _$NitChatViewStateModelCopyWithImpl<$Res, NitChatViewStateModel>;
+abstract class $ChatStateModelCopyWith<$Res> {
+  factory $ChatStateModelCopyWith(
+          ChatStateModel value, $Res Function(ChatStateModel) then) =
+      _$ChatStateModelCopyWithImpl<$Res, ChatStateModel>;
   @useResult
   $Res call(
-      {ScrollController scrollController,
-      ChatViewState viewState,
+      {ChatViewState viewState,
       List<NitChatMessage> messages,
       int? lastReadMessageId,
-      bool isTyping});
+      bool isTyping,
+      ScrollController scrollController,
+      ListObserverController observerController,
+      ChatScrollObserver chatObserver});
 }
 
 /// @nodoc
-class _$NitChatViewStateModelCopyWithImpl<$Res,
-        $Val extends NitChatViewStateModel>
-    implements $NitChatViewStateModelCopyWith<$Res> {
-  _$NitChatViewStateModelCopyWithImpl(this._value, this._then);
+class _$ChatStateModelCopyWithImpl<$Res, $Val extends ChatStateModel>
+    implements $ChatStateModelCopyWith<$Res> {
+  _$ChatStateModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of NitChatViewStateModel
+  /// Create a copy of ChatStateModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? scrollController = null,
     Object? viewState = null,
     Object? messages = null,
     Object? lastReadMessageId = freezed,
     Object? isTyping = null,
+    Object? scrollController = null,
+    Object? observerController = null,
+    Object? chatObserver = null,
   }) {
     return _then(_value.copyWith(
-      scrollController: null == scrollController
-          ? _value.scrollController
-          : scrollController // ignore: cast_nullable_to_non_nullable
-              as ScrollController,
       viewState: null == viewState
           ? _value.viewState
           : viewState // ignore: cast_nullable_to_non_nullable
@@ -86,52 +88,62 @@ class _$NitChatViewStateModelCopyWithImpl<$Res,
           ? _value.isTyping
           : isTyping // ignore: cast_nullable_to_non_nullable
               as bool,
+      scrollController: null == scrollController
+          ? _value.scrollController
+          : scrollController // ignore: cast_nullable_to_non_nullable
+              as ScrollController,
+      observerController: null == observerController
+          ? _value.observerController
+          : observerController // ignore: cast_nullable_to_non_nullable
+              as ListObserverController,
+      chatObserver: null == chatObserver
+          ? _value.chatObserver
+          : chatObserver // ignore: cast_nullable_to_non_nullable
+              as ChatScrollObserver,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$NitChatViewStateModelImplCopyWith<$Res>
-    implements $NitChatViewStateModelCopyWith<$Res> {
-  factory _$$NitChatViewStateModelImplCopyWith(
-          _$NitChatViewStateModelImpl value,
-          $Res Function(_$NitChatViewStateModelImpl) then) =
-      __$$NitChatViewStateModelImplCopyWithImpl<$Res>;
+abstract class _$$ChatStateModelImplCopyWith<$Res>
+    implements $ChatStateModelCopyWith<$Res> {
+  factory _$$ChatStateModelImplCopyWith(_$ChatStateModelImpl value,
+          $Res Function(_$ChatStateModelImpl) then) =
+      __$$ChatStateModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {ScrollController scrollController,
-      ChatViewState viewState,
+      {ChatViewState viewState,
       List<NitChatMessage> messages,
       int? lastReadMessageId,
-      bool isTyping});
+      bool isTyping,
+      ScrollController scrollController,
+      ListObserverController observerController,
+      ChatScrollObserver chatObserver});
 }
 
 /// @nodoc
-class __$$NitChatViewStateModelImplCopyWithImpl<$Res>
-    extends _$NitChatViewStateModelCopyWithImpl<$Res,
-        _$NitChatViewStateModelImpl>
-    implements _$$NitChatViewStateModelImplCopyWith<$Res> {
-  __$$NitChatViewStateModelImplCopyWithImpl(_$NitChatViewStateModelImpl _value,
-      $Res Function(_$NitChatViewStateModelImpl) _then)
+class __$$ChatStateModelImplCopyWithImpl<$Res>
+    extends _$ChatStateModelCopyWithImpl<$Res, _$ChatStateModelImpl>
+    implements _$$ChatStateModelImplCopyWith<$Res> {
+  __$$ChatStateModelImplCopyWithImpl(
+      _$ChatStateModelImpl _value, $Res Function(_$ChatStateModelImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of NitChatViewStateModel
+  /// Create a copy of ChatStateModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? scrollController = null,
     Object? viewState = null,
     Object? messages = null,
     Object? lastReadMessageId = freezed,
     Object? isTyping = null,
+    Object? scrollController = null,
+    Object? observerController = null,
+    Object? chatObserver = null,
   }) {
-    return _then(_$NitChatViewStateModelImpl(
-      scrollController: null == scrollController
-          ? _value.scrollController
-          : scrollController // ignore: cast_nullable_to_non_nullable
-              as ScrollController,
+    return _then(_$ChatStateModelImpl(
       viewState: null == viewState
           ? _value.viewState
           : viewState // ignore: cast_nullable_to_non_nullable
@@ -148,23 +160,35 @@ class __$$NitChatViewStateModelImplCopyWithImpl<$Res>
           ? _value.isTyping
           : isTyping // ignore: cast_nullable_to_non_nullable
               as bool,
+      scrollController: null == scrollController
+          ? _value.scrollController
+          : scrollController // ignore: cast_nullable_to_non_nullable
+              as ScrollController,
+      observerController: null == observerController
+          ? _value.observerController
+          : observerController // ignore: cast_nullable_to_non_nullable
+              as ListObserverController,
+      chatObserver: null == chatObserver
+          ? _value.chatObserver
+          : chatObserver // ignore: cast_nullable_to_non_nullable
+              as ChatScrollObserver,
     ));
   }
 }
 
 /// @nodoc
 
-class _$NitChatViewStateModelImpl implements _NitChatViewStateModel {
-  const _$NitChatViewStateModelImpl(
-      {required this.scrollController,
-      required this.viewState,
+class _$ChatStateModelImpl implements _ChatStateModel {
+  const _$ChatStateModelImpl(
+      {required this.viewState,
       final List<NitChatMessage> messages = const [],
       this.lastReadMessageId,
-      this.isTyping = false})
+      this.isTyping = false,
+      required this.scrollController,
+      required this.observerController,
+      required this.chatObserver})
       : _messages = messages;
 
-  @override
-  final ScrollController scrollController;
   @override
   final ChatViewState viewState;
   final List<NitChatMessage> _messages;
@@ -181,57 +205,69 @@ class _$NitChatViewStateModelImpl implements _NitChatViewStateModel {
   @override
   @JsonKey()
   final bool isTyping;
+  @override
+  final ScrollController scrollController;
+  @override
+  final ListObserverController observerController;
+  @override
+  final ChatScrollObserver chatObserver;
 
   @override
   String toString() {
-    return 'NitChatViewStateModel(scrollController: $scrollController, viewState: $viewState, messages: $messages, lastReadMessageId: $lastReadMessageId, isTyping: $isTyping)';
+    return 'ChatStateModel(viewState: $viewState, messages: $messages, lastReadMessageId: $lastReadMessageId, isTyping: $isTyping, scrollController: $scrollController, observerController: $observerController, chatObserver: $chatObserver)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NitChatViewStateModelImpl &&
-            (identical(other.scrollController, scrollController) ||
-                other.scrollController == scrollController) &&
+            other is _$ChatStateModelImpl &&
             (identical(other.viewState, viewState) ||
                 other.viewState == viewState) &&
             const DeepCollectionEquality().equals(other._messages, _messages) &&
             (identical(other.lastReadMessageId, lastReadMessageId) ||
                 other.lastReadMessageId == lastReadMessageId) &&
             (identical(other.isTyping, isTyping) ||
-                other.isTyping == isTyping));
+                other.isTyping == isTyping) &&
+            (identical(other.scrollController, scrollController) ||
+                other.scrollController == scrollController) &&
+            (identical(other.observerController, observerController) ||
+                other.observerController == observerController) &&
+            (identical(other.chatObserver, chatObserver) ||
+                other.chatObserver == chatObserver));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      scrollController,
       viewState,
       const DeepCollectionEquality().hash(_messages),
       lastReadMessageId,
-      isTyping);
+      isTyping,
+      scrollController,
+      observerController,
+      chatObserver);
 
-  /// Create a copy of NitChatViewStateModel
+  /// Create a copy of ChatStateModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$NitChatViewStateModelImplCopyWith<_$NitChatViewStateModelImpl>
-      get copyWith => __$$NitChatViewStateModelImplCopyWithImpl<
-          _$NitChatViewStateModelImpl>(this, _$identity);
+  _$$ChatStateModelImplCopyWith<_$ChatStateModelImpl> get copyWith =>
+      __$$ChatStateModelImplCopyWithImpl<_$ChatStateModelImpl>(
+          this, _$identity);
 }
 
-abstract class _NitChatViewStateModel implements NitChatViewStateModel {
-  const factory _NitChatViewStateModel(
-      {required final ScrollController scrollController,
-      required final ChatViewState viewState,
+abstract class _ChatStateModel implements ChatStateModel {
+  const factory _ChatStateModel(
+      {required final ChatViewState viewState,
       final List<NitChatMessage> messages,
       final int? lastReadMessageId,
-      final bool isTyping}) = _$NitChatViewStateModelImpl;
+      final bool isTyping,
+      required final ScrollController scrollController,
+      required final ListObserverController observerController,
+      required final ChatScrollObserver chatObserver}) = _$ChatStateModelImpl;
 
-  @override
-  ScrollController get scrollController;
   @override
   ChatViewState get viewState;
   @override
@@ -240,11 +276,17 @@ abstract class _NitChatViewStateModel implements NitChatViewStateModel {
   int? get lastReadMessageId;
   @override
   bool get isTyping;
+  @override
+  ScrollController get scrollController;
+  @override
+  ListObserverController get observerController;
+  @override
+  ChatScrollObserver get chatObserver;
 
-  /// Create a copy of NitChatViewStateModel
+  /// Create a copy of ChatStateModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$NitChatViewStateModelImplCopyWith<_$NitChatViewStateModelImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$ChatStateModelImplCopyWith<_$ChatStateModelImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

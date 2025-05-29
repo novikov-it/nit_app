@@ -9,9 +9,8 @@ class ReadIndicator extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUserId = ref.signedInUserId;
     if (message.userId != currentUserId) return const SizedBox.shrink();
-    final lastReadMessageId = ref.watch(
-        nitChatViewStateProvider(message.chatChannelId)
-            .select((state) => state.lastReadMessageId));
+    final lastReadMessageId = ref.watch(chatStateProvider(message.chatChannelId)
+        .select((state) => state.lastReadMessageId));
 
     return Icon(
       Icons.done_all,
