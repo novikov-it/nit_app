@@ -24,6 +24,8 @@ class EntityListState<Entity extends SerializableModel>
     extends FamilyAsyncNotifier<List<Entity>, EntityListConfig>
 // implements EntityManagerInterface<Entity>
 {
+  late int _nextPage;
+
   @override
   Future<List<Entity>> build(EntityListConfig config) async {
     ref.onDispose(
@@ -32,16 +34,44 @@ class EntityListState<Entity extends SerializableModel>
       ),
     );
 
-    // NitRepository.ensureDefaultDescriptor<Entity>();
+    _nextPage = 0;
 
-    // TODO: Изменить, toString() не работает на Web release из-за minification
     debugPrint("Building state for ${NitRepository.typeName<Entity>()}");
 
+    final data = await _loadData();
+
+    NitRepository.addUpdatesListener<Entity>(
+      config.customUpdatesListener ?? _updatesListener,
+    );
+
+    return _processData(data).toList();
+  }
+
+  void loadNextPage() async {
+    await future.then(
+      (currentState) async {
+        final data = await _loadData();
+
+        state = AsyncValue.data(
+          <Entity>[
+            ...currentState,
+            ..._processData(data),
+          ],
+        );
+      },
+    );
+  }
+
+  _processData(List<ObjectWrapper> data) => data.map((e) => e.model as Entity);
+
+  Future<List<ObjectWrapper>> _loadData() async {
     final result = await nitToolsCaller!.nitCrud
         // TODO: Изменить, toString() не работает на Web release из-за minification
         .getEntityList(
           className: NitRepository.typeName<Entity>(),
-          filter: config.backendFilter,
+          filter: arg.backendFilter,
+          limit: arg.pageSize,
+          offset: arg.pageSize != null ? _nextPage++ : null,
         )
         .then(
           (response) => ref.processApiResponse<List<ObjectWrapper>>(
@@ -50,15 +80,11 @@ class EntityListState<Entity extends SerializableModel>
           ),
         );
 
-    if (result == null) return <Entity>[];
+    if (result == null) return <ObjectWrapper>[];
 
     ref.updateRepository(result, updateListeners: false);
 
-    NitRepository.addUpdatesListener<Entity>(
-      config.customUpdatesListener ?? _updatesListener,
-    );
-
-    return result.map((e) => e.model as Entity).toList();
+    return result;
   }
 
   void _updatesListener(ObjectWrapper wrappedModel) async {

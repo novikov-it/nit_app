@@ -20,7 +20,7 @@ class NitSessionStateModel with _$NitSessionStateModel {
 @Riverpod(keepAlive: true)
 class NitSessionState extends _$NitSessionState {
   late final SessionManager _sessionManager;
-  late final Function(int? userId)? _onSessionUpdatePreloadActions;
+  late final Function(int? userId)? _signedInUserIdPreloadProcessing;
   // Future<void> Function(int? userId)? _preloadActions;
 
   @override
@@ -34,21 +34,21 @@ class NitSessionState extends _$NitSessionState {
 
   Future<bool> init({
     required auth.Caller authModuleCaller,
-    Function(int? userId)? onSessionUpdatePreloadActions,
+    Function(int? userId)? signedInUserIdPreloadProcessing,
   }) async {
     // _preloadActions = preloadActions;
     _sessionManager = SessionManager(
       caller: authModuleCaller,
     );
-    _onSessionUpdatePreloadActions = onSessionUpdatePreloadActions;
+    _signedInUserIdPreloadProcessing = signedInUserIdPreloadProcessing;
 
     if (!await _sessionManager.initialize()) return false;
 
-    await _triggerPreloadActions();
-
     state = state.copyWith(
       serverpodSessionManager: _sessionManager,
-      signedInUserId: _sessionManager.signedInUser?.id,
+      signedInUserId: await _processUserInfoId(
+        _sessionManager.signedInUser?.id,
+      ), // ,
       scopeNames: _sessionManager.signedInUser?.scopeNames ?? [],
     );
 
@@ -61,14 +61,12 @@ class NitSessionState extends _$NitSessionState {
     return await _sessionManager.signOut();
   }
 
-  _triggerPreloadActions() async {
-    // if (
-    //     // _sessionManager.signedInUser != null &&
-    //     _onSessionUpdatePreloadActions != null) {
-    await _onSessionUpdatePreloadActions
-        ?.call(_sessionManager.signedInUser?.id);
-    // }
-  }
+  Future<int?> _processUserInfoId(int? serverpodUserInfoId) async =>
+      _signedInUserIdPreloadProcessing == null
+          ? serverpodUserInfoId
+          : await _signedInUserIdPreloadProcessing.call(
+              _sessionManager.signedInUser?.id,
+            );
 
   _refresh() async {
     // if (state.signedInUserId != _sessionManager.signedInUser?.id &&
@@ -89,11 +87,11 @@ class NitSessionState extends _$NitSessionState {
       // }
       // _updateFcm();
 
-      await _triggerPreloadActions();
-
       state = NitSessionStateModel(
         serverpodSessionManager: _sessionManager,
-        signedInUserId: _sessionManager.signedInUser?.id,
+        signedInUserId: await _processUserInfoId(
+          _sessionManager.signedInUser?.id,
+        ),
         scopeNames: _sessionManager.signedInUser?.scopeNames ?? [],
         // websocketStatus: _connectionHandler?.status.status ??
         //     StreamingConnectionStatus.disconnected,
