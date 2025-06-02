@@ -7,6 +7,7 @@ import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:nit_app/nit_app.dart';
+import 'package:nit_app/src/ref_extension/nit_file_uploader.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -84,6 +85,7 @@ class FileUploaderHandler {
     required String path,
   }) async {
     final byteData = ByteData.view(bytes.buffer);
+    path = path.replaceAll(' ', '_');
 
     var uploadDescription =
         await nitToolsCaller!.nitUpload.getUploadDescription(
@@ -95,7 +97,7 @@ class FileUploaderHandler {
     }
     log(uploadDescription);
 
-    var uploader = FileUploader(uploadDescription);
+    var uploader = NitFileUploader(uploadDescription);
     await uploader.uploadByteData(byteData);
 
     var nitMedia = await nitToolsCaller!.nitUpload.verifyUpload(

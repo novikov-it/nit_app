@@ -32,18 +32,17 @@ extension NitAppWidgetRefExtension on WidgetRef {
     if (userLoggedIn && thenAction != null) thenAction();
   }
 
-// TODO: must returns Media
   Future<NitMedia> uploadXFileToServer({
     required XFile xFile,
   }) async =>
       await FileUploaderHandler.uploadXFileToServer(xFile: xFile);
-// TODO: must returns Media
+
   Future<NitMedia> uploadBytesToServer({
     required Uint8List bytes,
     required String path,
   }) async =>
       await FileUploaderHandler.uploadBytesToServer(bytes: bytes, path: path);
-// TODO: must returns Media
+
   Future<NitMedia?> pickAndUploadImage({
     ImageSource imageSource = ImageSource.gallery,
   }) async =>

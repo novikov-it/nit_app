@@ -23,3 +23,7 @@ export 'src/session/nit_session_state/nit_session_state.dart';
 export 'src/session/nit_session_state/signed_in_extension.dart';
 export 'src/session/notifications/nit_firebase_notifications_state.dart';
 export 'src/utils/alerting.dart';
+export 'src/chats/UI/widget/nit_chat_widgets.dart';
+export 'src/chats/UI/chat_theme/chat_theme.dart';
+export 'src/chats/UI/chat_list.dart';
+export 'src/chats/UI/nit_chat_view.dart';
