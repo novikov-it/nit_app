@@ -17,7 +17,7 @@ class FileUploaderHandler {
     XFile file,
     String extension,
   ) =>
-      '${DateFormat('yyyy-MM-dd-hh:mm:ss').format(DateTime.now())}-${file.name}';
+      '${DateFormat('yyyy-MM-dd-hh:mm:ss').format(DateTime.now())}.$extension';
 
   static Future<String?> pickAndUploadImageUrl({
     ImageSource imageSource = ImageSource.gallery,
@@ -51,7 +51,8 @@ class FileUploaderHandler {
     required XFile xFile,
     String? path,
   }) async {
-    final fileExtension = extension(xFile.path).toLowerCase();
+    final fileExtension = xFile.mimeType?.split('/').last.toLowerCase() ??
+        extension(xFile.name).toLowerCase();
 
     final originalBytes = await xFile.readAsBytes();
 
