@@ -12,25 +12,64 @@ mixin BackendFilterMethodsMixin<T> on Enum {
         negate: negate,
       );
 
-  NitBackendFilter<int> intMath(
-    NitBackendFilterType type,
-    int value, {
+  NitBackendFilter<T> greaterThan(
+    T value, {
     bool negate = false,
   }) =>
-      [
-        NitBackendFilterType.greaterThan,
-        NitBackendFilterType.greaterThanOrEquals,
-        NitBackendFilterType.lessThan,
-        NitBackendFilterType.lessThanOrEquals,
-      ].contains(type)
-          ? NitBackendFilter<int>.value(
-              type: type,
+      (T != int && T != double)
+          ? throw UnsupportedError(
+              'Unsupported value type, comparison filters are supported for int or double values only (currently)',
+            )
+          : NitBackendFilter<T>.value(
+              type: NitBackendFilterType.greaterThan,
               fieldName: name,
               fieldValue: value,
               negate: negate,
+            );
+
+  NitBackendFilter<T> greaterThanOrEquals(
+    T value, {
+    bool negate = false,
+  }) =>
+      (T != int && T != double)
+          ? throw UnsupportedError(
+              'Unsupported value type, comparison filters are supported for int or double values only (currently)',
             )
-          : throw UnsupportedError(
-              'Unsupported filter type, please, choose from greaterThan, greaterThanOrEquals, lessThan,lessThanOrEquals',
+          : NitBackendFilter<T>.value(
+              type: NitBackendFilterType.greaterThanOrEquals,
+              fieldName: name,
+              fieldValue: value,
+              negate: negate,
+            );
+
+  NitBackendFilter<T> lessThan(
+    T value, {
+    bool negate = false,
+  }) =>
+      (T != int && T != double)
+          ? throw UnsupportedError(
+              'Unsupported value type, comparison filters are supported for int or double values only (currently)',
+            )
+          : NitBackendFilter<T>.value(
+              type: NitBackendFilterType.lessThan,
+              fieldName: name,
+              fieldValue: value,
+              negate: negate,
+            );
+
+  NitBackendFilter<T> lessThanOrEquals(
+    T value, {
+    bool negate = false,
+  }) =>
+      (T != int && T != double)
+          ? throw UnsupportedError(
+              'Unsupported value type, comparison filters are supported for int or double values only (currently)',
+            )
+          : NitBackendFilter<T>.value(
+              type: NitBackendFilterType.lessThanOrEquals,
+              fieldName: name,
+              fieldValue: value,
+              negate: negate,
             );
 
   NitBackendFilter<String> like(
