@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nit_app/src/chats/UI/widget/nit_chat_widgets.dart';
 
 import 'package:nit_app/src/chats/states/chat_ui_state/chat_ui_state.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';

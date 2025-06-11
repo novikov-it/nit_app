@@ -10,12 +10,14 @@ class ScrollToBottomButton extends ConsumerWidget {
     final uiState = ref.watch(chatUIStateProvider(chatId));
     final uiNotifier = ref.read(chatUIStateProvider(chatId).notifier);
 
+    final chatTheme = ChatTheme.of(context);
+
     return AnimatedScale(
       scale: uiState.showScrollToBottom ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 200),
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
+          color: chatTheme.primaryColor,
           borderRadius: BorderRadius.circular(28),
           boxShadow: [
             BoxShadow(
@@ -32,15 +34,15 @@ class ScrollToBottomButton extends ConsumerWidget {
             onTap: () {
               uiNotifier.scrollToBottomForced();
             },
-            child: Container(
+            child: SizedBox(
               width: 56,
               height: 56,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.keyboard_arrow_down,
-                    color: Colors.white,
+                    color: chatTheme.outgoingBubble.textColor,
                     size: 28,
                   ),
 
@@ -51,8 +53,8 @@ class ScrollToBottomButton extends ConsumerWidget {
                       right: 8,
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
+                        decoration: BoxDecoration(
+                          color: chatTheme.errorColor,
                           shape: BoxShape.circle,
                         ),
                         constraints: const BoxConstraints(
@@ -63,8 +65,8 @@ class ScrollToBottomButton extends ConsumerWidget {
                           uiState.unreadCount > 99
                               ? '99+'
                               : uiState.unreadCount.toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: chatTheme.outgoingBubble.textColor,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),

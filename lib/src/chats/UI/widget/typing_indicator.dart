@@ -5,6 +5,8 @@ class TypingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chatTheme = ChatTheme.of(context);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
@@ -13,17 +15,29 @@ class TypingIndicator extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: chatTheme.incomingBubble.backgroundColor.withOpacity(0.5),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _TypingDot(delay: 0),
+                _TypingDot(
+                  delay: 0,
+                  color: chatTheme.typingIndicatorColor,
+                  size: chatTheme.typingIndicatorSize,
+                ),
                 const SizedBox(width: 4),
-                _TypingDot(delay: 200),
+                _TypingDot(
+                  delay: 200,
+                  color: chatTheme.typingIndicatorColor,
+                  size: chatTheme.typingIndicatorSize,
+                ),
                 const SizedBox(width: 4),
-                _TypingDot(delay: 400),
+                _TypingDot(
+                  delay: 400,
+                  color: chatTheme.typingIndicatorColor,
+                  size: chatTheme.typingIndicatorSize,
+                ),
               ],
             ),
           ),
@@ -35,8 +49,14 @@ class TypingIndicator extends StatelessWidget {
 
 class _TypingDot extends HookWidget {
   final int delay;
+  final Color color;
+  final double size;
 
-  const _TypingDot({required this.delay});
+  const _TypingDot({
+    required this.delay,
+    required this.color,
+    required this.size,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +80,10 @@ class _TypingDot extends HookWidget {
         return Opacity(
           opacity: animationValue,
           child: Container(
-            width: 6,
-            height: 6,
-            decoration: const BoxDecoration(
-              color: Colors.grey,
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              color: color,
               shape: BoxShape.circle,
             ),
           ),

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
-import 'package:nit_app/src/chats/UI/chat_list.dart';
-import 'package:nit_app/src/chats/UI/widget/nit_chat_widgets.dart';
 
 import 'package:nit_app/src/chats/states/chat_ui_state/chat_ui_state.dart';
 
@@ -29,6 +27,7 @@ class NitChatView extends ConsumerWidget {
     }
 
     return Scaffold(
+      backgroundColor: ChatTheme.of(context).backgroundColor,
       body: SafeArea(
         child: Column(
           children: [

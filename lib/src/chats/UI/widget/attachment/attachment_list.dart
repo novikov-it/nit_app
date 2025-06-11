@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nit_app/nit_app.dart';
 import 'package:nit_app/src/chats/UI/widget/attachment/state/attachment_state.dart';
 import 'package:nit_ui_kit/nit_ui_kit.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -12,11 +13,14 @@ class AttachmentList extends ConsumerWidget {
     final state = ref.watch(attachmentStateProvider);
     return SizedBox(
       height: state.items.isNotEmpty ? 80 : 0,
-      child: ListView.builder(
+      child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: state.items.length,
         itemBuilder: (context, index) {
           return _AttachmentItem(media: state.items[index]);
+        },
+        separatorBuilder: (context, index) {
+          return Gap(4);
         },
       ),
     );
@@ -32,6 +36,8 @@ class _AttachmentItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final chatTheme = ChatTheme.of(context);
+
     return Stack(
       children: [
         if (media.isMedia)
@@ -53,10 +59,10 @@ class _AttachmentItem extends ConsumerWidget {
               thumbnailSize: const ThumbnailSize.square(80),
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                return const Center(
+                return Center(
                   child: Icon(
                     Icons.error,
-                    color: Colors.red,
+                    color: chatTheme.errorColor,
                   ),
                 );
               },
@@ -80,14 +86,18 @@ class _AttachmentItem extends ConsumerWidget {
                 child: Container(
                   width: 25,
                   height: 25,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
+                  decoration: BoxDecoration(
+                    color: chatTheme.backgroundColor,
                     shape: BoxShape.circle,
+                    border: Border.all(
+                      color: chatTheme.dividerColor,
+                      width: 1,
+                    ),
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Icon(
                       Icons.delete_outline,
-                      color: Colors.red,
+                      color: chatTheme.errorColor,
                       size: 20,
                     ),
                   ),

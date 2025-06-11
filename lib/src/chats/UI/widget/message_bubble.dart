@@ -15,6 +15,8 @@ class MessageBubble extends ConsumerWidget {
     final theme = ChatTheme.of(context);
     final isMe = message.userId == ref.signedInUserId;
 
+    final bubbleTheme = isMe ? theme.outgoingBubble : theme.incomingBubble;
+
     final customWidget = customMessageBuilders != null &&
             message.customMessageType?.type != null
         ? customMessageBuilders![message.customMessageType!.type]?.call(message)
@@ -27,23 +29,21 @@ class MessageBubble extends ConsumerWidget {
           maxWidth: MediaQuery.sizeOf(context).width * 0.7,
         ),
         child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          padding: const EdgeInsets.all(12),
+          margin: bubbleTheme.margin,
+          padding: bubbleTheme.padding,
           decoration: BoxDecoration(
-            color: isMe ? theme.primaryColor : theme.incomingBubbleColor,
-            borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(12),
-              topRight: const Radius.circular(12),
-              bottomLeft: Radius.circular(isMe ? 12 : 4),
-              bottomRight: Radius.circular(isMe ? 4 : 12),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 2,
-                offset: const Offset(0, 1),
-              ),
-            ],
+            color: bubbleTheme.backgroundColor,
+            borderRadius:
+                BorderRadius.all(Radius.circular(bubbleTheme.borderRadius)),
+            border: bubbleTheme.border,
+            boxShadow: bubbleTheme.boxShadow ??
+                [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 2,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
           ),
           child: customWidget ??
               Column(
@@ -58,13 +58,12 @@ class MessageBubble extends ConsumerWidget {
                   if (message.text?.trim().isNotEmpty == true)
                     Text(
                       message.text!,
-                      style: TextStyle(
-                        color: isMe
-                            ? theme.outgoingBubbleTextColor
-                            : theme.incomingBubbleTextColor,
-                        fontSize: 16,
-                        height: 1.3,
-                      ),
+                      style: bubbleTheme.textStyle ??
+                          TextStyle(
+                            color: bubbleTheme.textColor,
+                            fontSize: 16,
+                            height: 1.3,
+                          ),
                     ),
                   const SizedBox(height: 6),
                   Row(
@@ -72,11 +71,7 @@ class MessageBubble extends ConsumerWidget {
                     children: [
                       Text(
                         '${message.sentAt.toLocal().hour}:${message.sentAt.toLocal().minute.toString().padLeft(2, '0')}',
-                        style: TextStyle(
-                          color: theme.timeTextColor,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w400,
-                        ),
+                        style: theme.timeTextStyle,
                       ),
                       const SizedBox(width: 6),
                       ReadIndicator(message: message),

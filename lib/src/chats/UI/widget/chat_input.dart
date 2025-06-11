@@ -10,12 +10,16 @@ class ChatInputWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final chatTheme = ChatTheme.of(context);
+    final inputTheme = chatTheme.inputTheme;
+
     final controller = useTextEditingController();
     final focusNode = useFocusNode();
     final chatNotifier = ref.read(chatStateProvider(chatId).notifier);
     final isSending = useState(false);
     final isTyping = useState(false);
     final typingTimer = useRef<Timer?>(null);
+
     useEffect(() {
       void onTextChanged() {
         final hasText = controller.text.trim().isNotEmpty;
@@ -87,12 +91,12 @@ class ChatInputWidget extends HookConsumerWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: inputTheme.padding,
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: inputTheme.backgroundColor,
         border: Border(
           top: BorderSide(
-            color: Theme.of(context).dividerColor,
+            color: chatTheme.dividerColor,
             width: 0.5,
           ),
         ),
@@ -104,65 +108,76 @@ class ChatInputWidget extends HookConsumerWidget {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
         children: [
-          AddAttachmentButton(),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: Theme.of(context).dividerColor,
-                  width: 1,
-                ),
-              ),
-              child: TextField(
-                controller: controller,
-                focusNode: focusNode,
-                maxLines: 5,
-                minLines: 1,
-                decoration: InputDecoration(
-                  hintText: 'Введите сообщение...',
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                  hintStyle: TextStyle(
-                    color: isTyping.value
-                        ? Theme.of(context).primaryColor
-                        : Theme.of(context).hintColor,
-                  ),
-                ),
-                onSubmitted: (_) => sendMessage(),
-                textInputAction: TextInputAction.send,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            child: FloatingActionButton.small(
-              onPressed: isSending.value ? null : sendMessage,
-              backgroundColor: controller.text.trim().isEmpty
-                  ? Colors.grey
-                  : Theme.of(context).primaryColor,
-              child: isSending.value
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : Icon(
-                      isTyping.value ? Icons.edit : Icons.send,
-                      color: Colors.white,
+          AttachmentList(),
+          Row(
+            children: [
+              AddAttachmentButton(),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: inputTheme.backgroundColor,
+                    borderRadius:
+                        BorderRadius.circular(inputTheme.borderRadius),
+                    border: Border.all(
+                      color: chatTheme.dividerColor,
+                      width: 1,
                     ),
-            ),
+                  ),
+                  child: TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    maxLines: 5,
+                    minLines: 1,
+                    style: inputTheme.textStyle,
+                    decoration: InputDecoration(
+                      hintText: 'Введите сообщение...',
+                      border: inputTheme.border ?? InputBorder.none,
+                      contentPadding: inputTheme.padding,
+                      hintStyle: inputTheme.hintStyle?.copyWith(
+                            color: isTyping.value
+                                ? chatTheme.primaryColor
+                                : inputTheme.hintColor,
+                          ) ??
+                          TextStyle(
+                            color: isTyping.value
+                                ? chatTheme.primaryColor
+                                : inputTheme.hintColor,
+                          ),
+                    ),
+                    cursorColor: inputTheme.cursorColor,
+                    onSubmitted: (_) => sendMessage(),
+                    textInputAction: TextInputAction.send,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                child: FloatingActionButton.small(
+                  onPressed: isSending.value ? null : sendMessage,
+                  backgroundColor: controller.text.trim().isEmpty
+                      ? chatTheme.secondaryColor
+                      : chatTheme.primaryColor,
+                  child: isSending.value
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : Icon(
+                          Icons.send,
+                          color: Colors.white,
+                        ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
