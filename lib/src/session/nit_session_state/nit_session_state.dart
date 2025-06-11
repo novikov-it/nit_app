@@ -20,7 +20,8 @@ class NitSessionStateModel with _$NitSessionStateModel {
 @Riverpod(keepAlive: true)
 class NitSessionState extends _$NitSessionState {
   late final SessionManager _sessionManager;
-  late final Function(int? userId)? _signedInUserIdPreloadProcessing;
+  late final Future<int?> Function(int? userId)?
+      _signedInUserIdPreloadProcessing;
   // Future<void> Function(int? userId)? _preloadActions;
 
   @override
@@ -34,7 +35,7 @@ class NitSessionState extends _$NitSessionState {
 
   Future<bool> init({
     required auth.Caller authModuleCaller,
-    Function(int? userId)? signedInUserIdPreloadProcessing,
+    Future<int?> Function(int? userId)? signedInUserIdPreloadProcessing,
   }) async {
     // _preloadActions = preloadActions;
     _sessionManager = SessionManager(
