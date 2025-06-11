@@ -154,14 +154,6 @@ class NitApp extends HookConsumerWidget {
         debugShowCheckedModeBanner: false,
         theme: themeData,
         title: title,
-        scrollBehavior: const MaterialScrollBehavior().copyWith(
-          dragDevices: {
-            PointerDeviceKind.mouse,
-            PointerDeviceKind.touch,
-            PointerDeviceKind.stylus,
-            PointerDeviceKind.unknown,
-          },
-        ),
         routerConfig: ref.watch(
           routerProvider,
           // routerProvider ??
