@@ -8,7 +8,7 @@ class EntityListConfig with _$EntityListConfig {
   const factory EntityListConfig({
     NitBackendFilter? backendFilter,
     int? pageSize,
-    Function(ObjectWrapper wrappedModel)? customUpdatesListener,
+    Function(List<ObjectWrapper> wrappedModel)? customUpdatesListener,
   }) = _EntityListConfig;
 
   // static const defaultConfig = EntityListConfig();

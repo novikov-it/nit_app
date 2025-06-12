@@ -19,7 +19,7 @@ mixin _$EntityListConfig {
   NitBackendFilter<dynamic>? get backendFilter =>
       throw _privateConstructorUsedError;
   int? get pageSize => throw _privateConstructorUsedError;
-  dynamic Function(ObjectWrapper)? get customUpdatesListener =>
+  dynamic Function(List<ObjectWrapper>)? get customUpdatesListener =>
       throw _privateConstructorUsedError;
 
   /// Create a copy of EntityListConfig
@@ -38,7 +38,7 @@ abstract class $EntityListConfigCopyWith<$Res> {
   $Res call(
       {NitBackendFilter<dynamic>? backendFilter,
       int? pageSize,
-      dynamic Function(ObjectWrapper)? customUpdatesListener});
+      dynamic Function(List<ObjectWrapper>)? customUpdatesListener});
 }
 
 /// @nodoc
@@ -72,7 +72,7 @@ class _$EntityListConfigCopyWithImpl<$Res, $Val extends EntityListConfig>
       customUpdatesListener: freezed == customUpdatesListener
           ? _value.customUpdatesListener
           : customUpdatesListener // ignore: cast_nullable_to_non_nullable
-              as dynamic Function(ObjectWrapper)?,
+              as dynamic Function(List<ObjectWrapper>)?,
     ) as $Val);
   }
 }
@@ -88,7 +88,7 @@ abstract class _$$EntityListConfigImplCopyWith<$Res>
   $Res call(
       {NitBackendFilter<dynamic>? backendFilter,
       int? pageSize,
-      dynamic Function(ObjectWrapper)? customUpdatesListener});
+      dynamic Function(List<ObjectWrapper>)? customUpdatesListener});
 }
 
 /// @nodoc
@@ -120,7 +120,7 @@ class __$$EntityListConfigImplCopyWithImpl<$Res>
       customUpdatesListener: freezed == customUpdatesListener
           ? _value.customUpdatesListener
           : customUpdatesListener // ignore: cast_nullable_to_non_nullable
-              as dynamic Function(ObjectWrapper)?,
+              as dynamic Function(List<ObjectWrapper>)?,
     ));
   }
 }
@@ -136,7 +136,7 @@ class _$EntityListConfigImpl implements _EntityListConfig {
   @override
   final int? pageSize;
   @override
-  final dynamic Function(ObjectWrapper)? customUpdatesListener;
+  final dynamic Function(List<ObjectWrapper>)? customUpdatesListener;
 
   @override
   String toString() {
@@ -174,7 +174,7 @@ abstract class _EntityListConfig implements EntityListConfig {
   const factory _EntityListConfig(
           {final NitBackendFilter<dynamic>? backendFilter,
           final int? pageSize,
-          final dynamic Function(ObjectWrapper)? customUpdatesListener}) =
+          final dynamic Function(List<ObjectWrapper>)? customUpdatesListener}) =
       _$EntityListConfigImpl;
 
   @override
@@ -182,7 +182,7 @@ abstract class _EntityListConfig implements EntityListConfig {
   @override
   int? get pageSize;
   @override
-  dynamic Function(ObjectWrapper)? get customUpdatesListener;
+  dynamic Function(List<ObjectWrapper>)? get customUpdatesListener;
 
   /// Create a copy of EntityListConfig
   /// with the given fields replaced by the non-null parameter values.

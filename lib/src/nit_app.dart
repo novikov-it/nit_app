@@ -9,9 +9,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:nit_app/src/nit_auth/config/nit_auth_config.dart';
 import 'package:nit_app/src/session/notifications/nit_firebase_notifications_state.dart';
-import 'package:nit_tools_client/nit_tools_client.dart';
 import 'package:oktoast/oktoast.dart';
 
 import 'utils/firebase.dart';
@@ -153,6 +151,15 @@ class NitApp extends HookConsumerWidget {
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         theme: themeData,
+        scrollBehavior: const MaterialScrollBehavior().copyWith(
+          dragDevices: {
+            ...PointerDeviceKind.values,
+            // PointerDeviceKind.mouse,
+            // PointerDeviceKind.touch,
+            // PointerDeviceKind.stylus,
+            // PointerDeviceKind.unknown,
+          },
+        ),
         title: title,
         routerConfig: ref.watch(
           routerProvider,
