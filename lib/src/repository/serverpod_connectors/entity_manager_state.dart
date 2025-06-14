@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
@@ -56,18 +55,29 @@ class EntityManagerState<Entity extends SerializableModel>
     return result;
   }
 
-  void _updatesListener(ObjectWrapper wrappedModel) async {
-    return await future.then(
-      (value) async {
-        state = AsyncValue.data(
-          [
-            if (!wrappedModel.isDeleted) wrappedModel.modelId!,
-            ...value.whereNot(
-              (e) => e == wrappedModel.modelId!,
-            ),
-          ],
-        );
-      },
-    );
+  void _updatesListener(List<ObjectWrapper> wrappedModelUpdates) async {
+    final ids = wrappedModelUpdates.map((e) => e.modelId).toSet();
+
+    return await future.then((value) async {
+      state = AsyncValue.data([
+        ...wrappedModelUpdates
+            .where((e) => !e.isDeleted)
+            .map((e) => e.modelId!),
+        ...value.where((e) => !ids.contains((e as dynamic).id)),
+      ]);
+    });
+
+    // return await future.then(
+    //   (value) async {
+    //     state = AsyncValue.data(
+    //       [
+    //         if (!wrappedModel.isDeleted) wrappedModel.modelId!,
+    //         ...value.whereNot(
+    //           (e) => e == wrappedModel.modelId!,
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
   }
 }

@@ -14,6 +14,7 @@ extension NitServerpodToolsExtension on WidgetRef {
   Future<bool> initNitServerpodApp({
     required ServerpodClientShared client,
     required Function() initRepositoryFunction,
+    Future<int?> Function(int? userId)? customSignedInUserIdPreloadProcessing,
     UserIdMode userIdMode = UserIdMode.userInfoId,
     List<NitRepositoryDescriptor>? customRepositoryDescriptors,
     NitAuthConfig? nitAuthConfig,
@@ -60,27 +61,28 @@ extension NitServerpodToolsExtension on WidgetRef {
 
     await read(nitSessionStateProvider.notifier).init(
       authModuleCaller: authCaller as auth.Caller,
-      signedInUserIdPreloadProcessing: (serverpodUserInfoId) async {
-        if (serverpodUserInfoId != null) {
-          final profileId = await nitToolsCaller!.nitCrud
-              .getOneCustom(
-                className: 'UserProfile',
-                filter: NitBackendFilter<int>.value(
-                  type: NitBackendFilterType.equals,
-                  fieldName: 'userId',
-                  fieldValue: serverpodUserInfoId,
-                ),
-              )
-              .then(
-                (response) => processApiResponse<int>(response),
-              );
+      signedInUserIdPreloadProcessing: customSignedInUserIdPreloadProcessing ??
+          (serverpodUserInfoId) async {
+            if (serverpodUserInfoId != null) {
+              final profileId = await nitToolsCaller!.nitCrud
+                  .getOneCustom(
+                    className: 'UserProfile',
+                    filter: NitBackendFilter<int>.value(
+                      type: NitBackendFilterType.equals,
+                      fieldName: 'userId',
+                      fieldValue: serverpodUserInfoId,
+                    ),
+                  )
+                  .then(
+                    (response) => processApiResponse<int>(response),
+                  );
 
-          return userIdMode == UserIdMode.userProfileId
-              ? profileId
-              : serverpodUserInfoId;
-        }
-        return null;
-      },
+              return userIdMode == UserIdMode.userProfileId
+                  ? profileId
+                  : serverpodUserInfoId;
+            }
+            return null;
+          },
     );
 
     if (nitAuthConfig != null) NitAuthConfig.config = nitAuthConfig;

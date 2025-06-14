@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
@@ -87,18 +86,31 @@ class EntityListState<Entity extends SerializableModel>
     return result;
   }
 
-  void _updatesListener(ObjectWrapper wrappedModel) async {
-    return await future.then(
-      (value) async {
-        state = AsyncValue.data(
-          [
-            if (!wrappedModel.isDeleted) wrappedModel.model as Entity,
-            ...value
-                .whereNot((e) => (e as dynamic).id == wrappedModel.modelId!),
-          ],
-        );
-      },
-    );
+  void _updatesListener(List<ObjectWrapper> wrappedModelUpdates) async {
+    final ids = wrappedModelUpdates.map((e) => e.modelId).toSet();
+
+    return await future.then((value) async {
+      state = AsyncValue.data([
+        ...wrappedModelUpdates
+            .where((e) => !e.isDeleted)
+            .map((e) => e.model as Entity),
+        ...value.where((e) => !ids.contains((e as dynamic).id)),
+      ]);
+    });
+    // return await future.then(
+    //   (value) async {
+    //     print((state.value ?? []).map((e) => (e as dynamic).id));
+    //     print(wrappedModel.modelId);
+    //     print(wrappedModel.isDeleted);
+    //     state = AsyncValue.data(
+    //       [
+    //         if (!wrappedModel.isDeleted) wrappedModel.model as Entity,
+    //         ...value.where((e) => (e as dynamic).id != wrappedModel.modelId!),
+    //       ],
+    //     );
+    //     print((state.value ?? []).map((e) => (e as dynamic).id));
+    //   },
+    // );
   }
 
   // void manualInsert(int modelId, Entity model) async {

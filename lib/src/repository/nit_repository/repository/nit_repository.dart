@@ -25,7 +25,8 @@ class NitRepository {
       StateProviderFamily<dynamic, dynamic>> _repositories = {};
   static final Map<String, List<NitRepositoryDescriptor>>
       _customRepositoryDescriptors = {};
-  static final Map<String, List<Function(ObjectWrapper)>> _updateListeners = {};
+  static final Map<String, List<Function(List<ObjectWrapper>)>>
+      _updateListeners = {};
 
   static final Map<String, NitRepositoryDescriptor> _defaultDescriptors = {};
 
@@ -74,7 +75,7 @@ class NitRepository {
 
   static addUpdatesListener<T extends SerializableModel>(
     Function(
-      ObjectWrapper wrappedModel,
+      List<ObjectWrapper> wrappedModelUpdates,
     ) listener,
   ) {
     // TODO: Изменить, toString() не работает на Web release из-за minification
@@ -86,7 +87,7 @@ class NitRepository {
 
   static removeUpdatesListener<T extends SerializableModel>(
       Function(
-        ObjectWrapper wrappedModel,
+        List<ObjectWrapper> wrappedModelUpdates,
       ) listener) {
     // TODO: Изменить, toString() не работает на Web release из-за minification
     if (_updateListeners[NitRepository.typeName<T>()] != null) {
@@ -95,18 +96,28 @@ class NitRepository {
   }
 
   static updateListeningStates({
-    required ObjectWrapper wrappedModel,
+    required List<ObjectWrapper> wrappedModelUpdates,
     // required String className,
     // required int modelId,
   }) {
-    debugPrint(
-      'Updating Listening State. Active listeners: ${_updateListeners.keys}. Updated id - ${wrappedModel.modelId} for class ${wrappedModel.className}',
-    );
-    for (var listener
-        in _updateListeners[wrappedModel.nitMappingClassname] ?? []) {
-      listener(
-        wrappedModel,
-      );
+    final updateMap = <String, List<ObjectWrapper>>{};
+
+    for (var wrappedModel in wrappedModelUpdates) {
+      if (updateMap[wrappedModel.nitMappingClassname] == null) {
+        updateMap[wrappedModel.nitMappingClassname] = [wrappedModel];
+      } else {
+        updateMap[wrappedModel.nitMappingClassname]!.add(wrappedModel);
+      }
+    }
+
+    for (var className in updateMap.keys) {
+      debugPrint(
+          'Updating Listening States for $className with ${updateMap[className]!.length} objects. Active listeners: ${_updateListeners.keys}.');
+      for (var listener in _updateListeners[className] ?? []) {
+        listener(
+          updateMap[className],
+        );
+      }
     }
   }
 
