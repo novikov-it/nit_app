@@ -43,13 +43,15 @@ class FileUploaderHandler {
   static Future<String?> uploadXFileToServerUrl({
     required XFile xFile,
     String? path,
+    int? duration, // miliseconds
   }) async =>
-      uploadXFileToServer(xFile: xFile, path: path)
+      uploadXFileToServer(xFile: xFile, path: path, duration: duration)
           .then((media) => media.publicUrl);
 
   static Future<NitMedia> uploadXFileToServer({
     required XFile xFile,
     String? path,
+    int? duration, // miliseconds
   }) async {
     final fileExtension = xFile.mimeType?.split('/').last.toLowerCase() ??
         extension(xFile.name).toLowerCase();
@@ -67,16 +69,19 @@ class FileUploaderHandler {
     return uploadBytesToServer(
       bytes: bytesToUpload,
       path: uploadPath,
+      duration: duration,
     );
   }
 
   static Future<String?> uploadBytesToServerUrl({
     required Uint8List bytes,
     required String path,
+    int? duration, // miliseconds
   }) async =>
       uploadBytesToServer(
         bytes: bytes,
         path: path,
+        duration: duration,
       ).then(
         (media) => media.publicUrl,
       );
@@ -84,6 +89,7 @@ class FileUploaderHandler {
   static Future<NitMedia> uploadBytesToServer({
     required Uint8List bytes,
     required String path,
+    int? duration,
   }) async {
     final byteData = ByteData.view(bytes.buffer);
     path = path.replaceAll(' ', '_');
@@ -103,6 +109,7 @@ class FileUploaderHandler {
 
     var nitMedia = await nitToolsCaller!.nitUpload.verifyUpload(
       path: path,
+      duration: duration,
     );
 
     if (nitMedia == null) {
