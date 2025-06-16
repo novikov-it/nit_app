@@ -1,5 +1,6 @@
 import 'package:fcm_token_manager/fcm_token_manager.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:nit_app/nit_app.dart';
 
 // import 'package:firebase_messaging/firebase_messaging.dart';
@@ -20,6 +21,10 @@ class FirebaseInitializer {
       apiInterface: NitFcmAppBackendInterface(),
       tokenTtl: const Duration(days: 1),
     );
+
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+            alert: false, badge: false, sound: false);
 
     // Инициализация сервиса push уведомлений
 
