@@ -92,7 +92,7 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
   }) async {
     debugPrint("Updating Notifications Token");
     final settings = requestPermission
-        ? await FirebaseMessaging.instance.requestPermission()
+        ? await FirebaseMessaging.instance.requestPermission(alert: false)
         : await FirebaseMessaging.instance.getNotificationSettings();
 
     if (requestPermission &&

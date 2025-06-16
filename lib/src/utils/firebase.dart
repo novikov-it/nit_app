@@ -22,9 +22,9 @@ class FirebaseInitializer {
       tokenTtl: const Duration(days: 1),
     );
 
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-            alert: false, badge: false, sound: false);
+    // await FirebaseMessaging.instance
+    //     .setForegroundNotificationPresentationOptions(
+    //         alert: false, badge: false, sound: false);
 
     // Инициализация сервиса push уведомлений
 

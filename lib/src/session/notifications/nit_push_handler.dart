@@ -25,13 +25,13 @@ class FirebaseNotificationService extends _$FirebaseNotificationService {
 
   Future<void> _setup() async {
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-    await _requestPermissions();
+    // await _requestPermissions();
     await _setupMessageHandlers();
   }
 
-  Future<void> _requestPermissions() async {
-    await FirebaseMessaging.instance.requestPermission();
-  }
+  // Future<void> _requestPermissions() async {
+  //   await FirebaseMessaging.instance.requestPermission();
+  // }
 
   Future<void> _setupMessageHandlers() async {
     //Foreground shows
