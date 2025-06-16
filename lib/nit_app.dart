@@ -22,6 +22,7 @@ export 'src/repository/serverpod_connectors/single_item_custom_provider_config.d
 export 'src/session/nit_session_state/nit_session_state.dart';
 export 'src/session/nit_session_state/signed_in_extension.dart';
 export 'src/session/notifications/nit_firebase_notifications_state.dart';
+export 'src/session/notifications/push_path_parameters_extension.dart';
 export 'src/utils/alerting.dart';
 export 'src/chats/UI/widget/nit_chat_widgets.dart';
 export 'src/chats/UI/chat_theme/chat_theme.dart';

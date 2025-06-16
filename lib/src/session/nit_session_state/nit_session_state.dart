@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:nit_app/nit_app.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/module.dart' as auth;
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
@@ -59,7 +60,10 @@ class NitSessionState extends _$NitSessionState {
   }
 
   Future<bool> signOut() async {
-    return await _sessionManager.signOut();
+    return await _sessionManager.signOut().then((v) {
+      ref.read(nitFirebaseNotificationsStateProvider.notifier).deleteToken();
+      return v;
+    });
   }
 
   Future<int?> _processUserInfoId(int? serverpodUserInfoId) async =>

@@ -1,13 +1,29 @@
+import 'package:fcm_token_manager/fcm_token_manager.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:nit_app/nit_app.dart';
+
 // import 'package:firebase_messaging/firebase_messaging.dart';
 
 // import 'package:flutter/material.dart';
 
 class FirebaseInitializer {
-  static init(FirebaseOptions options) async {
+  static late final bool inited;
+  FirebaseInitializer._internal();
+  factory FirebaseInitializer() => _instance;
+  static final FirebaseInitializer _instance = FirebaseInitializer._internal();
+
+  static init({FirebaseOptions? options}) async {
     await Firebase.initializeApp(
       options: options,
     );
+    FcmTokenManager.initialize(
+      apiInterface: NitFcmAppBackendInterface(),
+      tokenTtl: const Duration(days: 1),
+    );
+
+    // Инициализация сервиса push уведомлений
+
+    inited = true;
 
     // final firebaseMessaging = FirebaseMessaging.instance;
     // firebaseMessaging.requestPermission();

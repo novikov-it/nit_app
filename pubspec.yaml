@@ -51,6 +51,7 @@ dependencies:
     
   scrollview_observer: ^1.26.1
     #   ref: master
+  nit_router: ^0.3.1
 
   # chatview: # ^2.2.0
   #   # path: ../nit_flutter_chatview

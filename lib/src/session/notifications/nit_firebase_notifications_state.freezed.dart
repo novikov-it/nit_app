@@ -116,6 +116,7 @@ class __$$NitFirebaseNotificationsStateModelImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$NitFirebaseNotificationsStateModelImpl
+    with DiagnosticableTreeMixin
     implements _NitFirebaseNotificationsStateModel {
   const _$NitFirebaseNotificationsStateModelImpl(
       {required this.notificationsAllowed, required this.mayRequest});
@@ -126,8 +127,17 @@ class _$NitFirebaseNotificationsStateModelImpl
   final bool mayRequest;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'NitFirebaseNotificationsStateModel(notificationsAllowed: $notificationsAllowed, mayRequest: $mayRequest)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'NitFirebaseNotificationsStateModel'))
+      ..add(DiagnosticsProperty('notificationsAllowed', notificationsAllowed))
+      ..add(DiagnosticsProperty('mayRequest', mayRequest));
   }
 
   @override

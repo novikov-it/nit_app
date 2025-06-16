@@ -6,16 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
+
 import 'package:nit_app/src/session/notifications/nit_firebase_notifications_state.dart';
+import 'package:nit_app/src/session/notifications/nit_push_handler.dart';
+import 'package:nit_router/nit_router.dart';
 import 'package:oktoast/oktoast.dart';
 
 import 'utils/firebase.dart';
 
 class NitApp extends HookConsumerWidget {
-  static preInitialization({
+  static Future<void> preInitialization({
     bool? goRouterOptionURLReflectsImperativeAPIs,
 
     /// Used to remove hash sign from URLs using
@@ -35,19 +37,8 @@ class NitApp extends HookConsumerWidget {
     WidgetsFlutterBinding.ensureInitialized();
 
     if (firebaseOptions != null) {
-      await FirebaseInitializer.init(firebaseOptions);
       NitFirebaseNotificationsState.vapidKey = firebaseVapidKey;
-
-      // // Handle when the app is in foreground
-      // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      //   print("📩 Foreground Notification: ${message.notification?.title}");
-      // });
-
-      // // Handle when the app is opened by clicking on a notification
-      // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      //   print("📩 Background Notification: ${message.notification?.title}");
-      //   // _handleMessageClick(message);
-      // });
+      await FirebaseInitializer.init(options: firebaseOptions);
     }
   }
 
@@ -89,7 +80,7 @@ class NitApp extends HookConsumerWidget {
   final String title;
   // final List<List<NavigationZoneEnum>>? navigationZones;
   // final Provider<RouterConfig<Object>> routerProvider;
-  final ProviderBase<RouterConfig<Object>> routerProvider;
+  final NitRouterStateProvider routerProvider;
   // final Provider<Map<NavigationZoneEnum, NavigationZoneEnum>>?
 
   // Provider<NitRedirectsStateModel>? redirectProvider;
@@ -136,6 +127,14 @@ class NitApp extends HookConsumerWidget {
         ),
       ),
     );
+    useMemoized(
+      () async {
+        if (FirebaseInitializer.inited) {
+          FirebaseNotificationService.routerProvider = routerProvider;
+          ref.read(firebaseNotificationServiceProvider);
+        }
+      },
+    );
 
     if (initialization.connectionState != ConnectionState.done) {
       return loadingScreen;
@@ -151,16 +150,15 @@ class NitApp extends HookConsumerWidget {
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         theme: themeData,
+        title: title,
         scrollBehavior: const MaterialScrollBehavior().copyWith(
           dragDevices: {
-            ...PointerDeviceKind.values,
-            // PointerDeviceKind.mouse,
-            // PointerDeviceKind.touch,
-            // PointerDeviceKind.stylus,
-            // PointerDeviceKind.unknown,
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.touch,
+            PointerDeviceKind.stylus,
+            PointerDeviceKind.unknown,
           },
         ),
-        title: title,
         routerConfig: ref.watch(
           routerProvider,
           // routerProvider ??
