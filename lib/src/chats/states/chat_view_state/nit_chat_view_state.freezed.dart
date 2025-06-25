@@ -24,6 +24,7 @@ mixin _$ChatStateModel {
   ListObserverController get observerController =>
       throw _privateConstructorUsedError;
   ChatScrollObserver get chatObserver => throw _privateConstructorUsedError;
+  NitChatMessage? get repliedMessage => throw _privateConstructorUsedError;
 
   /// Create a copy of ChatStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -45,7 +46,8 @@ abstract class $ChatStateModelCopyWith<$Res> {
       bool isTyping,
       ScrollController scrollController,
       ListObserverController observerController,
-      ChatScrollObserver chatObserver});
+      ChatScrollObserver chatObserver,
+      NitChatMessage? repliedMessage});
 }
 
 /// @nodoc
@@ -70,6 +72,7 @@ class _$ChatStateModelCopyWithImpl<$Res, $Val extends ChatStateModel>
     Object? scrollController = null,
     Object? observerController = null,
     Object? chatObserver = null,
+    Object? repliedMessage = freezed,
   }) {
     return _then(_value.copyWith(
       viewState: null == viewState
@@ -100,6 +103,10 @@ class _$ChatStateModelCopyWithImpl<$Res, $Val extends ChatStateModel>
           ? _value.chatObserver
           : chatObserver // ignore: cast_nullable_to_non_nullable
               as ChatScrollObserver,
+      repliedMessage: freezed == repliedMessage
+          ? _value.repliedMessage
+          : repliedMessage // ignore: cast_nullable_to_non_nullable
+              as NitChatMessage?,
     ) as $Val);
   }
 }
@@ -119,7 +126,8 @@ abstract class _$$ChatStateModelImplCopyWith<$Res>
       bool isTyping,
       ScrollController scrollController,
       ListObserverController observerController,
-      ChatScrollObserver chatObserver});
+      ChatScrollObserver chatObserver,
+      NitChatMessage? repliedMessage});
 }
 
 /// @nodoc
@@ -142,6 +150,7 @@ class __$$ChatStateModelImplCopyWithImpl<$Res>
     Object? scrollController = null,
     Object? observerController = null,
     Object? chatObserver = null,
+    Object? repliedMessage = freezed,
   }) {
     return _then(_$ChatStateModelImpl(
       viewState: null == viewState
@@ -172,6 +181,10 @@ class __$$ChatStateModelImplCopyWithImpl<$Res>
           ? _value.chatObserver
           : chatObserver // ignore: cast_nullable_to_non_nullable
               as ChatScrollObserver,
+      repliedMessage: freezed == repliedMessage
+          ? _value.repliedMessage
+          : repliedMessage // ignore: cast_nullable_to_non_nullable
+              as NitChatMessage?,
     ));
   }
 }
@@ -186,7 +199,8 @@ class _$ChatStateModelImpl implements _ChatStateModel {
       this.isTyping = false,
       required this.scrollController,
       required this.observerController,
-      required this.chatObserver})
+      required this.chatObserver,
+      this.repliedMessage})
       : _messages = messages;
 
   @override
@@ -211,10 +225,12 @@ class _$ChatStateModelImpl implements _ChatStateModel {
   final ListObserverController observerController;
   @override
   final ChatScrollObserver chatObserver;
+  @override
+  final NitChatMessage? repliedMessage;
 
   @override
   String toString() {
-    return 'ChatStateModel(viewState: $viewState, messages: $messages, lastReadMessageId: $lastReadMessageId, isTyping: $isTyping, scrollController: $scrollController, observerController: $observerController, chatObserver: $chatObserver)';
+    return 'ChatStateModel(viewState: $viewState, messages: $messages, lastReadMessageId: $lastReadMessageId, isTyping: $isTyping, scrollController: $scrollController, observerController: $observerController, chatObserver: $chatObserver, repliedMessage: $repliedMessage)';
   }
 
   @override
@@ -234,7 +250,9 @@ class _$ChatStateModelImpl implements _ChatStateModel {
             (identical(other.observerController, observerController) ||
                 other.observerController == observerController) &&
             (identical(other.chatObserver, chatObserver) ||
-                other.chatObserver == chatObserver));
+                other.chatObserver == chatObserver) &&
+            (identical(other.repliedMessage, repliedMessage) ||
+                other.repliedMessage == repliedMessage));
   }
 
   @override
@@ -246,7 +264,8 @@ class _$ChatStateModelImpl implements _ChatStateModel {
       isTyping,
       scrollController,
       observerController,
-      chatObserver);
+      chatObserver,
+      repliedMessage);
 
   /// Create a copy of ChatStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -266,7 +285,8 @@ abstract class _ChatStateModel implements ChatStateModel {
       final bool isTyping,
       required final ScrollController scrollController,
       required final ListObserverController observerController,
-      required final ChatScrollObserver chatObserver}) = _$ChatStateModelImpl;
+      required final ChatScrollObserver chatObserver,
+      final NitChatMessage? repliedMessage}) = _$ChatStateModelImpl;
 
   @override
   ChatViewState get viewState;
@@ -282,6 +302,8 @@ abstract class _ChatStateModel implements ChatStateModel {
   ListObserverController get observerController;
   @override
   ChatScrollObserver get chatObserver;
+  @override
+  NitChatMessage? get repliedMessage;
 
   /// Create a copy of ChatStateModel
   /// with the given fields replaced by the non-null parameter values.

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
+import 'package:nit_app/src/chats/UI/widget/input/widget/reply_input_panel.dart';
 
 import 'package:nit_app/src/chats/states/chat_ui_state/chat_ui_state.dart';
 
@@ -27,7 +28,7 @@ class NitChatView extends ConsumerWidget {
     }
 
     return Scaffold(
-      backgroundColor: ChatTheme.of(context).backgroundColor,
+      backgroundColor: ChatTheme.of(context).mainTheme.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -39,22 +40,23 @@ class NitChatView extends ConsumerWidget {
                     customMessageBuilders: customMessageBuilders,
                   ),
                   // Should be consumer inside widgets?
-                  Consumer(
-                    builder:
-                        (BuildContext context, WidgetRef ref, Widget? child) {
-                      return ref.watch(
-                        chatUIStateProvider(chatId).select(
-                          (state) => state.showScrollToBottom,
-                        ),
-                      )
-                          ? Positioned(
-                              bottom: 16,
-                              right: 16,
-                              child: ScrollToBottomButton(chatId: chatId),
-                            )
-                          : const SizedBox.shrink();
-                    },
-                  ),
+                  if (ChatTheme.of(context).settings.showScrollToBottomButton)
+                    Consumer(
+                      builder:
+                          (BuildContext context, WidgetRef ref, Widget? child) {
+                        return ref.watch(
+                          chatUIStateProvider(chatId).select(
+                            (state) => state.showScrollToBottom,
+                          ),
+                        )
+                            ? Positioned(
+                                bottom: 16,
+                                right: 16,
+                                child: ScrollToBottomButton(chatId: chatId),
+                              )
+                            : const SizedBox.shrink();
+                      },
+                    ),
                 ],
               ),
             ),
@@ -67,7 +69,12 @@ class NitChatView extends ConsumerWidget {
                     : const SizedBox.shrink();
               },
             ),
-            ChatInputWidget(chatId: chatId),
+            Column(
+              children: [
+                ReplyInputPanel(chatId: chatId),
+                ChatInputWidget(chatId: chatId),
+              ],
+            ),
           ],
         ),
       ),

@@ -11,17 +11,20 @@ class AttachmentList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(attachmentStateProvider);
-    return SizedBox(
-      height: state.items.isNotEmpty ? 80 : 0,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: state.items.length,
-        itemBuilder: (context, index) {
-          return _AttachmentItem(media: state.items[index]);
-        },
-        separatorBuilder: (context, index) {
-          return Gap(4);
-        },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: SizedBox(
+        height: state.items.isNotEmpty ? 80 : 0,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: state.items.length,
+          itemBuilder: (context, index) {
+            return _AttachmentItem(media: state.items[index]);
+          },
+          separatorBuilder: (context, index) {
+            return Gap(4);
+          },
+        ),
       ),
     );
   }
@@ -62,7 +65,7 @@ class _AttachmentItem extends ConsumerWidget {
                 return Center(
                   child: Icon(
                     Icons.error,
-                    color: chatTheme.errorColor,
+                    color: chatTheme.mainTheme.errorColor,
                   ),
                 );
               },
@@ -87,17 +90,17 @@ class _AttachmentItem extends ConsumerWidget {
                   width: 25,
                   height: 25,
                   decoration: BoxDecoration(
-                    color: chatTheme.backgroundColor,
+                    color: chatTheme.mainTheme.backgroundColor,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: chatTheme.dividerColor,
+                      color: chatTheme.mainTheme.dividerColor,
                       width: 1,
                     ),
                   ),
                   child: Center(
                     child: Icon(
                       Icons.delete_outline,
-                      color: chatTheme.errorColor,
+                      color: chatTheme.mainTheme.errorColor,
                       size: 20,
                     ),
                   ),

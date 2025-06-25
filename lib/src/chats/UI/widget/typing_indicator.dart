@@ -23,20 +23,14 @@ class TypingIndicator extends StatelessWidget {
               children: [
                 _TypingDot(
                   delay: 0,
-                  color: chatTheme.typingIndicatorColor,
-                  size: chatTheme.typingIndicatorSize,
                 ),
                 const SizedBox(width: 4),
                 _TypingDot(
                   delay: 200,
-                  color: chatTheme.typingIndicatorColor,
-                  size: chatTheme.typingIndicatorSize,
                 ),
                 const SizedBox(width: 4),
                 _TypingDot(
                   delay: 400,
-                  color: chatTheme.typingIndicatorColor,
-                  size: chatTheme.typingIndicatorSize,
                 ),
               ],
             ),
@@ -49,17 +43,16 @@ class TypingIndicator extends StatelessWidget {
 
 class _TypingDot extends HookWidget {
   final int delay;
-  final Color color;
-  final double size;
 
   const _TypingDot({
     required this.delay,
-    required this.color,
-    required this.size,
   });
 
   @override
   Widget build(BuildContext context) {
+    final chatTheme = ChatTheme.of(context);
+    final typingIndicatorSize = chatTheme.mainTheme.typingIndicatorSize;
+    final typingIndicatorColor = chatTheme.mainTheme.typingIndicatorColor;
     final animation = useAnimationController(
       duration: const Duration(milliseconds: 600),
     );
@@ -80,10 +73,10 @@ class _TypingDot extends HookWidget {
         return Opacity(
           opacity: animationValue,
           child: Container(
-            width: size,
-            height: size,
+            width: typingIndicatorSize,
+            height: typingIndicatorSize,
             decoration: BoxDecoration(
-              color: color,
+              color: typingIndicatorColor,
               shape: BoxShape.circle,
             ),
           ),

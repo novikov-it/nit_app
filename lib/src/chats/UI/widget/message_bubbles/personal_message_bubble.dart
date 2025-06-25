@@ -1,13 +1,15 @@
-part of 'nit_chat_widgets.dart';
+part of '../nit_chat_widgets.dart';
 
-class MessageBubble extends ConsumerWidget {
+class PersonalMessageBubble extends ConsumerWidget {
   final NitChatMessage message;
   final Map<String, Widget Function(NitChatMessage)>? customMessageBuilders;
+  final int chatId;
 
-  const MessageBubble({
+  const PersonalMessageBubble({
     super.key,
     required this.message,
     this.customMessageBuilders,
+    required this.chatId,
   });
 
   @override
@@ -51,11 +53,20 @@ class MessageBubble extends ConsumerWidget {
                     isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  if (message.replyMessageId != null)
+                    ReplyIndicator(
+                      repliedMessageId: message.replyMessageId!,
+                      chatId: chatId,
+                    ),
                   if (message.attachmentIds?.isNotEmpty == true) ...[
                     MediaGrid(message: message),
-                    const SizedBox(height: 8),
+                    const Gap(8),
                   ],
-                  if (message.text?.trim().isNotEmpty == true)
+                  if (message.text?.isOnlyEmoji == true &&
+                      (message.attachmentIds == null ||
+                          message.attachmentIds?.isEmpty == true))
+                    EmojiBubble(message: message)
+                  else if (message.text?.trim().isNotEmpty == true)
                     Text(
                       message.text!,
                       style: bubbleTheme.textStyle ??
@@ -65,15 +76,12 @@ class MessageBubble extends ConsumerWidget {
                             height: 1.3,
                           ),
                     ),
-                  const SizedBox(height: 6),
+                  const Gap(6),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        '${message.sentAt.toLocal().hour}:${message.sentAt.toLocal().minute.toString().padLeft(2, '0')}',
-                        style: theme.timeTextStyle,
-                      ),
-                      const SizedBox(width: 6),
+                      MessageTime(message: message),
+                      const Gap(6),
                       ReadIndicator(message: message),
                     ],
                   ),

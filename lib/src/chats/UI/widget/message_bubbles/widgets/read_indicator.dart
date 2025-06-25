@@ -1,4 +1,4 @@
-part of 'nit_chat_widgets.dart';
+part of '../../nit_chat_widgets.dart';
 
 class ReadIndicator extends ConsumerWidget {
   final NitChatMessage message;
@@ -18,9 +18,9 @@ class ReadIndicator extends ConsumerWidget {
 
     Color color;
     if (lastReadMessageId != null && lastReadMessageId >= message.id!) {
-      color = theme.readStatusColor;
+      color = theme.mainTheme.readStatusColor;
     } else {
-      color = theme.sentStatusColor;
+      color = theme.mainTheme.sentStatusColor;
     }
 
     return Icon(

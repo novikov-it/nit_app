@@ -1,216 +1,113 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class ChatBubbleThemeData {
-  final Color backgroundColor;
-  final Color textColor;
-  final double borderRadius;
-  final EdgeInsets padding;
-  final EdgeInsets margin;
-  final BoxBorder? border;
-  final List<BoxShadow>? boxShadow;
-  final TextStyle? textStyle;
+part 'chat_theme.freezed.dart';
 
-  const ChatBubbleThemeData({
-    required this.backgroundColor,
-    required this.textColor,
-    this.borderRadius = 12.0,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-    this.margin = const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-    this.border,
-    this.boxShadow,
-    this.textStyle,
-  });
+enum ChatBubbleType { personal, group }
 
-  ChatBubbleThemeData copyWith({
-    Color? backgroundColor,
-    Color? textColor,
-    double? borderRadius,
-    EdgeInsets? padding,
-    EdgeInsets? margin,
+@freezed
+class ChatBubbleThemeData with _$ChatBubbleThemeData {
+  const factory ChatBubbleThemeData({
+    required Color backgroundColor,
+    required Color textColor,
+    @Default(12.0) double borderRadius,
+    @Default(EdgeInsets.symmetric(horizontal: 16, vertical: 10))
+    EdgeInsets padding,
+    @Default(EdgeInsets.symmetric(vertical: 4, horizontal: 8))
+    EdgeInsets margin,
     BoxBorder? border,
     List<BoxShadow>? boxShadow,
     TextStyle? textStyle,
-  }) {
-    return ChatBubbleThemeData(
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      textColor: textColor ?? this.textColor,
-      borderRadius: borderRadius ?? this.borderRadius,
-      padding: padding ?? this.padding,
-      margin: margin ?? this.margin,
-      border: border ?? this.border,
-      boxShadow: boxShadow ?? this.boxShadow,
-      textStyle: textStyle ?? this.textStyle,
-    );
-  }
+  }) = _ChatBubbleThemeData;
 }
 
-class ChatInputThemeData {
-  final Color backgroundColor;
-  final Color textColor;
-  final Color hintColor;
-  final Color cursorColor;
-  final double borderRadius;
-  final EdgeInsets padding;
-  final InputBorder? border;
-  final TextStyle? textStyle;
-  final TextStyle? hintStyle;
-
-  const ChatInputThemeData({
-    this.backgroundColor = Colors.white,
-    this.textColor = Colors.black87,
-    this.hintColor = Colors.grey,
-    this.cursorColor = Colors.blue,
-    this.borderRadius = 24.0,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-    this.border,
-    this.textStyle,
-    this.hintStyle,
-  });
+@freezed
+class ChatInputThemeData with _$ChatInputThemeData {
+  const factory ChatInputThemeData({
+    @Default(Colors.white) Color backgroundColor,
+    @Default(Colors.black87) Color textColor,
+    @Default(Colors.grey) Color hintColor,
+    @Default(Colors.blue) Color cursorColor,
+    @Default(24.0) double borderRadius,
+    @Default(EdgeInsets.symmetric(horizontal: 0, vertical: 12))
+    EdgeInsets padding,
+    InputBorder? border,
+    TextStyle? textStyle,
+    TextStyle? hintStyle,
+  }) = _ChatInputThemeData;
 }
 
-class ChatThemeData {
-  static ChatThemeData get _default => const ChatThemeData._();
-
-  // Приватный конструктор для дефолтного экземпляра
-  const ChatThemeData._({
-    this.backgroundColor = const Color(0xFFF5F5F5),
-    this.primaryColor = Colors.blue,
-    this.secondaryColor = Colors.grey,
-    this.errorColor = Colors.red,
-    this.dividerColor = const Color(0xFFE0E0E0),
-    ChatBubbleThemeData? incomingBubble,
-    ChatBubbleThemeData? outgoingBubble,
-    ChatInputThemeData? inputTheme,
-    TextStyle? timeTextStyle,
-    this.timeTextColor = Colors.grey,
-    Color? sentStatusColor,
-    Color? deliveredStatusColor,
-    Color? readStatusColor,
-    this.typingIndicatorColor = Colors.blue,
-    this.typingIndicatorSize = 12.0,
-  })  : incomingBubble = incomingBubble ??
-            const ChatBubbleThemeData(
-              backgroundColor: Colors.white,
-              textColor: Colors.black87,
-              borderRadius: 12.0,
-            ),
-        outgoingBubble = outgoingBubble ??
-            const ChatBubbleThemeData(
-              backgroundColor: Colors.blue,
-              textColor: Colors.white,
-              borderRadius: 12.0,
-            ),
-        inputTheme = inputTheme ?? const ChatInputThemeData(),
-        timeTextStyle = timeTextStyle ??
-            const TextStyle(
-              fontSize: 10.0,
-              color: Colors.grey,
-            ),
-        sentStatusColor = sentStatusColor ?? Colors.grey,
-        deliveredStatusColor = deliveredStatusColor ?? Colors.grey,
-        readStatusColor = readStatusColor ?? Colors.blue;
-
-  // General
-  final Color backgroundColor;
-  final Color dividerColor;
-  final Color primaryColor;
-  final Color secondaryColor;
-  final Color errorColor;
-
-  // Bubbles
-  final ChatBubbleThemeData incomingBubble;
-  final ChatBubbleThemeData outgoingBubble;
-
-  // Input
-  final ChatInputThemeData inputTheme;
-
-  // Time
-  final TextStyle timeTextStyle;
-  final Color timeTextColor;
-
-  // Status
-  final Color sentStatusColor;
-  final Color deliveredStatusColor;
-  final Color readStatusColor;
-
-  // Typing indicator
-  final Color typingIndicatorColor;
-  final double typingIndicatorSize;
-
-  const ChatThemeData({
-    this.backgroundColor = const Color(0xFFF5F5F5),
-    this.primaryColor = Colors.blue,
-    this.secondaryColor = Colors.grey,
-    this.errorColor = Colors.red,
-    this.dividerColor = const Color(0xFFE0E0E0),
-    ChatBubbleThemeData? incomingBubble,
-    ChatBubbleThemeData? outgoingBubble,
-    ChatInputThemeData? inputTheme,
-    TextStyle? timeTextStyle,
-    this.timeTextColor = Colors.grey,
-    Color? sentStatusColor,
-    Color? deliveredStatusColor,
-    Color? readStatusColor,
-    this.typingIndicatorColor = Colors.blue,
-    this.typingIndicatorSize = 12.0,
-  })  : incomingBubble = incomingBubble ??
-            const ChatBubbleThemeData(
-              backgroundColor: Colors.white,
-              textColor: Colors.black87,
-              borderRadius: 12.0,
-            ),
-        outgoingBubble = outgoingBubble ??
-            const ChatBubbleThemeData(
-              backgroundColor: Colors.blue,
-              textColor: Colors.white,
-              borderRadius: 12.0,
-            ),
-        inputTheme = inputTheme ?? const ChatInputThemeData(),
-        timeTextStyle = timeTextStyle ??
-            const TextStyle(
-              fontSize: 10.0,
-              color: Colors.grey,
-            ),
-        sentStatusColor = sentStatusColor ?? Colors.grey,
-        deliveredStatusColor = deliveredStatusColor ?? Colors.grey,
-        readStatusColor = readStatusColor ?? Colors.blue;
-
-  ChatThemeData copyWith({
-    Color? backgroundColor,
-    Color? primaryColor,
-    Color? secondaryColor,
-    Color? errorColor,
-    Color? dividerColor,
-    ChatBubbleThemeData? incomingBubble,
-    ChatBubbleThemeData? outgoingBubble,
-    ChatInputThemeData? inputTheme,
-    TextStyle? timeTextStyle,
-    Color? timeTextColor,
-    Color? sentStatusColor,
-    Color? deliveredStatusColor,
-    Color? readStatusColor,
-    Color? typingIndicatorColor,
-    double? typingIndicatorSize,
-  }) {
-    return ChatThemeData(
-      backgroundColor: backgroundColor ?? this.backgroundColor,
-      primaryColor: primaryColor ?? this.primaryColor,
-      secondaryColor: secondaryColor ?? this.secondaryColor,
-      errorColor: errorColor ?? this.errorColor,
-      dividerColor: dividerColor ?? this.dividerColor,
-      incomingBubble: incomingBubble ?? this.incomingBubble,
-      outgoingBubble: outgoingBubble ?? this.outgoingBubble,
-      inputTheme: inputTheme ?? this.inputTheme,
-      timeTextStyle: timeTextStyle ?? this.timeTextStyle,
-      timeTextColor: timeTextColor ?? this.timeTextColor,
-      sentStatusColor: sentStatusColor ?? this.sentStatusColor,
-      deliveredStatusColor: deliveredStatusColor ?? this.deliveredStatusColor,
-      readStatusColor: readStatusColor ?? this.readStatusColor,
-      typingIndicatorColor: typingIndicatorColor ?? this.typingIndicatorColor,
-      typingIndicatorSize: typingIndicatorSize ?? this.typingIndicatorSize,
-    );
-  }
+@freezed
+class GroupMessageTheme with _$GroupMessageTheme {
+  const factory GroupMessageTheme({
+    required AsyncValue<String?> Function(int userId) getSenderName,
+    @Default(TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 15,
+      color: Color(0xFF222222),
+    ))
+    TextStyle senderNameTextStyle,
+  }) = _GroupMessageTheme;
 }
+
+@freezed
+class MainTheme with _$MainTheme {
+  const factory MainTheme({
+    @Default(Color(0xFFF5F5F5)) Color backgroundColor,
+    @Default(Colors.blue) Color primaryColor,
+    @Default(Colors.grey) Color secondaryColor,
+    @Default(Colors.red) Color errorColor,
+    @Default(Color(0xFFE0E0E0)) Color dividerColor,
+    @Default(Colors.grey) Color timeTextColor,
+    @Default(Colors.grey) Color sentStatusColor,
+    @Default(Colors.grey) Color deliveredStatusColor,
+    @Default(Colors.blue) Color readStatusColor,
+    @Default(Colors.blue) Color typingIndicatorColor,
+    @Default(TextStyle(fontSize: 10.0, color: Colors.grey))
+    TextStyle timeTextStyle,
+    @Default(12.0) double typingIndicatorSize,
+  }) = _MainTheme;
+}
+
+@freezed
+class Settings with _$Settings {
+  const factory Settings({
+    @Default(ChatBubbleType.personal) ChatBubbleType chatBubbleType,
+    @Default(true) bool showScrollToBottomButton,
+  }) = _Settings;
+}
+
+@freezed
+class ChatThemeData with _$ChatThemeData {
+  const factory ChatThemeData({
+    @Default(MainTheme()) MainTheme mainTheme,
+    @Default(Settings()) Settings settings,
+    @Default(ChatBubbleThemeData(
+      backgroundColor: Colors.white,
+      textColor: Colors.black87,
+      borderRadius: 12.0,
+    ))
+    ChatBubbleThemeData incomingBubble,
+    @Default(ChatBubbleThemeData(
+      backgroundColor: Colors.blue,
+      textColor: Colors.white,
+      borderRadius: 12.0,
+    ))
+    ChatBubbleThemeData outgoingBubble,
+    @Default(ChatInputThemeData()) ChatInputThemeData inputTheme,
+    @Default(GroupMessageTheme(
+      getSenderName: _defaultGetSenderName,
+    ))
+    GroupMessageTheme groupMessageTheme,
+  }) = _ChatThemeData;
+}
+
+// Функция по умолчанию для получения имени отправителя
+AsyncValue<String?> _defaultGetSenderName(int id) =>
+    AsyncValue.data('User $id');
 
 class ChatTheme extends InheritedWidget {
   final ChatThemeData data;
@@ -224,7 +121,7 @@ class ChatTheme extends InheritedWidget {
   static ChatThemeData of(BuildContext context) {
     final ChatTheme? result =
         context.dependOnInheritedWidgetOfExactType<ChatTheme>();
-    return result?.data ?? ChatThemeData._default;
+    return result?.data ?? const ChatThemeData();
   }
 
   @override
@@ -232,19 +129,19 @@ class ChatTheme extends InheritedWidget {
 }
 
 class ChatThemeProvider extends StatelessWidget {
-  final ChatThemeData data;
   final Widget child;
+  final ChatThemeData? themeData;
 
   const ChatThemeProvider({
     super.key,
     required this.child,
-    ChatThemeData? themeData,
-  }) : data = themeData ?? const ChatThemeData();
+    this.themeData,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ChatTheme(
-      data: data,
+      data: themeData ?? const ChatThemeData(),
       child: child,
     );
   }

@@ -17,7 +17,7 @@ class ScrollToBottomButton extends ConsumerWidget {
       duration: const Duration(milliseconds: 200),
       child: Container(
         decoration: BoxDecoration(
-          color: chatTheme.primaryColor,
+          color: chatTheme.mainTheme.primaryColor,
           borderRadius: BorderRadius.circular(28),
           boxShadow: [
             BoxShadow(
@@ -54,7 +54,7 @@ class ScrollToBottomButton extends ConsumerWidget {
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: chatTheme.errorColor,
+                          color: chatTheme.mainTheme.errorColor,
                           shape: BoxShape.circle,
                         ),
                         constraints: const BoxConstraints(

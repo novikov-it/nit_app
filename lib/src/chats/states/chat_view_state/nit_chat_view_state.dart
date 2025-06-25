@@ -22,6 +22,7 @@ abstract class ChatStateModel with _$ChatStateModel {
     required ScrollController scrollController,
     required ListObserverController observerController,
     required ChatScrollObserver chatObserver,
+    NitChatMessage? repliedMessage,
   }) = _ChatStateModel;
 }
 
@@ -110,6 +111,7 @@ class ChatState extends _$ChatState {
         chatChannelId: chatId,
         sentAt: DateTime.now(),
         attachmentIds: attachment.map((e) => e.id).nonNulls.toList(),
+        replyMessageId: state.repliedMessage?.id,
       ),
     );
 
@@ -140,9 +142,12 @@ class ChatState extends _$ChatState {
     state = state.copyWith(messages: updatedMessages);
   }
 
-  /// Обработка потоковых сообщений (ChatGPT-style)
   void handleStreamingMessage(NitChatMessage streamingMessage) {
     state.chatObserver.standby(mode: ChatScrollObserverHandleMode.generative);
     updateMessage(streamingMessage);
+  }
+
+  void setRepliedMessage(NitChatMessage? message) {
+    state = state.copyWith(repliedMessage: message);
   }
 }

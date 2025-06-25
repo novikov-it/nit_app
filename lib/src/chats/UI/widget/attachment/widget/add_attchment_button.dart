@@ -13,13 +13,12 @@ class AddAttachmentButton extends ConsumerWidget {
     return IconButton(
       icon: Icon(
         Icons.attach_file,
-        color: chatTheme.primaryColor,
+        color: chatTheme.mainTheme.primaryColor,
       ),
       onPressed: () {
         ref.read(attachmentStateProvider.notifier).openMediaPicker(context);
       },
-      splashColor:
-          chatTheme.secondaryColor.withOpacity(0.2), // Эффект нажатия из темы
+      splashColor: chatTheme.mainTheme.secondaryColor.withOpacity(0.2),
       tooltip: 'Прикрепить файл',
     );
   }
