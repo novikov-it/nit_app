@@ -116,6 +116,7 @@ class ChatState extends _$ChatState {
     );
 
     ref.invalidate(attachmentStateProvider);
+    setRepliedMessage(null);
   }
 
   void typingToggle(bool isTyping) {
