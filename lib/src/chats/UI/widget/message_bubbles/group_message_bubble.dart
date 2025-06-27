@@ -1,6 +1,6 @@
 part of '../nit_chat_widgets.dart';
 
-class GroupMessageBubble extends ConsumerWidget {
+class GroupMessageBubble extends HookConsumerWidget {
   final NitChatMessage message;
   final Map<String, Widget Function(NitChatMessage)>? customMessageBuilders;
   final int chatId;
@@ -22,6 +22,13 @@ class GroupMessageBubble extends ConsumerWidget {
             message.customMessageType?.type != null
         ? customMessageBuilders![message.customMessageType!.type]?.call(message)
         : null;
+    //TODO: сомнительно
+    final senderNameFuture = useMemoized(
+      () => isMe ? null : theme.groupMessageTheme.getSenderName(message.userId),
+      [isMe, message.userId],
+    );
+
+    final senderNameSnapshot = useFuture(senderNameFuture);
 
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -61,21 +68,10 @@ class GroupMessageBubble extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Flexible(
-                        child: isMe
-                            ? Text('Вы',
-                                style:
-                                    theme.groupMessageTheme.senderNameTextStyle)
-                            : theme.groupMessageTheme
-                                .getSenderName(message.userId)
-                                .nitWhen(
-                                  childBuilder: (userName) => Text(
-                                    userName ?? '',
-                                    style: theme
-                                        .groupMessageTheme.senderNameTextStyle,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
+                        child: Text(
+                          isMe ? 'Вы' : senderNameSnapshot.data ?? 'n',
+                          style: theme.groupMessageTheme.senderNameTextStyle,
+                        ),
                       ),
                       const Gap(8),
                       MessageTime(message: message),

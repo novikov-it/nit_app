@@ -631,7 +631,7 @@ abstract class _ChatInputThemeData implements ChatInputThemeData {
 
 /// @nodoc
 mixin _$GroupMessageTheme {
-  AsyncValue<String?> Function(int) get getSenderName =>
+  Future<String?> Function(int) get getSenderName =>
       throw _privateConstructorUsedError;
   TextStyle get senderNameTextStyle => throw _privateConstructorUsedError;
 
@@ -649,7 +649,7 @@ abstract class $GroupMessageThemeCopyWith<$Res> {
       _$GroupMessageThemeCopyWithImpl<$Res, GroupMessageTheme>;
   @useResult
   $Res call(
-      {AsyncValue<String?> Function(int) getSenderName,
+      {Future<String?> Function(int) getSenderName,
       TextStyle senderNameTextStyle});
 }
 
@@ -675,7 +675,7 @@ class _$GroupMessageThemeCopyWithImpl<$Res, $Val extends GroupMessageTheme>
       getSenderName: null == getSenderName
           ? _value.getSenderName
           : getSenderName // ignore: cast_nullable_to_non_nullable
-              as AsyncValue<String?> Function(int),
+              as Future<String?> Function(int),
       senderNameTextStyle: null == senderNameTextStyle
           ? _value.senderNameTextStyle
           : senderNameTextStyle // ignore: cast_nullable_to_non_nullable
@@ -693,7 +693,7 @@ abstract class _$$GroupMessageThemeImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {AsyncValue<String?> Function(int) getSenderName,
+      {Future<String?> Function(int) getSenderName,
       TextStyle senderNameTextStyle});
 }
 
@@ -717,7 +717,7 @@ class __$$GroupMessageThemeImplCopyWithImpl<$Res>
       getSenderName: null == getSenderName
           ? _value.getSenderName
           : getSenderName // ignore: cast_nullable_to_non_nullable
-              as AsyncValue<String?> Function(int),
+              as Future<String?> Function(int),
       senderNameTextStyle: null == senderNameTextStyle
           ? _value.senderNameTextStyle
           : senderNameTextStyle // ignore: cast_nullable_to_non_nullable
@@ -737,7 +737,7 @@ class _$GroupMessageThemeImpl implements _GroupMessageTheme {
           color: Color(0xFF222222))});
 
   @override
-  final AsyncValue<String?> Function(int) getSenderName;
+  final Future<String?> Function(int) getSenderName;
   @override
   @JsonKey()
   final TextStyle senderNameTextStyle;
@@ -774,11 +774,11 @@ class _$GroupMessageThemeImpl implements _GroupMessageTheme {
 
 abstract class _GroupMessageTheme implements GroupMessageTheme {
   const factory _GroupMessageTheme(
-      {required final AsyncValue<String?> Function(int) getSenderName,
+      {required final Future<String?> Function(int) getSenderName,
       final TextStyle senderNameTextStyle}) = _$GroupMessageThemeImpl;
 
   @override
-  AsyncValue<String?> Function(int) get getSenderName;
+  Future<String?> Function(int) get getSenderName;
   @override
   TextStyle get senderNameTextStyle;
 

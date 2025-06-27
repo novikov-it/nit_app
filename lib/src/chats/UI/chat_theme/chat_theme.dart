@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'chat_theme.freezed.dart';
@@ -43,7 +40,7 @@ class ChatInputThemeData with _$ChatInputThemeData {
 @freezed
 class GroupMessageTheme with _$GroupMessageTheme {
   const factory GroupMessageTheme({
-    required AsyncValue<String?> Function(int userId) getSenderName,
+    required Future<String?> Function(int userId) getSenderName,
     @Default(TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 15,
@@ -106,8 +103,7 @@ class ChatThemeData with _$ChatThemeData {
 }
 
 // Функция по умолчанию для получения имени отправителя
-AsyncValue<String?> _defaultGetSenderName(int id) =>
-    AsyncValue.data('User $id');
+Future<String?> _defaultGetSenderName(int id) => Future.value('User $id');
 
 class ChatTheme extends InheritedWidget {
   final ChatThemeData data;
