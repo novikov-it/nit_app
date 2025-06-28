@@ -89,11 +89,12 @@ extension RefEntityListStateExtension on Ref {
                 : data.where((e) => _filter(e, frontendFilter)).toList(),
           );
 
-  loadNextPageForCustomizedEntityListMore<T extends SerializableModel>({
+  Future<bool>
+      loadNextPageForCustomizedEntityListMore<T extends SerializableModel>({
     required EntityListConfig entityListConfig,
   }) =>
-      read(entityListStateProvider<T>()(
-        entityListConfig,
-      ).notifier)
-          .loadNextPage();
+          read(entityListStateProvider<T>()(
+            entityListConfig,
+          ).notifier)
+              .loadNextPage();
 }

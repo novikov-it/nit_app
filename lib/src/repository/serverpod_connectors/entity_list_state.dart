@@ -23,7 +23,7 @@ class EntityListState<Entity extends SerializableModel>
     extends FamilyAsyncNotifier<List<Entity>, EntityListConfig>
 // implements EntityManagerInterface<Entity>
 {
-  late int _nextPage;
+  late int _offset;
 
   @override
   Future<List<Entity>> build(EntityListConfig config) async {
@@ -33,7 +33,7 @@ class EntityListState<Entity extends SerializableModel>
       ),
     );
 
-    _nextPage = 0;
+    _offset = 0;
 
     debugPrint("Building state for ${NitRepository.typeName<Entity>()}");
 
@@ -46,8 +46,8 @@ class EntityListState<Entity extends SerializableModel>
     return _processData(data).toList();
   }
 
-  void loadNextPage() async {
-    await future.then(
+  Future<bool> loadNextPage() async {
+    return await future.then(
       (currentState) async {
         final data = await _loadData();
 
@@ -57,6 +57,8 @@ class EntityListState<Entity extends SerializableModel>
             ..._processData(data),
           ],
         );
+
+        return data.length == arg.pageSize;
       },
     );
   }
@@ -70,7 +72,7 @@ class EntityListState<Entity extends SerializableModel>
           className: NitRepository.typeName<Entity>(),
           filter: arg.backendFilter,
           limit: arg.pageSize,
-          offset: arg.pageSize != null ? _nextPage++ : null,
+          offset: _offset,
         )
         .then(
           (response) => ref.processApiResponse<List<ObjectWrapper>>(
@@ -78,6 +80,8 @@ class EntityListState<Entity extends SerializableModel>
             updateListeners: false,
           ),
         );
+
+    _offset += arg.pageSize ?? 0;
 
     if (result == null) return <ObjectWrapper>[];
 
@@ -97,79 +101,5 @@ class EntityListState<Entity extends SerializableModel>
         ...value.where((e) => !ids.contains((e as dynamic).id)),
       ]);
     });
-    // return await future.then(
-    //   (value) async {
-    //     print((state.value ?? []).map((e) => (e as dynamic).id));
-    //     print(wrappedModel.modelId);
-    //     print(wrappedModel.isDeleted);
-    //     state = AsyncValue.data(
-    //       [
-    //         if (!wrappedModel.isDeleted) wrappedModel.model as Entity,
-    //         ...value.where((e) => (e as dynamic).id != wrappedModel.modelId!),
-    //       ],
-    //     );
-    //     print((state.value ?? []).map((e) => (e as dynamic).id));
-    //   },
-    // );
   }
-
-  // void manualInsert(int modelId, Entity model) async {
-  //   return await future.then((value) async {
-  //     ref.manualUpdate(modelId, model);
-
-  //     state = AsyncValue.data(
-  //       [
-  //         modelId,
-  //         ...value.whereNot((e) => e == modelId),
-  //       ],
-  //     );
-  //   });
-  // }
-
-  // @override
-  // Future<int?> save(
-  //   Entity model, {
-  //   bool andRemoveFromList = false,
-  // }) async {
-  //   return await future.then(
-  //     (value) async => await nitToolsCaller!.nitCrud
-  //         .saveModel(
-  //           wrappedModel: ObjectWrapper.wrap(model: model),
-  //         )
-  //         .then((response) => ref.processApiResponse<int>(response))
-  //         .then(
-  //       (res) {
-  //         if (res == null) return null;
-
-  //         state = AsyncValue.data([
-  //           if (!andRemoveFromList) res,
-  //           ...value.whereNot((e) => e == res)
-  //         ]);
-  //         debugPrint("Updated value = ${state.value}");
-  //         return res;
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // @override
-  // Future<bool> delete(int modelId) async {
-  //   return await future.then(
-  //     (value) async => await nitToolsCaller!.nitCrud
-  //         .delete(
-  //           // TODO: Изменить, toString() не работает на Web release из-за minification
-  //           className: Entity.toString(), modelId: modelId,
-  //         )
-  //         .then((response) => ref.processApiResponse<bool>(response))
-  //         .then(
-  //       (res) {
-  //         if (res == true) {
-  //           state = AsyncValue.data([...value.whereNot((e) => e == modelId)]);
-  //           debugPrint("Updated value = ${state.value}");
-  //         }
-  //         return res ?? false;
-  //       },
-  //     ),
-  //   );
-  // }
 }
