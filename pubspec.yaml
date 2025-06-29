@@ -26,11 +26,10 @@ dependencies:
         path: modules/serverpod_auth/serverpod_auth_phone_flutter
 
   nit_tools_client:
-    # path: ../nit_tools/nit_tools_client
-    git:
-      url: git@github.com:novikov-it/nit_tools.git
-      path: nit_tools_client
-      ref: chat
+    path: ../nit_tools/nit_tools_client
+    # git:
+    #   url: git@github.com:novikov-it/nit_tools.git
+    #   path: nit_tools_client
 
   nit_ui_kit: ^0.1.1
     # path: ../nit_ui_kit
@@ -48,7 +47,7 @@ dependencies:
     # path: ../nit_generic_forms
     # git:
     #   url: git@github.com:novikov-it/nit_generic_forms.git
-    
+
   scrollview_observer: ^1.26.1
     #   ref: master
   nit_router: ^0.3.1
