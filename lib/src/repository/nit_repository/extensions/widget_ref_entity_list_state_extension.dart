@@ -2,6 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_app/src/repository/serverpod_connectors/entity_list_state.dart';
 
+import '../../serverpod_connectors/entity_count_config.dart';
+import '../../serverpod_connectors/entity_count_state.dart';
+
 _filter<T>(T? model, bool Function(T model) filter) =>
     model != null ? filter(model) : false;
 
@@ -97,4 +100,15 @@ extension WidgetRefEntityListStateExtensions on WidgetRef {
             entityListConfig,
           ).notifier)
               .loadNextPage();
+
+  AsyncValue<int> watchEntityCountAsync<T extends SerializableModel>({
+    NitBackendFilter? backendFilter,
+  }) =>
+      watch(
+        entityCountStateProvider<T>()(
+          EntityCountConfig(
+            backendFilter: backendFilter,
+          ),
+        ),
+      );
 }
