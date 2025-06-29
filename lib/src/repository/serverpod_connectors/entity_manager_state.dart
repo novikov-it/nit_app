@@ -63,7 +63,7 @@ class EntityManagerState<Entity extends SerializableModel>
         ...wrappedModelUpdates
             .where((e) => !e.isDeleted)
             .map((e) => e.modelId!),
-        ...value.where((e) => !ids.contains((e as dynamic).id)),
+        ...value.where((e) => !ids.contains(e)),
       ]);
     });
 

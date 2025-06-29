@@ -16,7 +16,7 @@ mixin BackendFilterMethodsMixin<T> on Enum {
     T value, {
     bool negate = false,
   }) =>
-      (T != int && T != double)
+      (T != int && T != double && T != DateTime)
           ? throw UnsupportedError(
               'Unsupported value type, comparison filters are supported for int or double values only (currently)',
             )
@@ -31,7 +31,7 @@ mixin BackendFilterMethodsMixin<T> on Enum {
     T value, {
     bool negate = false,
   }) =>
-      (T != int && T != double)
+      (T != int && T != double && T != DateTime)
           ? throw UnsupportedError(
               'Unsupported value type, comparison filters are supported for int or double values only (currently)',
             )
@@ -46,7 +46,7 @@ mixin BackendFilterMethodsMixin<T> on Enum {
     T value, {
     bool negate = false,
   }) =>
-      (T != int && T != double)
+      (T != int && T != double && T != DateTime)
           ? throw UnsupportedError(
               'Unsupported value type, comparison filters are supported for int or double values only (currently)',
             )
@@ -61,7 +61,7 @@ mixin BackendFilterMethodsMixin<T> on Enum {
     T value, {
     bool negate = false,
   }) =>
-      (T != int && T != double)
+      (T != int && T != double && T != DateTime)
           ? throw UnsupportedError(
               'Unsupported value type, comparison filters are supported for int or double values only (currently)',
             )
