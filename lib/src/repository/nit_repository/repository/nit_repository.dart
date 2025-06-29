@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
 
+final globalRefreshTriggerProvider = StateProvider<DateTime>(
+  (ref) => DateTime.now(),
+);
+
 class NitRepository {
   // static debug() {
   //   for (var MapEntry(:key, :value) in _repositories.entries) {
