@@ -19,7 +19,7 @@ class FirebaseInitializer {
     );
     FcmTokenManager.initialize(
       apiInterface: NitFcmAppBackendInterface(),
-      tokenTtl: const Duration(days: 1),
+      tokenTtl: const Duration(hours: 1),
     );
 
     // await FirebaseMessaging.instance

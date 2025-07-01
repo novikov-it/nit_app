@@ -61,7 +61,6 @@ class NitSessionState extends _$NitSessionState {
 
   Future<bool> signOut() async {
     return await _sessionManager.signOut().then((v) {
-      ref.read(nitFirebaseNotificationsStateProvider.notifier).deleteToken();
       return v;
     });
   }
@@ -87,6 +86,13 @@ class NitSessionState extends _$NitSessionState {
     //   _listenToUpdates();
     // }
     if (_sessionManager.signedInUser?.id != state.signedInUserId) {
+      if (_sessionManager.signedInUser?.id == null) {
+        ref.read(nitFirebaseNotificationsStateProvider.notifier).deleteToken();
+      } else {
+        ref
+            .read(nitFirebaseNotificationsStateProvider.notifier)
+            .updateFcm(_sessionManager.signedInUser?.id.toString());
+      }
       // if (nitToolsCaller != null) {
       //   await _openUpdatesStream();
       // }

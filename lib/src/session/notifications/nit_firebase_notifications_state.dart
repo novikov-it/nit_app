@@ -44,14 +44,13 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
     return true;
   }
 
-  Future<bool> updateFcm() async {
-    if (ref.signedInUserId == null) return false;
+  Future<bool> updateFcm(String? userId) async {
+    if (userId == null) return false;
     try {
       if (!kIsWeb) {
-        // await FcmTokenManager.instance()
-        //     .getAppNotificationPreference(ref.signedInUserId.toString());
         await FcmTokenManager.instance()
-            .onLogin(userId: ref.signedInUserId.toString());
+            .getAppNotificationPreference(userId.toString());
+        await FcmTokenManager.instance().onLogin(userId: userId.toString());
         return true;
       }
 
@@ -61,8 +60,8 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
           )
           .then(
             (token) async => token != null
-                ? NitFcmAppBackendInterface().updateOnServer(
-                    userId: ref.signedInUserId.toString(), fcmToken: token)
+                ? NitFcmAppBackendInterface()
+                    .updateOnServer(userId: userId, fcmToken: token)
                 : {},
           );
       return true;
@@ -78,11 +77,10 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
     // );
   }
 
-  //TODO: do on logout
   Future<bool> deleteToken() async {
     if (!kIsWeb) {
-      await FcmTokenManager.instance()
-          .onLogout(userId: ref.signedInUserId.toString());
+      await NitFcmAppBackendInterface()
+          .deleteOnServer(userId: ref.signedInUserId.toString());
     }
     return true;
   }
@@ -95,9 +93,9 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
         ? await FirebaseMessaging.instance.requestPermission(alert: false)
         : await FirebaseMessaging.instance.getNotificationSettings();
 
-    if (requestPermission &&
-        [AuthorizationStatus.authorized, AuthorizationStatus.provisional]
-            .contains(settings.authorizationStatus)) updateFcm();
+    // if (requestPermission &&
+    //     [AuthorizationStatus.authorized, AuthorizationStatus.provisional]
+    //         .contains(settings.authorizationStatus)) updateFcm();
 
     return switch (settings.authorizationStatus) {
       AuthorizationStatus.authorized ||
