@@ -12,7 +12,9 @@ import 'package:path_provider/path_provider.dart';
 
 class FileUploaderHandler {
   static String Function(
-      XFile file, String extension) defaultUploadNameTemplate = (
+    XFile file,
+    String extension,
+  ) defaultUploadNameTemplate = (
     XFile file,
     String extension,
   ) =>
