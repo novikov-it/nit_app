@@ -61,7 +61,10 @@ class EntityManagerState<Entity extends SerializableModel>
     return await future.then((value) async {
       state = AsyncValue.data([
         ...wrappedModelUpdates
-            .where((e) => !e.isDeleted)
+            .where((e) =>
+                !e.isDeleted &&
+                (arg.backendFilter == null ||
+                    arg.backendFilter!.filterUpdate(e.jsonSerialization)))
             .map((e) => e.modelId!),
         ...value.where((e) => !ids.contains(e)),
       ]);
