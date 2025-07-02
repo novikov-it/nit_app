@@ -1,26 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'nit_session_state.dart';
+part of 'nit_push_handler.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$nitSessionStateHash() => r'3b1a2673b340c0769e4056afb6fc0e49cd8d2bd9';
+String _$firebaseNotificationServiceHash() =>
+    r'239ad321b5dc43461b709470d960a6320c0c85fd';
 
-/// See also [NitSessionState].
-@ProviderFor(NitSessionState)
-final nitSessionStateProvider =
-    NotifierProvider<NitSessionState, NitSessionStateModel>.internal(
-  NitSessionState.new,
-  name: r'nitSessionStateProvider',
+/// See also [FirebaseNotificationService].
+@ProviderFor(FirebaseNotificationService)
+final firebaseNotificationServiceProvider =
+    AsyncNotifierProvider<FirebaseNotificationService, void>.internal(
+  FirebaseNotificationService.new,
+  name: r'firebaseNotificationServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$nitSessionStateHash,
+      : _$firebaseNotificationServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$NitSessionState = Notifier<NitSessionStateModel>;
+typedef _$FirebaseNotificationService = AsyncNotifier<void>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

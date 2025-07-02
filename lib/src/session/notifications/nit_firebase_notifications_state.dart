@@ -1,5 +1,6 @@
+import 'package:fcm_token_manager/fcm_token_manager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
@@ -43,18 +44,24 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
     return true;
   }
 
-  Future<bool> updateFcm() async {
-    // return await future.then(
-    //   (currentState) async {
-    //     if (currentState.notificationsAllowed) {
+  Future<bool> updateFcm(String? userId) async {
+    if (userId == null) return false;
     try {
+      if (!kIsWeb) {
+        await FcmTokenManager.instance()
+            .getAppNotificationPreference(userId.toString());
+        await FcmTokenManager.instance().onLogin(userId: userId.toString());
+        return true;
+      }
+
       await FirebaseMessaging.instance
           .getToken(
             vapidKey: vapidKey,
           )
           .then(
             (token) async => token != null
-                ? await nitToolsCaller!.services.setFcmToken(fcmToken: token)
+                ? NitFcmAppBackendInterface()
+                    .updateOnServer(userId: userId, fcmToken: token)
                 : {},
           );
       return true;
@@ -70,17 +77,25 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
     // );
   }
 
+  Future<bool> deleteToken() async {
+    if (!kIsWeb) {
+      await NitFcmAppBackendInterface()
+          .deleteOnServer(userId: ref.signedInUserId.toString());
+    }
+    return true;
+  }
+
   Future<NitFirebaseNotificationsStateModel> _checkNotificationsStatus({
     bool requestPermission = false,
   }) async {
     debugPrint("Updating Notifications Token");
     final settings = requestPermission
-        ? await FirebaseMessaging.instance.requestPermission()
+        ? await FirebaseMessaging.instance.requestPermission(alert: false)
         : await FirebaseMessaging.instance.getNotificationSettings();
 
-    if (requestPermission &&
-        [AuthorizationStatus.authorized, AuthorizationStatus.provisional]
-            .contains(settings.authorizationStatus)) updateFcm();
+    // if (requestPermission &&
+    //     [AuthorizationStatus.authorized, AuthorizationStatus.provisional]
+    //         .contains(settings.authorizationStatus)) updateFcm();
 
     return switch (settings.authorizationStatus) {
       AuthorizationStatus.authorized ||
@@ -108,4 +123,21 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
   //     ),
   //   );
   // }
+}
+
+class NitFcmAppBackendInterface implements FcmAppBackendInterface {
+  @override
+  FutureOr<void> updateOnServer({
+    required String userId,
+    required String fcmToken,
+  }) async {
+    await nitToolsCaller!.services.setFcmToken(fcmToken: fcmToken);
+  }
+
+  @override
+  FutureOr<void> deleteOnServer({
+    required String userId,
+  }) async {
+    await nitToolsCaller!.services.deleteFcmToken(userId: int.parse(userId));
+  }
 }

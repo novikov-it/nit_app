@@ -32,7 +32,11 @@ class EntityCountState<Entity extends SerializableModel>
       ),
     );
 
-    debugPrint("Building state for ${NitRepository.typeName<Entity>()}");
+    final globalTimestamp = ref.watch(globalRefreshTriggerProvider);
+
+    debugPrint(
+      "Building entity count state for ${NitRepository.typeName<Entity>()} with timestamp $globalTimestamp",
+    );
 
     final result = await nitToolsCaller!.nitCrud
         // TODO: Изменить, toString() не работает на Web release из-за minification

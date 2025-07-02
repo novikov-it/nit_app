@@ -7,6 +7,7 @@ import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:nit_app/nit_app.dart';
+import 'package:nit_app/src/ref_extension/nit_file_uploader.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -18,7 +19,7 @@ class FileUploaderHandler {
     XFile file,
     String extension,
   ) =>
-      '${DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())}-${file.name}$extension';
+      '${DateFormat('yyyy-MM-dd-hh:mm:ss').format(DateTime.now())}.$extension';
 
   static Future<String?> pickAndUploadImageUrl({
     ImageSource imageSource = ImageSource.gallery,
@@ -44,15 +45,18 @@ class FileUploaderHandler {
   static Future<String?> uploadXFileToServerUrl({
     required XFile xFile,
     String? path,
+    int? duration, // miliseconds
   }) async =>
-      uploadXFileToServer(xFile: xFile, path: path)
+      uploadXFileToServer(xFile: xFile, path: path, duration: duration)
           .then((media) => media.publicUrl);
 
   static Future<NitMedia> uploadXFileToServer({
     required XFile xFile,
     String? path,
+    int? duration, // miliseconds
   }) async {
-    final fileExtension = extension(xFile.path).toLowerCase();
+    final fileExtension = xFile.mimeType?.split('/').last.toLowerCase() ??
+        extension(xFile.name).toLowerCase();
 
     final originalBytes = await xFile.readAsBytes();
 
@@ -67,16 +71,19 @@ class FileUploaderHandler {
     return uploadBytesToServer(
       bytes: bytesToUpload,
       path: uploadPath,
+      duration: duration,
     );
   }
 
   static Future<String?> uploadBytesToServerUrl({
     required Uint8List bytes,
     required String path,
+    int? duration, // miliseconds
   }) async =>
       uploadBytesToServer(
         bytes: bytes,
         path: path,
+        duration: duration,
       ).then(
         (media) => media.publicUrl,
       );
@@ -84,8 +91,10 @@ class FileUploaderHandler {
   static Future<NitMedia> uploadBytesToServer({
     required Uint8List bytes,
     required String path,
+    int? duration,
   }) async {
     final byteData = ByteData.view(bytes.buffer);
+    path = path.replaceAll(' ', '_');
 
     var uploadDescription =
         await nitToolsCaller!.nitUpload.getUploadDescription(
@@ -97,11 +106,12 @@ class FileUploaderHandler {
     }
     log(uploadDescription);
 
-    var uploader = FileUploader(uploadDescription);
+    var uploader = NitFileUploader(uploadDescription);
     await uploader.uploadByteData(byteData);
 
     var nitMedia = await nitToolsCaller!.nitUpload.verifyUpload(
       path: path,
+      duration: duration,
     );
 
     if (nitMedia == null) {

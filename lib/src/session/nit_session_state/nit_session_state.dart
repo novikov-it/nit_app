@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:nit_app/nit_app.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/module.dart' as auth;
 import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
@@ -59,7 +60,9 @@ class NitSessionState extends _$NitSessionState {
   }
 
   Future<bool> signOut() async {
-    return await _sessionManager.signOut();
+    return await _sessionManager.signOut().then((v) {
+      return v;
+    });
   }
 
   Future<int?> _processUserInfoId(int? serverpodUserInfoId) async =>
@@ -83,6 +86,13 @@ class NitSessionState extends _$NitSessionState {
     //   _listenToUpdates();
     // }
     if (_sessionManager.signedInUser?.id != state.signedInUserId) {
+      if (_sessionManager.signedInUser?.id == null) {
+        ref.read(nitFirebaseNotificationsStateProvider.notifier).deleteToken();
+      } else {
+        ref
+            .read(nitFirebaseNotificationsStateProvider.notifier)
+            .updateFcm(_sessionManager.signedInUser?.id.toString());
+      }
       // if (nitToolsCaller != null) {
       //   await _openUpdatesStream();
       // }

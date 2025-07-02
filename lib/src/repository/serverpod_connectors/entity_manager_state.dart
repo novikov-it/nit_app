@@ -31,7 +31,11 @@ class EntityManagerState<Entity extends SerializableModel>
       ),
     );
 
-    debugPrint("Building state for ${NitRepository.typeName<Entity>()}");
+    final globalTimestamp = ref.watch(globalRefreshTriggerProvider);
+
+    debugPrint(
+      "Building entity manager state for ${NitRepository.typeName<Entity>()} with timestamp $globalTimestamp",
+    );
 
     final result = await nitToolsCaller!.nitCrud
         .getAll(

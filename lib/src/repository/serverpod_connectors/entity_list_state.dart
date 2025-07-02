@@ -35,7 +35,11 @@ class EntityListState<Entity extends SerializableModel>
 
     _offset = 0;
 
-    debugPrint("Building state for ${NitRepository.typeName<Entity>()}");
+    final globalTimestamp = ref.watch(globalRefreshTriggerProvider);
+
+    debugPrint(
+      "Building entity list state for ${NitRepository.typeName<Entity>()} with timestamp $globalTimestamp",
+    );
 
     final data = await _loadData();
 

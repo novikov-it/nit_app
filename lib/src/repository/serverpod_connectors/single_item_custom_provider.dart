@@ -26,7 +26,11 @@ class SingleItemCustomProviderState<T extends SerializableModel>
   Future<int?> build(
     SingleItemCustomProviderConfig arg,
   ) async {
-    debugPrint("Getting single ${NitRepository.typeName<T>()} with id $arg");
+    final globalTimestamp = ref.watch(globalRefreshTriggerProvider);
+
+    debugPrint(
+      "Getting single ${NitRepository.typeName<T>()} with id $arg with timestamp $globalTimestamp",
+    );
     // final res = await ref.getAll<T>();
     // NitRepository.ensureDefaultDescriptor<T>();
 
