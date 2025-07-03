@@ -14,6 +14,7 @@ export 'src/ref_extension/file_upload_handler.dart';
 export 'src/ref_extension/nit_app_ref_extension.dart';
 export 'src/ref_extension/nit_app_widget_ref_extension.dart';
 export 'src/repository/filters/nit_backend_filter_config.dart';
+export 'src/repository/filters/nit_backend_filter_extension.dart';
 export 'src/repository/nit_repository/nit_repository_export_package.dart';
 export 'src/repository/serverpod_connectors/entity_list_config.dart';
 export 'src/repository/serverpod_connectors/entity_manager_state.dart';
