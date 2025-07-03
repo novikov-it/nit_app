@@ -1,6 +1,5 @@
 import 'package:fcm_token_manager/fcm_token_manager.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:nit_app/nit_app.dart';
 
 // import 'package:firebase_messaging/firebase_messaging.dart';
@@ -8,7 +7,7 @@ import 'package:nit_app/nit_app.dart';
 // import 'package:flutter/material.dart';
 
 class FirebaseInitializer {
-  static late final bool inited;
+  static bool inited = false;
   FirebaseInitializer._internal();
   factory FirebaseInitializer() => _instance;
   static final FirebaseInitializer _instance = FirebaseInitializer._internal();
