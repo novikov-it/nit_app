@@ -33,7 +33,7 @@ extension WidgetRefUpdateActionsExtension on WidgetRef {
     }
     return await nitToolsCaller!.nitCrud
         .delete(
-          className: ObjectWrapper.getClassNameForObject(model),
+          className: ObjectWrapper.getClassNameForObject(model).split('.').last,
           modelId: modelId,
         )
         .then(
