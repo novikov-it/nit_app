@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -89,6 +90,25 @@ class AttachmentState extends _$AttachmentState {
       );
     } catch (e) {
       log('Ошибка при загрузке ассета: $e');
+    }
+  }
+
+  Future<void> uploadAudio(File file) async {
+    state = state.copyWith(isUploading: true);
+
+    try {
+      await ref.uploadXFileToServer(
+        xFile: XFile(
+          file.path,
+          bytes: await file.readAsBytes(),
+          name: file.path,
+        ),
+        path: 'chat/${ref.signedInUserId}',
+      );
+    } catch (e) {
+      log('Ошибка при загрузке ассета: $e');
+    } finally {
+      state = state.copyWith(isUploading: false);
     }
   }
 

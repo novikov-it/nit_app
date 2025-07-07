@@ -1,6 +1,11 @@
 /// Grid widget to display message attachments as images
 part of '../../nit_chat_widgets.dart';
 
+enum MediaGridType {
+  image,
+  audio,
+}
+
 class MediaGrid extends HookConsumerWidget {
   final NitChatMessage message;
 
@@ -9,21 +14,26 @@ class MediaGrid extends HookConsumerWidget {
     required this.message,
   });
 
-  Future<List<String>> _loadImages(WidgetRef ref) async {
+  Future<List<NitMedia>> _loadMedias(WidgetRef ref) async {
     if (message.attachmentIds == null || message.attachmentIds!.isEmpty) {
       return [];
     }
-    final futures = message.attachmentIds!
-        .map((e) async => (await ref.readOrFetchModel<NitMedia>(e)).publicUrl)
-        .toList();
+    final futures = message.attachmentIds!.map((e) async {
+      final nitMedia = (await ref.readOrFetchModel<NitMedia>(e));
+      if (nitMedia.type == MediaType.audio) {
+        return nitMedia;
+      }
+      return nitMedia;
+    }).toList();
+
     return Future.wait(futures);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final imagesFuture = useMemoized(() => _loadImages(ref), [message.id]);
+    final mediasFuture = useMemoized(() => _loadMedias(ref), [message.id]);
 
-    final snapshot = useFuture(imagesFuture);
+    final snapshot = useFuture(mediasFuture);
 
     if (snapshot.connectionState == ConnectionState.waiting) {
       return const Center(child: CircularProgressIndicator());
@@ -31,24 +41,31 @@ class MediaGrid extends HookConsumerWidget {
     if (!snapshot.hasData || snapshot.data!.isEmpty) {
       return const SizedBox.shrink();
     }
-    final images = snapshot.data!;
-    if (images.length < 3) {
+    final medias = snapshot.data!;
+    if (medias.length == 1 && medias.first.type == MediaType.audio) {
+      return VoiceMessageBubble(nitMedia: medias.single);
+    }
+    final images = medias.map((e) => e.publicUrl).toList();
+    if (medias.length < 3) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(images.length, (index) {
-          return Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: index == 1 ? 4 : 0),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: MessageBubbleImageTile(
-                  images: images,
-                  index: index,
+        children: List.generate(
+          medias.length,
+          (index) {
+            return Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: index == 1 ? 4 : 0),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: MessageBubbleImageTile(
+                    images: images,
+                    index: index,
+                  ),
                 ),
               ),
-            ),
-          );
-        }),
+            );
+          },
+        ),
       );
     }
     return GridView.count(
@@ -57,18 +74,21 @@ class MediaGrid extends HookConsumerWidget {
       crossAxisSpacing: 4,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      children: List.generate(images.length, (index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2.0),
-          child: AspectRatio(
-            aspectRatio: 1.2,
-            child: MessageBubbleImageTile(
-              images: images,
-              index: index,
+      children: List.generate(
+        medias.length,
+        (index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2.0),
+            child: AspectRatio(
+              aspectRatio: 1.2,
+              child: MessageBubbleImageTile(
+                images: images,
+                index: index,
+              ),
             ),
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 }

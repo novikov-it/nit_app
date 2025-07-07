@@ -19,7 +19,7 @@ class FileUploaderHandler {
     XFile file,
     String extension,
   ) =>
-      '${DateFormat('yyyy-MM-dd-hh:mm:ss').format(DateTime.now())}.$extension';
+      '${DateFormat('yyyy-MM-dd-hh:mm:ss').format(DateTime.now())}$extension';
 
   static Future<String?> pickAndUploadImageUrl({
     ImageSource imageSource = ImageSource.gallery,

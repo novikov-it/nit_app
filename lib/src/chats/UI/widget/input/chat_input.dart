@@ -11,20 +11,18 @@ class ChatInputWidget extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chatTheme = ChatTheme.of(context);
-
     final inputTheme = chatTheme.inputTheme;
-
     final controller = useTextEditingController();
     final focusNode = useFocusNode();
     final chatNotifier = ref.read(chatStateProvider(chatId).notifier);
     final isSending = useState(false);
     final isTyping = useState(false);
     final typingTimer = useRef<Timer?>(null);
+    final isAudioMode = useState(false);
 
     useEffect(() {
       void onTextChanged() {
         final hasText = controller.text.trim().isNotEmpty;
-
         if (hasText) {
           if (!isTyping.value) {
             isTyping.value = true;
@@ -47,7 +45,6 @@ class ChatInputWidget extends HookConsumerWidget {
       }
 
       controller.addListener(onTextChanged);
-
       return () {
         controller.removeListener(onTextChanged);
         typingTimer.value?.cancel();
@@ -76,123 +73,152 @@ class ChatInputWidget extends HookConsumerWidget {
 
       try {
         isSending.value = true;
-
         if (isTyping.value) {
           isTyping.value = false;
           chatNotifier.typingToggle(false);
         }
         typingTimer.value?.cancel();
-
         controller.clear();
-
-        await chatNotifier.sendMessage(text);
+        if (chatNotifier.isEditMode) {
+          await chatNotifier.editMessage(text);
+        } else {
+          await chatNotifier.sendMessage(text);
+        }
       } finally {
         isSending.value = false;
       }
     }
 
-    return Container(
-      padding: inputTheme.padding,
-      decoration: BoxDecoration(
-        color: inputTheme.backgroundColor,
-        border: Border(
-          top: BorderSide(
-            color: chatTheme.mainTheme.dividerColor,
-            width: 0.5,
-          ),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          AttachmentList(),
-          Gap(8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: inputTheme.backgroundColor,
-                      borderRadius:
-                          BorderRadius.circular(inputTheme.borderRadius),
-                      border: Border.all(
+    return Stack(
+      children: [
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          child: isAudioMode.value
+              ? Positioned.fill(
+                  key: const ValueKey('audio_recorder'),
+                  child: AudioRecorderWidget(
+                    chatId: chatId,
+                    isAudioMode: isAudioMode,
+                  ),
+                )
+              : Container(
+                  padding: inputTheme.padding,
+                  decoration: BoxDecoration(
+                    color: inputTheme.backgroundColor,
+                    border: Border(
+                      top: BorderSide(
                         color: chatTheme.mainTheme.dividerColor,
-                        width: 1,
+                        width: 0.5,
                       ),
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AddAttachmentButton(),
-                        Expanded(
-                          child: TextField(
-                            controller: controller,
-                            focusNode: focusNode,
-                            maxLines: 5,
-                            minLines: 1,
-                            style: inputTheme.textStyle,
-                            decoration: InputDecoration(
-                              hintText: 'Введите сообщение...',
-                              border: inputTheme.border ?? InputBorder.none,
-                              contentPadding: inputTheme.padding,
-                              hintStyle: inputTheme.hintStyle?.copyWith(
-                                    color: isTyping.value
-                                        ? chatTheme.mainTheme.primaryColor
-                                        : inputTheme.hintColor,
-                                  ) ??
-                                  TextStyle(
-                                    color: isTyping.value
-                                        ? chatTheme.mainTheme.primaryColor
-                                        : inputTheme.hintColor,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 4,
+                        offset: const Offset(0, -2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      AttachmentList(),
+                      Gap(8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: inputTheme.backgroundColor,
+                                  borderRadius: BorderRadius.circular(
+                                      inputTheme.borderRadius),
+                                  border: Border.all(
+                                    color: chatTheme.mainTheme.dividerColor,
+                                    width: 1,
                                   ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    AddAttachmentButton(),
+                                    Expanded(
+                                      child: TextField(
+                                        controller: controller,
+                                        focusNode: focusNode,
+                                        maxLines: 5,
+                                        minLines: 1,
+                                        style: inputTheme.textStyle,
+                                        decoration: InputDecoration(
+                                          hintText: 'Введите сообщение...',
+                                          border: inputTheme.border ??
+                                              InputBorder.none,
+                                          contentPadding: inputTheme.padding,
+                                          hintStyle: inputTheme.hintStyle
+                                                  ?.copyWith(
+                                                color: isTyping.value
+                                                    ? chatTheme.mainTheme
+                                                        .primaryColor
+                                                    : inputTheme.hintColor,
+                                              ) ??
+                                              TextStyle(
+                                                color: isTyping.value
+                                                    ? chatTheme.mainTheme
+                                                        .primaryColor
+                                                    : inputTheme.hintColor,
+                                              ),
+                                        ),
+                                        cursorColor: inputTheme.cursorColor,
+                                        onSubmitted: (_) => sendMessage(),
+                                        textInputAction: TextInputAction.send,
+                                        textCapitalization:
+                                            TextCapitalization.sentences,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                            cursorColor: inputTheme.cursorColor,
-                            onSubmitted: (_) => sendMessage(),
-                            textInputAction: TextInputAction.send,
-                            textCapitalization: TextCapitalization.sentences,
-                          ),
+                            const SizedBox(width: 8),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              child: FloatingActionButton.small(
+                                onPressed: isSending.value
+                                    ? null
+                                    : controller.text.trim().isEmpty
+                                        ? () => isAudioMode.value = true
+                                        : sendMessage,
+                                backgroundColor: isSending.value
+                                    ? chatTheme.mainTheme.secondaryColor
+                                    : chatTheme.mainTheme.primaryColor,
+                                foregroundColor: Colors.white,
+                                child: isSending.value
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  Colors.white),
+                                        ),
+                                      )
+                                    : Icon(
+                                        controller.text.trim().isEmpty &&
+                                                !chatNotifier.isEditMode
+                                            ? Icons.mic
+                                            : Icons.send,
+                                      ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 8),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  child: FloatingActionButton.small(
-                    onPressed: isSending.value ? null : sendMessage,
-                    backgroundColor: controller.text.trim().isEmpty
-                        ? chatTheme.mainTheme.secondaryColor
-                        : chatTheme.mainTheme.primaryColor,
-                    child: isSending.value
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : Icon(
-                            Icons.send,
-                            color: Colors.white,
-                          ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

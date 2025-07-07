@@ -44,7 +44,7 @@ class BubbleOverlay extends HookConsumerWidget {
 
       double overlayWidth = 260;
       double overlayHeight =
-          isMe ? 235 : 180; // Разная высота в зависимости от isMe
+          isMe ? 180 : 60; // Разная высота в зависимости от isMe
 
       double left = tap.dx - overlayWidth / 2;
       double top = tap.dy - overlayHeight;
@@ -108,39 +108,39 @@ class BubbleOverlay extends HookConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           // Реакции
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                for (final emoji in [
-                                  '👍',
-                                  '❤️',
-                                  '😂',
-                                  '😮',
-                                  '😢',
-                                ])
-                                  _AnimatedIconButton(
-                                    onPressed: () {
-                                      animationController
-                                          .reverse()
-                                          .then((value) {
-                                        overlayEntry.value?.remove();
-                                        overlayEntry.value = null;
-                                      });
-                                    },
-                                    icon: Text(
-                                      emoji,
-                                      style: const TextStyle(fontSize: 24),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                          Divider(
-                            color: theme.mainTheme.dividerColor,
-                            height: 1,
-                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //     children: [
+                          //       for (final emoji in [
+                          //         '👍',
+                          //         '❤️',
+                          //         '😂',
+                          //         '😮',
+                          //         '😢',
+                          //       ])
+                          //         _AnimatedIconButton(
+                          //           onPressed: () {
+                          //             animationController
+                          //                 .reverse()
+                          //                 .then((value) {
+                          //               overlayEntry.value?.remove();
+                          //               overlayEntry.value = null;
+                          //             });
+                          //           },
+                          //           icon: Text(
+                          //             emoji,
+                          //             style: const TextStyle(fontSize: 24),
+                          //           ),
+                          //         ),
+                          //     ],
+                          //   ),
+                          // ),
+                          // Divider(
+                          //   color: theme.mainTheme.dividerColor,
+                          //   height: 1,
+                          // ),
                           // Действия в зависимости от isMe
                           _AnimatedListTile(
                             leading: Icon(
@@ -235,10 +235,9 @@ class _AnimatedIconButton extends HookWidget {
   final Widget icon;
 
   const _AnimatedIconButton({
-    Key? key,
     required this.onPressed,
     required this.icon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -277,11 +276,10 @@ class _AnimatedListTile extends HookWidget {
   final VoidCallback onTap;
 
   const _AnimatedListTile({
-    Key? key,
     required this.leading,
     required this.title,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
