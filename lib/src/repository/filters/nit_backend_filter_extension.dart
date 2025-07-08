@@ -39,8 +39,15 @@ extension NitBackendFilterExtension<T> on NitBackendFilter<T> {
     Map<String, dynamic> jsonSerialization, {
     bool negate = false,
   }) {
-    final modelValue =
-        NitToolsClient.protocol.deserialize<T?>(jsonSerialization[fieldName]);
+    // print(T.toString());
+    if (T == dynamic) {
+      throw Exception(
+        'NitBackendFilter<$T>: тип не определён! '
+        'Создайте фильтр с явным generic, например NitBackendFilter<int>().',
+      );
+    }
+    final modelValue = NitToolsClient.protocol
+        .deserialize<T?>(jsonSerialization['data'][fieldName]);
 
     if (type == NitBackendFilterType.equals) {
       return negate != (modelValue == fieldValue);

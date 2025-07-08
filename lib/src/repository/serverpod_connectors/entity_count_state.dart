@@ -59,10 +59,15 @@ class EntityCountState<Entity extends SerializableModel>
   }
 
   void _updatesListener(List<ObjectWrapper> wrappedModelUpdates) async {
+    final filteredUpdates = wrappedModelUpdates
+        .where((e) => (arg.backendFilter == null ||
+            arg.backendFilter!.filterUpdate(e.jsonSerialization)))
+        .toList();
+
     return await future.then((value) async {
       state = AsyncValue.data(value +
-          wrappedModelUpdates.where((e) => !e.isDeleted).length -
-          wrappedModelUpdates.where((e) => e.isDeleted).length);
+          filteredUpdates.where((e) => !e.isDeleted).length -
+          filteredUpdates.where((e) => e.isDeleted).length);
     });
   }
 }
