@@ -68,7 +68,7 @@ class EditInputPanel extends ConsumerWidget {
                     onPressed: () {
                       ref
                           .read(chatStateProvider(chatId).notifier)
-                          .setRepliedMessage(null);
+                          .setEditedMessage(null);
                     },
                   ),
                 ],
