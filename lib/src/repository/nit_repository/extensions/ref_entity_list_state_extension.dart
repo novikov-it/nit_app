@@ -78,7 +78,7 @@ extension RefEntityListStateExtension on Ref {
 
   AsyncValue<List<T>>
       watchEntityListCustomizedAsync<T extends SerializableModel>({
-    required EntityListConfig entityListConfig,
+    required EntityListConfig<T> entityListConfig,
     bool Function(T model)? frontendFilter,
   }) =>
           watch(
@@ -93,7 +93,7 @@ extension RefEntityListStateExtension on Ref {
 
   Future<bool>
       loadNextPageForCustomizedEntityListMore<T extends SerializableModel>({
-    required EntityListConfig entityListConfig,
+    required EntityListConfig<T> entityListConfig,
   }) =>
           read(entityListStateProvider<T>()(
             entityListConfig,
