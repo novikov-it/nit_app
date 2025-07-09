@@ -94,12 +94,9 @@ class ChatInputWidget extends HookConsumerWidget {
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: isAudioMode.value
-              ? Positioned.fill(
-                  key: const ValueKey('audio_recorder'),
-                  child: AudioRecorderWidget(
-                    chatId: chatId,
-                    isAudioMode: isAudioMode,
-                  ),
+              ? AudioRecorderWidget(
+                  chatId: chatId,
+                  isAudioMode: isAudioMode,
                 )
               : Container(
                   padding: inputTheme.padding,
@@ -154,19 +151,19 @@ class ChatInputWidget extends HookConsumerWidget {
                                           border: inputTheme.border ??
                                               InputBorder.none,
                                           contentPadding: inputTheme.padding,
-                                          hintStyle: inputTheme.hintStyle
-                                                  ?.copyWith(
-                                                color: isTyping.value
-                                                    ? chatTheme.mainTheme
-                                                        .primaryColor
-                                                    : inputTheme.hintColor,
-                                              ) ??
-                                              TextStyle(
-                                                color: isTyping.value
-                                                    ? chatTheme.mainTheme
-                                                        .primaryColor
-                                                    : inputTheme.hintColor,
-                                              ),
+                                          hintStyle:
+                                              inputTheme.hintStyle?.copyWith(
+                                                    color: isTyping.value
+                                                        ? chatTheme.mainTheme
+                                                            .primaryColor
+                                                        : inputTheme.hintColor,
+                                                  ) ??
+                                                  TextStyle(
+                                                    color: isTyping.value
+                                                        ? chatTheme.mainTheme
+                                                            .primaryColor
+                                                        : inputTheme.hintColor,
+                                                  ),
                                         ),
                                         cursorColor: inputTheme.cursorColor,
                                         onSubmitted: (_) => sendMessage(),
