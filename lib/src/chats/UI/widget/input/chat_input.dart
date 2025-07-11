@@ -182,7 +182,8 @@ class ChatInputWidget extends HookConsumerWidget {
                               child: FloatingActionButton.small(
                                 onPressed: isSending.value
                                     ? null
-                                    : controller.text.trim().isEmpty
+                                    : chatTheme.settings.enableVoiceMessages &&
+                                            controller.text.trim().isEmpty
                                         ? () => isAudioMode.value = true
                                         : sendMessage,
                                 backgroundColor: isSending.value
@@ -201,7 +202,10 @@ class ChatInputWidget extends HookConsumerWidget {
                                         ),
                                       )
                                     : Icon(
-                                        controller.text.trim().isEmpty &&
+                                        chatTheme.settings.enableVoiceMessages &&
+                                                controller.text
+                                                    .trim()
+                                                    .isEmpty &&
                                                 !chatNotifier.isEditMode
                                             ? Icons.mic
                                             : Icons.send,
