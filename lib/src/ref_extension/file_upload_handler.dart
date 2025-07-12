@@ -13,13 +13,11 @@ import 'package:path_provider/path_provider.dart';
 
 class FileUploaderHandler {
   static String Function(
-    XFile file,
     String extension,
   ) defaultUploadNameTemplate = (
-    XFile file,
     String extension,
   ) =>
-      '${DateFormat('yyyy-MM-dd-hh:mm:ss').format(DateTime.now())}$extension';
+      '${DateFormat('yyyy-MM-dd-hh:mm:ss').format(DateTime.now())}.$extension';
 
   static Future<String?> pickAndUploadImageUrl({
     ImageSource imageSource = ImageSource.gallery,
@@ -65,8 +63,8 @@ class FileUploaderHandler {
     final bytesToUpload = jpegBytes ?? originalBytes;
 
     final uploadPath = path == null
-        ? defaultUploadNameTemplate(xFile, fileExtension)
-        : '$path/${defaultUploadNameTemplate(xFile, fileExtension)}';
+        ? defaultUploadNameTemplate(fileExtension)
+        : '$path/${defaultUploadNameTemplate(fileExtension)}';
 
     return uploadBytesToServer(
       bytes: bytesToUpload,
