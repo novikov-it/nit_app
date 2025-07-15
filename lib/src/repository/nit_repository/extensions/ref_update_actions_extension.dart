@@ -78,9 +78,9 @@ extension RefUpdateActionsExtension on Ref {
     return response.value;
   }
 
-  updateFromStream(ObjectWrapper update) {
-    if (update.modelId != null) {
-      updateRepository([update]);
-    }
+  updateFromStream(List<ObjectWrapper> updates) {
+    // if (update.modelId != null) {
+    updateRepository(updates);
+    // }
   }
 }
