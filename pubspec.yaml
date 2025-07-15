@@ -89,7 +89,7 @@ dependencies:
   carousel_slider: ^5.0.0
   http: ^1.4.0
   http_parser: ^4.0.2
-  fcm_token_manager: ^0.1.5
+  # fcm_token_manager: ^0.1.5
   swipe_to: ^1.0.6
   # audioplayers: ^6.4.0
   # waveform_recorder: ^1.6.0

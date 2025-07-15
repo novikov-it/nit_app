@@ -38,8 +38,7 @@ class FirebaseNotificationService extends _$FirebaseNotificationService {
     FirebaseMessaging.onMessage.listen((message) {
       debugPrint('Foreground message: ${message.data}');
 
-      ref.notifyUser(NitNotification.success(
-          '${message.notification?.title}')); //TODO: handle press
+      ref.notifyUser(NitNotification.success('${message.notification?.title}'));
     });
 
     //Background

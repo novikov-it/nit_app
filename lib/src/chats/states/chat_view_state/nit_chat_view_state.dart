@@ -184,10 +184,10 @@ class ChatState extends _$ChatState {
   }
 
   void setRepliedMessage(NitChatMessage? message) {
-    state = state.copyWith(repliedMessage: message);
+    state = state.copyWith(repliedMessage: message, editedMessage: null);
   }
 
   void setEditedMessage(NitChatMessage? message) {
-    state = state.copyWith(editedMessage: message);
+    state = state.copyWith(editedMessage: message, repliedMessage: null);
   }
 }

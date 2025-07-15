@@ -91,7 +91,7 @@ class NitSessionState extends _$NitSessionState {
         if (_sessionManager.signedInUser?.id == null) {
           ref
               .read(nitFirebaseNotificationsStateProvider.notifier)
-              .deleteToken();
+              .deleteToken(state.signedInUserId);
         } else {
           ref
               .read(nitFirebaseNotificationsStateProvider.notifier)

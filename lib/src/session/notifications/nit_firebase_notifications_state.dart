@@ -1,4 +1,4 @@
-import 'package:fcm_token_manager/fcm_token_manager.dart';
+// import 'package:fcm_token_manager/fcm_token_manager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -29,7 +29,12 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
 
   @override
   Future<NitFirebaseNotificationsStateModel> build() async {
-    return await _checkNotificationsStatus();
+    FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
+      if (ref.signedIn) {
+        nitToolsCaller!.services.setFcmToken(fcmToken: fcmToken);
+      }
+    });
+    return await _checkNotificationsStatus(requestPermission: true);
   }
 
   Future<bool> requestPermission() async {
@@ -48,9 +53,10 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
     if (userId == null) return false;
     try {
       if (!kIsWeb) {
-        await FcmTokenManager.instance()
-            .getAppNotificationPreference(userId.toString());
-        await FcmTokenManager.instance().onLogin(userId: userId.toString());
+        final token = await FirebaseMessaging.instance.getToken();
+        if (token != null) {
+          nitToolsCaller!.services.setFcmToken(fcmToken: token);
+        }
         return true;
       }
 
@@ -60,8 +66,7 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
           )
           .then(
             (token) async => token != null
-                ? NitFcmAppBackendInterface()
-                    .updateOnServer(userId: userId, fcmToken: token)
+                ? nitToolsCaller!.services.setFcmToken(fcmToken: token)
                 : {},
           );
       return true;
@@ -70,17 +75,12 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
       ref.notifyUser(NitNotification.error(e.toString()));
       return false;
     }
-    // } else {
-    //   return false;
-    // }
-    //   },
-    // );
   }
 
-  Future<bool> deleteToken() async {
-    if (!kIsWeb) {
-      await NitFcmAppBackendInterface()
-          .deleteOnServer(userId: ref.signedInUserId.toString());
+  Future<bool> deleteToken(int? userId) async {
+    if (!kIsWeb && userId != null) {
+      await FirebaseMessaging.instance.deleteToken();
+      nitToolsCaller!.services.deleteFcmToken(userId: userId);
     }
     return true;
   }
@@ -113,31 +113,5 @@ class NitFirebaseNotificationsState extends _$NitFirebaseNotificationsState {
           mayRequest: true,
         ),
     };
-  }
-
-  // requestNotificationsPermission() async {
-  //   state = state.copyWith(
-  //     notificationsEnabled: await _checkNotificationsStatus(
-  //       refreshFcmToken: true,
-  //       requestPermission: true,
-  //     ),
-  //   );
-  // }
-}
-
-class NitFcmAppBackendInterface implements FcmAppBackendInterface {
-  @override
-  FutureOr<void> updateOnServer({
-    required String userId,
-    required String fcmToken,
-  }) async {
-    await nitToolsCaller!.services.setFcmToken(fcmToken: fcmToken);
-  }
-
-  @override
-  FutureOr<void> deleteOnServer({
-    required String userId,
-  }) async {
-    await nitToolsCaller!.services.deleteFcmToken(userId: int.parse(userId));
   }
 }

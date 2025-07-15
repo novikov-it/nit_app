@@ -1,4 +1,4 @@
-import 'package:fcm_token_manager/fcm_token_manager.dart';
+// import 'package:fcm_token_manager/fcm_token_manager.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:nit_app/nit_app.dart';
 
@@ -16,10 +16,10 @@ class FirebaseInitializer {
     await Firebase.initializeApp(
       options: options,
     );
-    FcmTokenManager.initialize(
-      apiInterface: NitFcmAppBackendInterface(),
-      tokenTtl: const Duration(hours: 1),
-    );
+    // FcmTokenManager.initialize(
+    //   apiInterface: NitFcmAppBackendInterface(),
+    //   tokenTtl: const Duration(hours: 1),
+    // );
 
     // await FirebaseMessaging.instance
     //     .setForegroundNotificationPresentationOptions(

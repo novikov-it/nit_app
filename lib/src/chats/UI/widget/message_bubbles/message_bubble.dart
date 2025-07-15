@@ -38,7 +38,11 @@ class MessageBubble extends ConsumerWidget {
         onCopy: () {
           // Clipboard.setData(ClipboardData(text: message.text));
         },
-        onDelete: () => chatNotifier.deleteMessage(message),
+        onDelete: () async {
+          await chatNotifier.deleteMessage(message);
+          chatNotifier.setRepliedMessage(null);
+          chatNotifier.setEditedMessage(null);
+        },
         onEdit: () {
           chatNotifier.setEditedMessage(message);
           FocusScope.of(context).requestFocus();

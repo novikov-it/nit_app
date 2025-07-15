@@ -8,7 +8,7 @@ class BubbleOverlay extends HookConsumerWidget {
   final bool isMe;
   final VoidCallback onReply;
   final VoidCallback onCopy;
-  final VoidCallback onDelete;
+  final Future<void> Function() onDelete;
   final VoidCallback onEdit;
   final void Function(String emoji) onReact;
 
@@ -192,12 +192,14 @@ class BubbleOverlay extends HookConsumerWidget {
                                   color: theme.mainTheme.errorColor,
                                 ),
                               ),
-                              onTap: () {
-                                onDelete();
-                                animationController.reverse().then((value) {
+                              onTap: () async {
+                                await animationController
+                                    .reverse()
+                                    .then((value) {
                                   overlayEntry.value?.remove();
                                   overlayEntry.value = null;
                                 });
+                                await onDelete();
                               },
                             ),
                           ],
