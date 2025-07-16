@@ -23,6 +23,9 @@ abstract class ChatUIStateModel with _$ChatUIStateModel {
 class ChatUIState extends _$ChatUIState {
   @override
   ChatUIStateModel build(int chatId) {
+    ref.onDispose(() {
+      // ref.invalidate(voiceMessageBubbleStateProvider);
+    });
     final chatState = ref.read(chatStateProvider(chatId));
 
     chatState.scrollController.addListener(_onScrollChanged);

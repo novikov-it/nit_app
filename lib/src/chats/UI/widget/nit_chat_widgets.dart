@@ -11,6 +11,8 @@ import 'package:nit_app/src/chats/UI/widget/message_bubbles/emoji/emoji_bubble.d
 import 'package:nit_app/src/chats/UI/widget/message_bubbles/emoji/emoji_utils_extension.dart';
 import 'package:nit_app/src/chats/UI/widget/message_bubbles/widgets/message_time.dart';
 import 'package:nit_app/src/chats/UI/widget/message_bubbles/widgets/reply_indicator.dart';
+import 'package:nit_app/src/chats/UI/widget/message_bubbles/widgets/voice_message/voice_message_bubble.dart';
+import 'package:nit_app/src/chats/UI/widget/voice_messages/voice_message_widget.dart';
 
 import 'package:nit_app/src/chats/states/chat_ui_state/chat_ui_state.dart';
 import 'package:nit_ui_kit/nit_ui_kit.dart';

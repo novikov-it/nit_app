@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'nit_chat_view_state.dart';
+part of 'voice_message_state.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chatStateHash() => r'cf5c24877cdffd0a2ce85cb11782e5a399b22c98';
+String _$voiceMessageStateHash() => r'a935170f1f67b77f96bde8c7d096ee72265b798b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,36 +29,36 @@ class _SystemHash {
   }
 }
 
-abstract class _$ChatState
-    extends BuildlessAutoDisposeNotifier<ChatStateModel> {
+abstract class _$VoiceMessageState
+    extends BuildlessAutoDisposeNotifier<NitMedia?> {
   late final int chatId;
 
-  ChatStateModel build(
+  NitMedia? build(
     int chatId,
   );
 }
 
-/// See also [ChatState].
-@ProviderFor(ChatState)
-const chatStateProvider = ChatStateFamily();
+/// See also [VoiceMessageState].
+@ProviderFor(VoiceMessageState)
+const voiceMessageStateProvider = VoiceMessageStateFamily();
 
-/// See also [ChatState].
-class ChatStateFamily extends Family<ChatStateModel> {
-  /// See also [ChatState].
-  const ChatStateFamily();
+/// See also [VoiceMessageState].
+class VoiceMessageStateFamily extends Family<NitMedia?> {
+  /// See also [VoiceMessageState].
+  const VoiceMessageStateFamily();
 
-  /// See also [ChatState].
-  ChatStateProvider call(
+  /// See also [VoiceMessageState].
+  VoiceMessageStateProvider call(
     int chatId,
   ) {
-    return ChatStateProvider(
+    return VoiceMessageStateProvider(
       chatId,
     );
   }
 
   @override
-  ChatStateProvider getProviderOverride(
-    covariant ChatStateProvider provider,
+  VoiceMessageStateProvider getProviderOverride(
+    covariant VoiceMessageStateProvider provider,
   ) {
     return call(
       provider.chatId,
@@ -77,29 +77,30 @@ class ChatStateFamily extends Family<ChatStateModel> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'chatStateProvider';
+  String? get name => r'voiceMessageStateProvider';
 }
 
-/// See also [ChatState].
-class ChatStateProvider
-    extends AutoDisposeNotifierProviderImpl<ChatState, ChatStateModel> {
-  /// See also [ChatState].
-  ChatStateProvider(
+/// See also [VoiceMessageState].
+class VoiceMessageStateProvider
+    extends AutoDisposeNotifierProviderImpl<VoiceMessageState, NitMedia?> {
+  /// See also [VoiceMessageState].
+  VoiceMessageStateProvider(
     int chatId,
   ) : this._internal(
-          () => ChatState()..chatId = chatId,
-          from: chatStateProvider,
-          name: r'chatStateProvider',
+          () => VoiceMessageState()..chatId = chatId,
+          from: voiceMessageStateProvider,
+          name: r'voiceMessageStateProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$chatStateHash,
-          dependencies: ChatStateFamily._dependencies,
-          allTransitiveDependencies: ChatStateFamily._allTransitiveDependencies,
+                  : _$voiceMessageStateHash,
+          dependencies: VoiceMessageStateFamily._dependencies,
+          allTransitiveDependencies:
+              VoiceMessageStateFamily._allTransitiveDependencies,
           chatId: chatId,
         );
 
-  ChatStateProvider._internal(
+  VoiceMessageStateProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -112,8 +113,8 @@ class ChatStateProvider
   final int chatId;
 
   @override
-  ChatStateModel runNotifierBuild(
-    covariant ChatState notifier,
+  NitMedia? runNotifierBuild(
+    covariant VoiceMessageState notifier,
   ) {
     return notifier.build(
       chatId,
@@ -121,10 +122,10 @@ class ChatStateProvider
   }
 
   @override
-  Override overrideWith(ChatState Function() create) {
+  Override overrideWith(VoiceMessageState Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ChatStateProvider._internal(
+      override: VoiceMessageStateProvider._internal(
         () => create()..chatId = chatId,
         from: from,
         name: null,
@@ -137,14 +138,14 @@ class ChatStateProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<ChatState, ChatStateModel>
+  AutoDisposeNotifierProviderElement<VoiceMessageState, NitMedia?>
       createElement() {
-    return _ChatStateProviderElement(this);
+    return _VoiceMessageStateProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ChatStateProvider && other.chatId == chatId;
+    return other is VoiceMessageStateProvider && other.chatId == chatId;
   }
 
   @override
@@ -158,18 +159,18 @@ class ChatStateProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ChatStateRef on AutoDisposeNotifierProviderRef<ChatStateModel> {
+mixin VoiceMessageStateRef on AutoDisposeNotifierProviderRef<NitMedia?> {
   /// The parameter `chatId` of this provider.
   int get chatId;
 }
 
-class _ChatStateProviderElement
-    extends AutoDisposeNotifierProviderElement<ChatState, ChatStateModel>
-    with ChatStateRef {
-  _ChatStateProviderElement(super.provider);
+class _VoiceMessageStateProviderElement
+    extends AutoDisposeNotifierProviderElement<VoiceMessageState, NitMedia?>
+    with VoiceMessageStateRef {
+  _VoiceMessageStateProviderElement(super.provider);
 
   @override
-  int get chatId => (origin as ChatStateProvider).chatId;
+  int get chatId => (origin as VoiceMessageStateProvider).chatId;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

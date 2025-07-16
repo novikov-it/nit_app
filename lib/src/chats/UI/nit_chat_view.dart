@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
+import 'package:nit_app/src/chats/UI/widget/input/widget/edit_input_panel.dart';
 import 'package:nit_app/src/chats/UI/widget/input/widget/reply_input_panel.dart';
 
 import 'package:nit_app/src/chats/states/chat_ui_state/chat_ui_state.dart';
@@ -71,6 +72,7 @@ class NitChatView extends ConsumerWidget {
             ),
             Column(
               children: [
+                EditInputPanel(chatId: chatId),
                 ReplyInputPanel(chatId: chatId),
                 ChatInputWidget(chatId: chatId),
               ],

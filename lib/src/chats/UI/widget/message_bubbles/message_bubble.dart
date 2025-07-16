@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
+
+import 'package:nit_app/src/chats/UI/widget/message_bubbles/widgets/bubble_overlay.dart';
+import 'package:nit_ui_kit/nit_ui_kit.dart';
 // import 'package:nit_app/src/chats/UI/widget/message_bubbles/widgets/bubble_overlay.dart';
 import 'package:swipe_to/swipe_to.dart';
 
@@ -22,75 +25,58 @@ class MessageBubble extends ConsumerWidget {
     final theme = ChatTheme.of(context);
     final isMe = message.userId == ref.signedInUserId;
 
-    return SwipeTo(
-      onRightSwipe: !isMe
-          ? (details) {
-              chatNotifier.setRepliedMessage(message);
-              FocusScope.of(context).requestFocus();
-            }
-          : null,
-      onLeftSwipe: isMe
-          ? (details) {
-              chatNotifier.setRepliedMessage(message);
-              FocusScope.of(context).requestFocus();
-            }
-          : null,
-      child: ChatBubbleType.personal == theme.settings.chatBubbleType
-          ? PersonalMessageBubble(
-              message: message,
-              customMessageBuilders: customMessageBuilders,
-              chatId: chatId,
-            )
-          : GroupMessageBubble(
-              message: message,
-              customMessageBuilders: customMessageBuilders,
-              chatId: chatId,
-            ),
-    );
+    final enableMessageOverlay = theme.settings.enableMessageOverlay;
 
-    // BubbleOverlay(
-    //   isMe: isMe,
-    //   onReply: () {
-    //     chatNotifier.setRepliedMessage(message);
-    //     FocusScope.of(context).requestFocus();
-    //   },
-    //   onCopy: () {
-    //     // Clipboard.setData(ClipboardData(text: message.text));
-    //   },
-    //   onDelete: () {
-    //     // chatNotifier.deleteMessage(message.id!);
-    //   },
-    //   onEdit: () {
-    //     // TODO: Реализовать редактирование сообщения
-    //   },
-    //   onReact: (emoji) {
-    //     // chatNotifier.reactToMessage(message.id!, emoji);
-    //   },
-    //   child: SwipeTo(
-    //     onRightSwipe: !isMe
-    //         ? (details) {
-    //             chatNotifier.setRepliedMessage(message);
-    //             FocusScope.of(context).requestFocus();
-    //           }
-    //         : null,
-    //     onLeftSwipe: isMe
-    //         ? (details) {
-    //             chatNotifier.setRepliedMessage(message);
-    //             FocusScope.of(context).requestFocus();
-    //           }
-    //         : null,
-    //     child: ChatBubbleType.personal == theme.settings.chatBubbleType
-    //         ? PersonalMessageBubble(
-    //             message: message,
-    //             customMessageBuilders: customMessageBuilders,
-    //             chatId: chatId,
-    //           )
-    //         : GroupMessageBubble(
-    //             message: message,
-    //             customMessageBuilders: customMessageBuilders,
-    //             chatId: chatId,
-    //           ),
-    //   ),
-    // );
+    return ConditionalParentWidget(
+      condition: enableMessageOverlay,
+      parentBuilder: (Widget child) => BubbleOverlay(
+        isMe: isMe,
+        onReply: () {
+          chatNotifier.setRepliedMessage(message);
+          FocusScope.of(context).requestFocus();
+        },
+        onCopy: () {
+          // Clipboard.setData(ClipboardData(text: message.text));
+        },
+        onDelete: () async {
+          await chatNotifier.deleteMessage(message);
+          chatNotifier.setRepliedMessage(null);
+          chatNotifier.setEditedMessage(null);
+        },
+        onEdit: () {
+          chatNotifier.setEditedMessage(message);
+          FocusScope.of(context).requestFocus();
+        },
+        onReact: (emoji) {
+          // chatNotifier.reactToMessage(message.id!, emoji);
+        },
+        child: child,
+      ),
+      child: SwipeTo(
+        onRightSwipe: !isMe
+            ? (details) {
+                chatNotifier.setRepliedMessage(message);
+                FocusScope.of(context).requestFocus();
+              }
+            : null,
+        onLeftSwipe: isMe
+            ? (details) {
+                chatNotifier.setRepliedMessage(message);
+                FocusScope.of(context).requestFocus();
+              }
+            : null,
+        child: ChatBubbleType.personal == theme.settings.chatBubbleType
+            ? PersonalMessageBubble(
+                message: message,
+                customMessageBuilders: customMessageBuilders,
+                chatId: chatId,
+              )
+            : GroupMessageBubble(
+                message: message,
+                customMessageBuilders: customMessageBuilders,
+                chatId: chatId,
+              ),
+      ),
+    );
   }
 }

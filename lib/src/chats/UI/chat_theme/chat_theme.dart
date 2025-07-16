@@ -74,6 +74,8 @@ class Settings with _$Settings {
   const factory Settings({
     @Default(ChatBubbleType.personal) ChatBubbleType chatBubbleType,
     @Default(true) bool showScrollToBottomButton,
+    @Default(false) bool enableVoiceMessages,
+    @Default(false) bool enableMessageOverlay,
   }) = _Settings;
 }
 

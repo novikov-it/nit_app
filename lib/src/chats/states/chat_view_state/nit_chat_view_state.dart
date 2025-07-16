@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/src/chats/UI/widget/attachment/state/attachment_state.dart';
+import 'package:nit_app/src/chats/UI/widget/message_bubbles/widgets/voice_message/state/voice_message_bubble_state.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -23,6 +24,7 @@ abstract class ChatStateModel with _$ChatStateModel {
     required ListObserverController observerController,
     required ChatScrollObserver chatObserver,
     NitChatMessage? repliedMessage,
+    NitChatMessage? editedMessage,
   }) = _ChatStateModel;
 }
 
@@ -35,6 +37,7 @@ class ChatState extends _$ChatState {
     ref.onDispose(() {
       _updatesSubscription?.cancel();
       state.scrollController.dispose();
+      ref.invalidate(voiceMessageBubbleStateProvider);
     });
 
     // Инициализация контроллеров
@@ -75,6 +78,10 @@ class ChatState extends _$ChatState {
           if (idx != -1) {
             final updated = [...state.messages];
             updated[idx] = update;
+            if (update.isDeleted) {
+              updated.removeAt(idx);
+            }
+
             state = state.copyWith(messages: updated);
           } else {
             state = state.copyWith(messages: [...state.messages, update]);
@@ -98,12 +105,18 @@ class ChatState extends _$ChatState {
   }
 
   /// Отправка сообщения
-  Future<void> sendMessage(String text) async {
+  Future<void> sendMessage(
+    String text, [
+    NitMedia? additionalAtttachment,
+  ]) async {
     state.chatObserver.standby();
 
     final attachment =
         await ref.read(attachmentStateProvider.notifier).uploadMedia();
 
+    if (additionalAtttachment != null) {
+      attachment.add(additionalAtttachment);
+    }
     ref.saveModel(
       NitChatMessage(
         text: text,
@@ -118,6 +131,28 @@ class ChatState extends _$ChatState {
     ref.invalidate(attachmentStateProvider);
     setRepliedMessage(null);
   }
+
+  /// Отправка сообщения
+  Future<void> deleteMessage(NitChatMessage message) async {
+    state.chatObserver.standby();
+
+    await ref.saveModel(message.copyWith(isDeleted: true));
+  }
+
+  /// Отправка сообщения
+  Future<void> editMessage(String text) async {
+    if (state.editedMessage == null) {
+      log('No edited message');
+      return;
+    }
+
+    state.chatObserver.standby();
+
+    await ref.saveModel(state.editedMessage!.copyWith(text: text));
+    setEditedMessage(null);
+  }
+
+  bool get isEditMode => state.editedMessage != null;
 
   void typingToggle(bool isTyping) {
     log('Typing $isTyping in chat $chatId');
@@ -149,6 +184,10 @@ class ChatState extends _$ChatState {
   }
 
   void setRepliedMessage(NitChatMessage? message) {
-    state = state.copyWith(repliedMessage: message);
+    state = state.copyWith(repliedMessage: message, editedMessage: null);
+  }
+
+  void setEditedMessage(NitChatMessage? message) {
+    state = state.copyWith(editedMessage: message, repliedMessage: null);
   }
 }
