@@ -79,18 +79,18 @@ class NitSocketState extends _$NitSocketState {
     // }
   }
 
-  _proccessUpdate(ObjectWrapper update) {
-    print("Received ${update.className} with id ${update.modelId}");
-    if (update.model is NitAppNotification) {
-      ref.notifyUser(update.model as NitAppNotification);
-      // for (var enclosedObject
-      //     in (update.model as NitAppNotification).updatedEntities ?? []) {
-      //   ref.updateFromStream(enclosedObject);
-      // }
-    }
+  // _proccessUpdate(ObjectWrapper update) {
+  //   print("Received ${update.className} with id ${update.modelId}");
+  //   if (update.model is NitAppNotification) {
+  //     ref.notifyUser(update.model as NitAppNotification);
+  //     // for (var enclosedObject
+  //     //     in (update.model as NitAppNotification).updatedEntities ?? []) {
+  //     //   ref.updateFromStream(enclosedObject);
+  //     // }
+  //   }
 
-    ref.updateFromStream(update);
-  }
+  //   ref.updateFromStream(update);
+  // }
 
   Future<void> _listenToUpdates() async {
     nitToolsCaller!.nitUpdates.resetStream();
@@ -99,10 +99,22 @@ class NitSocketState extends _$NitSocketState {
 
     await for (var update in nitToolsCaller!.nitUpdates.stream) {
       if (update is ObjectWrapper) {
-        _proccessUpdate(update);
+        print("Received ${update.className} with id ${update.modelId}");
+        if (update.model is NitAppNotification) {
+          ref.notifyUser(update.model as NitAppNotification);
+          // for (var enclosedObject
+          //     in (update.model as NitAppNotification).updatedEntities ?? []) {
+          //   ref.updateFromStream(enclosedObject);
+          // }
+        }
+
+        ref.updateFromStream([update]);
       } else if (update is NitUpdatesTransport) {
         for (var e in update.updatedEntities) {
-          _proccessUpdate(e);
+          if (e.model is NitAppNotification) {
+            ref.notifyUser(e.model as NitAppNotification);
+          }
+          ref.updateFromStream(update.updatedEntities);
         }
       }
 
