@@ -21,6 +21,7 @@ abstract class ChatUIStateModel with _$ChatUIStateModel {
 
 @Riverpod(keepAlive: false)
 class ChatUIState extends _$ChatUIState {
+  int? lastReadMessageId;
   @override
   ChatUIStateModel build(int chatId) {
     ref.onDispose(() {
@@ -51,6 +52,14 @@ class ChatUIState extends _$ChatUIState {
           });
         }
       },
+    );
+
+    ref.listen(
+      chatStateProvider(chatId).select((state) => state.lastReadMessageId),
+      (previous, next) {
+        lastReadMessageId = next;
+      },
+      fireImmediately: true,
     );
 
     ref.onDispose(() {
@@ -106,12 +115,11 @@ class ChatUIState extends _$ChatUIState {
   }
 
   /// Обработка видимости сообщений (вызывается из ChatMessagesList)
-  void handleVisibilityChange(ListViewObserveModel model) {
+  void handleVisibilityChange(ListViewObserveModel model) async {
     if (!state.isAtBottom) return;
 
     final chatState = ref.read(chatStateProvider(chatId));
     final currentUserId = ref.signedInUserId!;
-    final lastReadMessageId = chatState.lastReadMessageId ?? 0;
 
     final visibleUnreadMessages = <NitChatMessage>[];
 
@@ -122,31 +130,30 @@ class ChatUIState extends _$ChatUIState {
       if (reversedIndex >= 0 && reversedIndex < chatState.messages.length) {
         final message = chatState.messages[reversedIndex];
 
-        if (message.userId != currentUserId &&
-            message.id! > lastReadMessageId) {
+        if (message.userId != currentUserId) {
           visibleUnreadMessages.add(message);
         }
       }
     }
 
     // Помечаем как прочитанные
-    if (visibleUnreadMessages.isNotEmpty) {
-      _markMessagesAsRead(visibleUnreadMessages);
+    if (visibleUnreadMessages.isNotEmpty &&
+        (lastReadMessageId ?? 0) < visibleUnreadMessages.first.id!) {
+      lastReadMessageId = visibleUnreadMessages
+          .first.id!; // предварительно делаем так, чтобы не было лишних вызовов
+      await _markMessagesAsRead(visibleUnreadMessages);
     }
   }
 
-  /// Выполнение API вызова для пометки сообщений как прочитанных
-  void _markMessagesAsRead(List<NitChatMessage> messages) {
+  Future<void> _markMessagesAsRead(List<NitChatMessage> messages) async {
     if (messages.isEmpty) return;
 
-    // Сортируем и берем самое последнее сообщение
-    messages.sort((a, b) => a.id!.compareTo(b.id!));
-    final latestMessage = messages.last;
+    log('Marking messages as read up to ${messages.last.id} in chat $chatId');
 
-    log('Marking messages as read up to ${latestMessage.id} in chat $chatId');
-
-    // Выполняем API вызов
-    nitToolsCaller!.nitChat.readChatMessage(latestMessage.id!, chatId);
+    await nitToolsCaller!.nitChat.readChatMessages(
+      messages.map((e) => e.id).nonNulls.toList(),
+      chatId,
+    );
   }
 
   void scrollToBottomForced() {

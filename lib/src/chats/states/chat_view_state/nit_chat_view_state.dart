@@ -18,7 +18,7 @@ abstract class ChatStateModel with _$ChatStateModel {
   const factory ChatStateModel({
     required ChatViewState viewState,
     @Default([]) List<NitChatMessage> messages,
-    int? lastReadMessageId,
+    int? lastReadMessageId, // последнее прочитанное сообщение в чате
     @Default(false) bool isTyping,
     required ScrollController scrollController,
     required ListObserverController observerController,

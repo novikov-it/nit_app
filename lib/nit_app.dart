@@ -29,3 +29,4 @@ export 'src/chats/UI/widget/nit_chat_widgets.dart';
 export 'src/chats/UI/chat_theme/chat_theme.dart';
 export 'src/chats/UI/chat_list.dart';
 export 'src/chats/UI/nit_chat_view.dart';
+export 'src/session/notifications/nit_push_handler.dart';
