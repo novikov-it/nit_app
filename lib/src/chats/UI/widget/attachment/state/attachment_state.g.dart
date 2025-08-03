@@ -6,7 +6,7 @@ part of 'attachment_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$attachmentStateHash() => r'98d3fab5ec2974a5382ab6eaf917fe99e04dadc1';
+String _$attachmentStateHash() => r'2b9d248444e645c555f9537eada3575e2a29c2ae';
 
 /// See also [AttachmentState].
 @ProviderFor(AttachmentState)

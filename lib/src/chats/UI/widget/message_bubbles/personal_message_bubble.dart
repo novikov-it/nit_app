@@ -66,7 +66,9 @@ class PersonalMessageBubble extends ConsumerWidget {
                       (message.attachmentIds == null ||
                           message.attachmentIds?.isEmpty == true))
                     EmojiBubble(message: message)
-                  else if (message.text?.trim().isNotEmpty == true)
+                  else if (message.text?.trim().isNotEmpty == true &&
+                      message.text?.trim() !=
+                          'Голосовое сообщение') //TODO: плохо
                     Text(
                       message.text!,
                       style: bubbleTheme.textStyle ??

@@ -18,6 +18,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 @Riverpod(keepAlive: true)
 class FirebaseNotificationService extends _$FirebaseNotificationService {
   static late final NitRouterStateProvider routerProvider;
+  static RemoteMessage? terminatedMessage;
   @override
   Future<void> build() async {
     await _setup();
@@ -38,8 +39,13 @@ class FirebaseNotificationService extends _$FirebaseNotificationService {
     FirebaseMessaging.onMessage.listen((message) {
       debugPrint('Foreground message: ${message.data}');
 
-      ref.notifyUser(NitNotification.success(
-          '${message.notification?.title}')); //TODO: handle press
+      ref.notifyUser(
+        NitNotification.success(
+          '${message.notification?.title}',
+          onTap: () => _navigateFromMessage(message),
+          position: FlashPosition.top,
+        ),
+      );
     });
 
     //Background
@@ -49,9 +55,14 @@ class FirebaseNotificationService extends _$FirebaseNotificationService {
     });
 
     //Terminated
-    final initialMessage = await FirebaseMessaging.instance.getInitialMessage();
-    if (initialMessage != null) {
-      _navigateFromMessage(initialMessage);
+    terminatedMessage = await FirebaseMessaging.instance.getInitialMessage();
+  }
+
+  // Call it when app is ready to handle navigation (e.g HomeScreen)
+  void handleTerminatedMessage() {
+    debugPrint('Terminated message handle: ${terminatedMessage?.data}');
+    if (terminatedMessage != null) {
+      _navigateFromMessage(terminatedMessage!);
     }
   }
 

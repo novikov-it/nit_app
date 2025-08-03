@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nit_app/src/chats/UI/widget/attachment/attachment_list.dart';
+import 'package:nit_app/src/chats/UI/widget/attachment/state/attachment_state.dart';
 import 'package:nit_app/src/chats/UI/widget/attachment/widget/add_attchment_button.dart';
 import 'package:nit_app/src/chats/UI/widget/attachment/widget/fullscreen_attachment_view.dart';
 import 'package:nit_app/nit_app.dart';
@@ -11,6 +12,8 @@ import 'package:nit_app/src/chats/UI/widget/message_bubbles/emoji/emoji_bubble.d
 import 'package:nit_app/src/chats/UI/widget/message_bubbles/emoji/emoji_utils_extension.dart';
 import 'package:nit_app/src/chats/UI/widget/message_bubbles/widgets/message_time.dart';
 import 'package:nit_app/src/chats/UI/widget/message_bubbles/widgets/reply_indicator.dart';
+import 'package:nit_app/src/chats/UI/widget/message_bubbles/widgets/voice_message/voice_message_bubble.dart';
+import 'package:nit_app/src/chats/UI/widget/voice_messages/voice_message_widget.dart';
 
 import 'package:nit_app/src/chats/states/chat_ui_state/chat_ui_state.dart';
 import 'package:nit_ui_kit/nit_ui_kit.dart';

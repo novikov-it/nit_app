@@ -1182,6 +1182,8 @@ abstract class _MainTheme implements MainTheme {
 mixin _$Settings {
   ChatBubbleType get chatBubbleType => throw _privateConstructorUsedError;
   bool get showScrollToBottomButton => throw _privateConstructorUsedError;
+  bool get enableVoiceMessages => throw _privateConstructorUsedError;
+  bool get enableMessageOverlay => throw _privateConstructorUsedError;
 
   /// Create a copy of Settings
   /// with the given fields replaced by the non-null parameter values.
@@ -1195,7 +1197,11 @@ abstract class $SettingsCopyWith<$Res> {
   factory $SettingsCopyWith(Settings value, $Res Function(Settings) then) =
       _$SettingsCopyWithImpl<$Res, Settings>;
   @useResult
-  $Res call({ChatBubbleType chatBubbleType, bool showScrollToBottomButton});
+  $Res call(
+      {ChatBubbleType chatBubbleType,
+      bool showScrollToBottomButton,
+      bool enableVoiceMessages,
+      bool enableMessageOverlay});
 }
 
 /// @nodoc
@@ -1215,6 +1221,8 @@ class _$SettingsCopyWithImpl<$Res, $Val extends Settings>
   $Res call({
     Object? chatBubbleType = null,
     Object? showScrollToBottomButton = null,
+    Object? enableVoiceMessages = null,
+    Object? enableMessageOverlay = null,
   }) {
     return _then(_value.copyWith(
       chatBubbleType: null == chatBubbleType
@@ -1224,6 +1232,14 @@ class _$SettingsCopyWithImpl<$Res, $Val extends Settings>
       showScrollToBottomButton: null == showScrollToBottomButton
           ? _value.showScrollToBottomButton
           : showScrollToBottomButton // ignore: cast_nullable_to_non_nullable
+              as bool,
+      enableVoiceMessages: null == enableVoiceMessages
+          ? _value.enableVoiceMessages
+          : enableVoiceMessages // ignore: cast_nullable_to_non_nullable
+              as bool,
+      enableMessageOverlay: null == enableMessageOverlay
+          ? _value.enableMessageOverlay
+          : enableMessageOverlay // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
   }
@@ -1237,7 +1253,11 @@ abstract class _$$SettingsImplCopyWith<$Res>
       __$$SettingsImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ChatBubbleType chatBubbleType, bool showScrollToBottomButton});
+  $Res call(
+      {ChatBubbleType chatBubbleType,
+      bool showScrollToBottomButton,
+      bool enableVoiceMessages,
+      bool enableMessageOverlay});
 }
 
 /// @nodoc
@@ -1255,6 +1275,8 @@ class __$$SettingsImplCopyWithImpl<$Res>
   $Res call({
     Object? chatBubbleType = null,
     Object? showScrollToBottomButton = null,
+    Object? enableVoiceMessages = null,
+    Object? enableMessageOverlay = null,
   }) {
     return _then(_$SettingsImpl(
       chatBubbleType: null == chatBubbleType
@@ -1265,6 +1287,14 @@ class __$$SettingsImplCopyWithImpl<$Res>
           ? _value.showScrollToBottomButton
           : showScrollToBottomButton // ignore: cast_nullable_to_non_nullable
               as bool,
+      enableVoiceMessages: null == enableVoiceMessages
+          ? _value.enableVoiceMessages
+          : enableVoiceMessages // ignore: cast_nullable_to_non_nullable
+              as bool,
+      enableMessageOverlay: null == enableMessageOverlay
+          ? _value.enableMessageOverlay
+          : enableMessageOverlay // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -1274,7 +1304,9 @@ class __$$SettingsImplCopyWithImpl<$Res>
 class _$SettingsImpl implements _Settings {
   const _$SettingsImpl(
       {this.chatBubbleType = ChatBubbleType.personal,
-      this.showScrollToBottomButton = true});
+      this.showScrollToBottomButton = true,
+      this.enableVoiceMessages = false,
+      this.enableMessageOverlay = false});
 
   @override
   @JsonKey()
@@ -1282,10 +1314,16 @@ class _$SettingsImpl implements _Settings {
   @override
   @JsonKey()
   final bool showScrollToBottomButton;
+  @override
+  @JsonKey()
+  final bool enableVoiceMessages;
+  @override
+  @JsonKey()
+  final bool enableMessageOverlay;
 
   @override
   String toString() {
-    return 'Settings(chatBubbleType: $chatBubbleType, showScrollToBottomButton: $showScrollToBottomButton)';
+    return 'Settings(chatBubbleType: $chatBubbleType, showScrollToBottomButton: $showScrollToBottomButton, enableVoiceMessages: $enableVoiceMessages, enableMessageOverlay: $enableMessageOverlay)';
   }
 
   @override
@@ -1297,12 +1335,16 @@ class _$SettingsImpl implements _Settings {
                 other.chatBubbleType == chatBubbleType) &&
             (identical(
                     other.showScrollToBottomButton, showScrollToBottomButton) ||
-                other.showScrollToBottomButton == showScrollToBottomButton));
+                other.showScrollToBottomButton == showScrollToBottomButton) &&
+            (identical(other.enableVoiceMessages, enableVoiceMessages) ||
+                other.enableVoiceMessages == enableVoiceMessages) &&
+            (identical(other.enableMessageOverlay, enableMessageOverlay) ||
+                other.enableMessageOverlay == enableMessageOverlay));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, chatBubbleType, showScrollToBottomButton);
+  int get hashCode => Object.hash(runtimeType, chatBubbleType,
+      showScrollToBottomButton, enableVoiceMessages, enableMessageOverlay);
 
   /// Create a copy of Settings
   /// with the given fields replaced by the non-null parameter values.
@@ -1316,12 +1358,18 @@ class _$SettingsImpl implements _Settings {
 abstract class _Settings implements Settings {
   const factory _Settings(
       {final ChatBubbleType chatBubbleType,
-      final bool showScrollToBottomButton}) = _$SettingsImpl;
+      final bool showScrollToBottomButton,
+      final bool enableVoiceMessages,
+      final bool enableMessageOverlay}) = _$SettingsImpl;
 
   @override
   ChatBubbleType get chatBubbleType;
   @override
   bool get showScrollToBottomButton;
+  @override
+  bool get enableVoiceMessages;
+  @override
+  bool get enableMessageOverlay;
 
   /// Create a copy of Settings
   /// with the given fields replaced by the non-null parameter values.
