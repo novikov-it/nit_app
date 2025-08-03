@@ -163,15 +163,15 @@ class ChatState extends _$ChatState {
     nitToolsCaller!.nitChat.typingToggle(chatId, isTyping);
   }
 
-  /// Добавление исторических сообщений
-  void addHistoryMessages(List<NitChatMessage> historyMessages) {
-    if (historyMessages.isNotEmpty) {
-      state.chatObserver.standby(changeCount: historyMessages.length);
-      state = state.copyWith(
-        messages: [...historyMessages, ...state.messages],
-      );
-    }
-  }
+  // /// Добавление исторических сообщений
+  // void addHistoryMessages(List<NitChatMessage> historyMessages) {
+  //   if (historyMessages.isNotEmpty) {
+  //     state.chatObserver.standby(changeCount: historyMessages.length);
+  //     state = state.copyWith(
+  //       messages: [...historyMessages, ...state.messages],
+  //     );
+  //   }
+  // }
 
   // /// Обновление существующего сообщения
   // void updateMessage(NitChatMessage updatedMessage) {
