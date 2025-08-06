@@ -26,7 +26,9 @@ class VoiceMessageBubbleState extends _$VoiceMessageBubbleState {
     });
 
     return VoiceMessageBubbleStateModel(
-        playerController: playerController, type: AudioStateType.initial);
+      playerController: playerController,
+      type: AudioStateType.initial,
+    );
   }
 
   Future<void> initializeAudio() async {

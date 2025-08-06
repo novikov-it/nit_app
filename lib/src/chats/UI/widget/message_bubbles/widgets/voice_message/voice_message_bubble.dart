@@ -1,5 +1,6 @@
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_app/src/chats/UI/widget/message_bubbles/widgets/voice_message/state/voice_message_bubble_state.dart';
@@ -18,6 +19,13 @@ class VoiceMessageBubble extends HookConsumerWidget {
         ref.watch(voiceMessageBubbleStateProvider(nitMedia.publicUrl));
     final audioNotifier =
         ref.read(voiceMessageBubbleStateProvider(nitMedia.publicUrl).notifier);
+    final isPlaying = useState(false);
+    useEffect(() {
+      audioState.playerController.onCompletion.listen((_) {
+        isPlaying.value = false;
+      });
+      return null;
+    }, []);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -28,8 +36,7 @@ class VoiceMessageBubble extends HookConsumerWidget {
             icon: Icon(
               audioState.type == AudioStateType.loading
                   ? Icons.hourglass_empty
-                  : audioState.playerController.playerState ==
-                          PlayerState.playing
+                  : isPlaying.value
                       ? Icons.pause
                       : Icons.play_arrow,
               color: Theme.of(context).primaryColor,
@@ -38,6 +45,8 @@ class VoiceMessageBubble extends HookConsumerWidget {
                 ? null
                 : () async {
                     await audioNotifier.togglePlay();
+                    isPlaying.value = audioState.playerController.playerState ==
+                        PlayerState.playing;
                   },
           ),
           Expanded(

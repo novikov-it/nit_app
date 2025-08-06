@@ -18,7 +18,7 @@ abstract class ChatStateModel with _$ChatStateModel {
   const factory ChatStateModel({
     required ChatViewState viewState,
     @Default([]) List<NitChatMessage> messages,
-    int? lastReadMessageId,
+    int? lastReadMessageId, // последнее прочитанное сообщение в чате
     @Default(false) bool isTyping,
     required ScrollController scrollController,
     required ListObserverController observerController,
@@ -84,6 +84,9 @@ class ChatState extends _$ChatState {
 
             state = state.copyWith(messages: updated);
           } else {
+            if (update.isDeleted) {
+              return;
+            }
             state = state.copyWith(messages: [...state.messages, update]);
           }
 
@@ -127,6 +130,7 @@ class ChatState extends _$ChatState {
         replyMessageId: state.repliedMessage?.id,
       ),
     );
+    // nitToolsCaller!.nitChat.;
 
     ref.invalidate(attachmentStateProvider);
     setRepliedMessage(null);
@@ -159,29 +163,29 @@ class ChatState extends _$ChatState {
     nitToolsCaller!.nitChat.typingToggle(chatId, isTyping);
   }
 
-  /// Добавление исторических сообщений
-  void addHistoryMessages(List<NitChatMessage> historyMessages) {
-    if (historyMessages.isNotEmpty) {
-      state.chatObserver.standby(changeCount: historyMessages.length);
-      state = state.copyWith(
-        messages: [...historyMessages, ...state.messages],
-      );
-    }
-  }
+  // /// Добавление исторических сообщений
+  // void addHistoryMessages(List<NitChatMessage> historyMessages) {
+  //   if (historyMessages.isNotEmpty) {
+  //     state.chatObserver.standby(changeCount: historyMessages.length);
+  //     state = state.copyWith(
+  //       messages: [...historyMessages, ...state.messages],
+  //     );
+  //   }
+  // }
 
-  /// Обновление существующего сообщения
-  void updateMessage(NitChatMessage updatedMessage) {
-    final updatedMessages = state.messages.map((msg) {
-      return msg.id == updatedMessage.id ? updatedMessage : msg;
-    }).toList();
+  // /// Обновление существующего сообщения
+  // void updateMessage(NitChatMessage updatedMessage) {
+  //   final updatedMessages = state.messages.map((msg) {
+  //     return msg.id == updatedMessage.id ? updatedMessage : msg;
+  //   }).toList();
 
-    state = state.copyWith(messages: updatedMessages);
-  }
+  //   state = state.copyWith(messages: updatedMessages);
+  // }
 
-  void handleStreamingMessage(NitChatMessage streamingMessage) {
-    state.chatObserver.standby(mode: ChatScrollObserverHandleMode.generative);
-    updateMessage(streamingMessage);
-  }
+  // void handleStreamingMessage(NitChatMessage streamingMessage) {
+  //   state.chatObserver.standby(mode: ChatScrollObserverHandleMode.generative);
+  //   updateMessage(streamingMessage);
+  // }
 
   void setRepliedMessage(NitChatMessage? message) {
     state = state.copyWith(repliedMessage: message, editedMessage: null);

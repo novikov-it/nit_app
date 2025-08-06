@@ -69,7 +69,7 @@ class ChatInputWidget extends HookConsumerWidget {
 
     Future<void> sendMessage() async {
       final text = controller.text.trim();
-      if (text.isEmpty || isSending.value) return;
+      if (isSending.value) return;
 
       try {
         isSending.value = true;
@@ -88,6 +88,8 @@ class ChatInputWidget extends HookConsumerWidget {
         isSending.value = false;
       }
     }
+
+    final isAttachmentEmpty = ref.watch(attachmentStateProvider).items.isEmpty;
 
     return Stack(
       children: [
@@ -177,13 +179,15 @@ class ChatInputWidget extends HookConsumerWidget {
                               ),
                             ),
                             const SizedBox(width: 8),
+                            //TODO: вынести в отдельный виджет
                             AnimatedContainer(
                               duration: const Duration(milliseconds: 200),
                               child: FloatingActionButton.small(
                                 onPressed: isSending.value
                                     ? null
                                     : chatTheme.settings.enableVoiceMessages &&
-                                            controller.text.trim().isEmpty
+                                            controller.text.trim().isEmpty &&
+                                            isAttachmentEmpty
                                         ? () => isAudioMode.value = true
                                         : sendMessage,
                                 backgroundColor: isSending.value
@@ -206,6 +210,7 @@ class ChatInputWidget extends HookConsumerWidget {
                                                 controller.text
                                                     .trim()
                                                     .isEmpty &&
+                                                isAttachmentEmpty &&
                                                 !chatNotifier.isEditMode
                                             ? Icons.mic
                                             : Icons.send,

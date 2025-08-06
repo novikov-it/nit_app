@@ -28,7 +28,7 @@ class BubbleOverlay extends HookConsumerWidget {
     final theme = ChatTheme.of(context);
     final overlayEntry = useState<OverlayEntry?>(null);
     final tapPosition = useState<Offset?>(null);
-    final textColor = Colors.black87;
+    final textColor = Theme.of(context).iconTheme.color;
 
     final animationController = useAnimationController(
       duration: const Duration(milliseconds: 250),

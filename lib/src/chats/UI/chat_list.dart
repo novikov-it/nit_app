@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nit_app/src/chats/UI/widget/message_bubbles/message_bubble.dart';
 
 import 'package:nit_app/src/chats/states/chat_ui_state/chat_ui_state.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 import 'package:nit_app/nit_app.dart';
 
-class ChatMessagesList extends ConsumerWidget {
+class ChatMessagesList extends HookConsumerWidget {
   final int chatId;
   final Map<String, Widget Function(NitChatMessage)>? customMessageBuilders;
 
@@ -33,6 +35,14 @@ class ChatMessagesList extends ConsumerWidget {
         ),
       );
     }
+    useEffect(() {
+      // Для того чтобы стриггерить uiNotifier.handleVisibilityChange
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final chatState = ref.read(chatStateProvider(chatId));
+        chatState.observerController.controller!.jumpTo(1);
+      });
+      return null;
+    }, [chatId]);
 
     return ListViewObserver(
       controller: chatState.observerController,

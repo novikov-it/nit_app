@@ -104,6 +104,10 @@ dev_dependencies:
   build_runner: ^2.4.11
 
 dependency_overrides:
+  nit_riverpod_notifications:
+    git:
+      url: https://github.com/Strelkovik/nit_riverpod_notifications.git
+      ref: ivan # поменять потом на master
 
   # serverpod_chat_client:
   #   # path: ../nit_serverpod/modules/serverpod_chat/serverpod_chat_client
