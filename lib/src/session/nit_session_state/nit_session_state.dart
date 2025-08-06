@@ -70,7 +70,7 @@ class NitSessionState extends _$NitSessionState {
       _signedInUserIdPreloadProcessing == null
           ? serverpodUserInfoId
           : await _signedInUserIdPreloadProcessing.call(
-              _sessionManager.signedInUser?.id,
+              serverpodUserInfoId,
             );
 
   _refresh() async {
@@ -104,11 +104,16 @@ class NitSessionState extends _$NitSessionState {
       // }
       // _updateFcm();
 
+      final userId = await _processUserInfoId(
+        _sessionManager.signedInUser?.id,
+      );
+
       state = NitSessionStateModel(
         serverpodSessionManager: _sessionManager,
-        signedInUserId: await _processUserInfoId(
-          _sessionManager.signedInUser?.id,
-        ),
+        signedInUserId: userId,
+        //  await _processUserInfoId(
+        //   _sessionManager.signedInUser?.id,
+        // ),
         scopeNames: _sessionManager.signedInUser?.scopeNames ?? [],
         // websocketStatus: _connectionHandler?.status.status ??
         //     StreamingConnectionStatus.disconnected,
