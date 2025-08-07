@@ -35,9 +35,6 @@ class MessageBubble extends ConsumerWidget {
           chatNotifier.setRepliedMessage(message);
           FocusScope.of(context).requestFocus();
         },
-        onCopy: () {
-          // Clipboard.setData(ClipboardData(text: message.text));
-        },
         onDelete: () async {
           await chatNotifier.deleteMessage(message);
           chatNotifier.setRepliedMessage(null);
@@ -50,6 +47,7 @@ class MessageBubble extends ConsumerWidget {
         onReact: (emoji) {
           // chatNotifier.reactToMessage(message.id!, emoji);
         },
+        isCustomMessage: message.customMessageType?.type != null,
         child: child,
       ),
       child: SwipeTo(

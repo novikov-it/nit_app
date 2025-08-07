@@ -6,7 +6,7 @@ part of 'nit_chat_view_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chatStateHash() => r'cf5c24877cdffd0a2ce85cb11782e5a399b22c98';
+String _$chatStateHash() => r'beb04d3c1092c98f5051e7d7296fa7ecb699b1b5';
 
 /// Copied from Dart SDK
 class _SystemHash {

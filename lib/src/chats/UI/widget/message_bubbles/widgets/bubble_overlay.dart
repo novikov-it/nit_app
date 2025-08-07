@@ -7,20 +7,20 @@ class BubbleOverlay extends HookConsumerWidget {
   final Widget child;
   final bool isMe;
   final VoidCallback onReply;
-  final VoidCallback onCopy;
   final Future<void> Function() onDelete;
   final VoidCallback onEdit;
   final void Function(String emoji) onReact;
+  final bool isCustomMessage;
 
   const BubbleOverlay({
     super.key,
     required this.child,
     required this.isMe,
     required this.onReply,
-    required this.onCopy,
     required this.onDelete,
     required this.onEdit,
     required this.onReact,
+    required this.isCustomMessage,
   });
 
   @override
@@ -28,6 +28,10 @@ class BubbleOverlay extends HookConsumerWidget {
     final theme = ChatTheme.of(context);
     final overlayEntry = useState<OverlayEntry?>(null);
     final tapPosition = useState<Offset?>(null);
+    final overlayLeft = useState<double?>(null);
+    final overlayTop = useState<double?>(null);
+    final overlayKey = useMemoized(() => GlobalKey());
+
     final textColor = Theme.of(context).iconTheme.color;
 
     final animationController = useAnimationController(
@@ -42,160 +46,100 @@ class BubbleOverlay extends HookConsumerWidget {
       final tap = tapPosition.value ??
           Offset(screenSize.width / 2, screenSize.height / 2);
 
-      double overlayWidth = 260;
-      double overlayHeight =
-          isMe ? 180 : 60; // Разная высота в зависимости от isMe
+      const overlayMaxWidth = 260.0;
 
-      double left = tap.dx - overlayWidth / 2;
-      double top = tap.dy - overlayHeight;
+      // начальные (грубые) координаты до измерения
+      double left = tap.dx - overlayMaxWidth / 2;
+      double top = tap.dy - 100; // предположим среднюю высоту до измерения
 
-      if (left < 8) left = 8;
-      if (left + overlayWidth > screenSize.width - 8) {
-        left = screenSize.width - overlayWidth - 8;
-      }
-      if (top < 32) top = 32;
-      if (top + overlayHeight > screenSize.height - 16) {
-        top = screenSize.height - overlayHeight - 16;
-      }
+      left = left.clamp(8, screenSize.width - overlayMaxWidth - 8);
+      top = top.clamp(32, screenSize.height - 100 - 16);
 
       final entry = OverlayEntry(
         builder: (context) => FadeTransition(
           opacity: animationController,
           child: Stack(
             children: [
+              // затемнение
               GestureDetector(
                 onTap: () {
-                  animationController.reverse().then((value) {
+                  animationController.reverse().then((_) {
                     overlayEntry.value?.remove();
                     overlayEntry.value = null;
+                    overlayLeft.value = null;
+                    overlayTop.value = null;
                   });
                 },
                 behavior: HitTestBehavior.opaque,
                 child: Container(
-                  color: Colors.black.withOpacity(0.7),
-                  width: double.infinity,
-                  height: double.infinity,
-                ),
+                    color: Colors.black.withOpacity(0.7),
+                    width: double.infinity,
+                    height: double.infinity),
               ),
+              // сам блок
               Positioned(
-                left: left,
-                top: top,
+                left: overlayLeft.value ?? left,
+                top: overlayTop.value ?? top,
                 child: ScaleTransition(
                   scale: Tween<double>(begin: 0.8, end: 1.0).animate(
                     CurvedAnimation(
-                      parent: animationController,
-                      curve: Curves.easeOutBack,
-                    ),
+                        parent: animationController, curve: Curves.easeOutBack),
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: Container(
-                      width: overlayWidth,
-                      height: overlayHeight,
+                      key: overlayKey,
+                      // убрали height, даём контенту задавать размер
+                      constraints:
+                          const BoxConstraints(maxWidth: overlayMaxWidth),
                       decoration: BoxDecoration(
                         color:
                             theme.mainTheme.backgroundColor.withOpacity(0.95),
                         borderRadius: BorderRadius.circular(18),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 10.0,
-                            offset: const Offset(0, 4),
-                          ),
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 10,
+                              offset: Offset(0, 4))
                         ],
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Реакции
-                          // Padding(
-                          //   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //     children: [
-                          //       for (final emoji in [
-                          //         '👍',
-                          //         '❤️',
-                          //         '😂',
-                          //         '😮',
-                          //         '😢',
-                          //       ])
-                          //         _AnimatedIconButton(
-                          //           onPressed: () {
-                          //             animationController
-                          //                 .reverse()
-                          //                 .then((value) {
-                          //               overlayEntry.value?.remove();
-                          //               overlayEntry.value = null;
-                          //             });
-                          //           },
-                          //           icon: Text(
-                          //             emoji,
-                          //             style: const TextStyle(fontSize: 24),
-                          //           ),
-                          //         ),
-                          //     ],
-                          //   ),
-                          // ),
-                          // Divider(
-                          //   color: theme.mainTheme.dividerColor,
-                          //   height: 1,
-                          // ),
-                          // Действия в зависимости от isMe
                           _AnimatedListTile(
-                            leading: Icon(
-                              Icons.reply,
-                              color: textColor,
-                            ),
-                            title: Text(
-                              'Ответить',
-                              style: TextStyle(
-                                color: textColor,
-                              ),
-                            ),
+                            leading: Icon(Icons.reply, color: textColor),
+                            title: Text('Ответить',
+                                style: TextStyle(color: textColor)),
                             onTap: () {
                               onReply();
-                              animationController.reverse().then((value) {
+                              animationController.reverse().then((_) {
                                 overlayEntry.value?.remove();
                                 overlayEntry.value = null;
                               });
                             },
                           ),
                           if (isMe) ...[
+                            if (!isCustomMessage)
+                              _AnimatedListTile(
+                                leading: Icon(Icons.edit, color: textColor),
+                                title: Text('Редактировать',
+                                    style: TextStyle(color: textColor)),
+                                onTap: () {
+                                  onEdit();
+                                  animationController.reverse().then((_) {
+                                    overlayEntry.value?.remove();
+                                    overlayEntry.value = null;
+                                  });
+                                },
+                              ),
                             _AnimatedListTile(
-                              leading: Icon(
-                                Icons.edit,
-                                color: textColor,
-                              ),
-                              title: Text(
-                                'Редактировать',
-                                style: TextStyle(
-                                  color: textColor,
-                                ),
-                              ),
-                              onTap: () {
-                                onEdit();
-                                animationController.reverse().then((value) {
-                                  overlayEntry.value?.remove();
-                                  overlayEntry.value = null;
-                                });
-                              },
-                            ),
-                            _AnimatedListTile(
-                              leading: Icon(
-                                Icons.delete,
-                                color: theme.mainTheme.errorColor,
-                              ),
-                              title: Text(
-                                'Удалить',
-                                style: TextStyle(
-                                  color: theme.mainTheme.errorColor,
-                                ),
-                              ),
+                              leading: Icon(Icons.delete,
+                                  color: theme.mainTheme.errorColor),
+                              title: Text('Удалить',
+                                  style: TextStyle(
+                                      color: theme.mainTheme.errorColor)),
                               onTap: () async {
-                                await animationController
-                                    .reverse()
-                                    .then((value) {
+                                await animationController.reverse().then((_) {
                                   overlayEntry.value?.remove();
                                   overlayEntry.value = null;
                                 });
@@ -217,6 +161,21 @@ class BubbleOverlay extends HookConsumerWidget {
       overlay.insert(entry);
       overlayEntry.value = entry;
       animationController.forward();
+
+      // дождёмся построения и измерим размер
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final size = overlayKey.currentContext?.size;
+        if (size == null) return;
+
+        final newLeft = (tap.dx - size.width / 2)
+            .clamp(8.0, screenSize.width - size.width - 8.0);
+        final newTop = (tap.dy - size.height)
+            .clamp(32.0, screenSize.height - size.height - 16.0);
+
+        overlayLeft.value = newLeft;
+        overlayTop.value = newTop;
+        overlayEntry.value?.markNeedsBuild();
+      });
     }
 
     return GestureDetector(

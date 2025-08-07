@@ -25,8 +25,8 @@ class ChatBubbleThemeData with _$ChatBubbleThemeData {
 class ChatInputThemeData with _$ChatInputThemeData {
   const factory ChatInputThemeData({
     @Default(Colors.white) Color backgroundColor,
-    @Default(Colors.black87) Color textColor,
-    @Default(Colors.grey) Color hintColor,
+    // @Default(Colors.black87) Color textColor, //TODO: удалить
+    // @Default(Colors.grey) Color hintColor, //TODO: удалить
     @Default(Colors.blue) Color cursorColor,
     @Default(24.0) double borderRadius,
     @Default(EdgeInsets.symmetric(horizontal: 0, vertical: 12))

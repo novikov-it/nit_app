@@ -7,7 +7,7 @@ part of 'nit_push_handler.dart';
 // **************************************************************************
 
 String _$firebaseNotificationServiceHash() =>
-    r'239ad321b5dc43461b709470d960a6320c0c85fd';
+    r'ac0f8fe6f0f3e1d93255913b31132bb5e071d814';
 
 /// See also [FirebaseNotificationService].
 @ProviderFor(FirebaseNotificationService)

@@ -7,7 +7,7 @@ part of 'nit_firebase_notifications_state.dart';
 // **************************************************************************
 
 String _$nitFirebaseNotificationsStateHash() =>
-    r'490b2a9f0247c82b5b93f611eeffc52f2731347c';
+    r'a230cf39a8c33360682a35e50491a9a3b1411272';
 
 /// See also [NitFirebaseNotificationsState].
 @ProviderFor(NitFirebaseNotificationsState)

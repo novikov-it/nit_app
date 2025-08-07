@@ -158,13 +158,15 @@ class ChatInputWidget extends HookConsumerWidget {
                                                     color: isTyping.value
                                                         ? chatTheme.mainTheme
                                                             .primaryColor
-                                                        : inputTheme.hintColor,
+                                                        : inputTheme
+                                                            .hintStyle?.color,
                                                   ) ??
                                                   TextStyle(
                                                     color: isTyping.value
                                                         ? chatTheme.mainTheme
                                                             .primaryColor
-                                                        : inputTheme.hintColor,
+                                                        : inputTheme
+                                                            .hintStyle?.color,
                                                   ),
                                         ),
                                         cursorColor: inputTheme.cursorColor,
