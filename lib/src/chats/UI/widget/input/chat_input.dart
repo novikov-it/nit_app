@@ -171,7 +171,8 @@ class ChatInputWidget extends HookConsumerWidget {
                                         ),
                                         cursorColor: inputTheme.cursorColor,
                                         onSubmitted: (_) => sendMessage(),
-                                        textInputAction: TextInputAction.send,
+                                        textInputAction:
+                                            TextInputAction.newline,
                                         textCapitalization:
                                             TextCapitalization.sentences,
                                       ),
