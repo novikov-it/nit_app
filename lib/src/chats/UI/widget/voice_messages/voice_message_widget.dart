@@ -25,7 +25,7 @@ class AudioRecorderWidget extends HookConsumerWidget {
     Timer? timer;
 
     useEffect(() {
-      recorderController.checkPermission();
+      // recorderController.checkPermission();
       return () {
         recorderController.dispose();
         timer?.cancel();

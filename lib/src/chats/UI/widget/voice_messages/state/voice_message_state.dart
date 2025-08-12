@@ -12,8 +12,11 @@ class VoiceMessageState extends _$VoiceMessageState {
   }
 
   Future<void> uploadVoiceMessage(XFile file, int duration) async {
-    final nitMedia =
-        await ref.uploadXFileToServer(xFile: file, duration: duration);
+    final nitMedia = await ref.uploadXFileToServer(
+      xFile: file,
+      duration: duration,
+      path: 'chat/${ref.signedInUserId}',
+    );
     await ref
         .read(chatStateProvider(chatId).notifier)
         .sendMessage('Голосовое сообщение', nitMedia);
