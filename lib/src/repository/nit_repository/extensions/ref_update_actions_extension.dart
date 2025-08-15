@@ -4,20 +4,24 @@ import 'package:nit_app/nit_app.dart';
 import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 
 extension RefUpdateActionsExtension on Ref {
-  Future<int?> saveModel<T extends SerializableModel>(T model) async {
+  Future<int> saveModel<T extends SerializableModel>(T model) async {
     return saveModels([model]).then(
-      (ids) => ids?.first,
+      (ids) => ids.isNotEmpty
+          ? ids[0]
+          : throw Exception(
+              'Failed to save ${NitRepository.typeName<T>()} $model',
+            ),
     );
   }
 
-  Future<List<int>?> saveModels(List<SerializableModel> models) async {
+  Future<List<int>> saveModels(List<SerializableModel> models) async {
     return await nitToolsCaller!.nitCrud
         .saveModels(
           wrappedModels:
               models.map((model) => ObjectWrapper.wrap(model: model)).toList(),
         )
         .then(
-          (response) => processApiResponse<List<int>>(response),
+          (response) => processApiResponse<List<int>>(response) ?? [],
         );
   }
 
