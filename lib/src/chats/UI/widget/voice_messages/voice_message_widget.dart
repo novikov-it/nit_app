@@ -38,7 +38,12 @@ class AudioRecorderWidget extends HookConsumerWidget {
       timer = Timer.periodic(const Duration(seconds: 1), (_) {
         recordDuration.value += const Duration(seconds: 1);
       });
-      await recorderController.record();
+      await recorderController.record(
+        androidEncoder: AndroidEncoder.aac,
+        sampleRate: 44100,
+        bitRate: 128000,
+        linearPCMBitDepth: 16,
+      );
     }
 
     Future<void> stopAndSend() async {

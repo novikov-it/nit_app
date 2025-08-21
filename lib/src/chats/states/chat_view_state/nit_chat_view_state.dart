@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/src/chats/UI/widget/attachment/state/attachment_state.dart';
 import 'package:nit_app/src/chats/UI/widget/message_bubbles/widgets/voice_message/state/voice_message_bubble_state.dart';
+import 'package:nit_app/src/session/nit_socket_state/nit_socket_state.dart';
 import 'package:scrollview_observer/scrollview_observer.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -28,7 +30,7 @@ abstract class ChatStateModel with _$ChatStateModel {
   }) = _ChatStateModel;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class ChatState extends _$ChatState {
   StreamSubscription<SerializableModel>? _updatesSubscription;
 
@@ -47,6 +49,11 @@ class ChatState extends _$ChatState {
     final chatObserver = ChatScrollObserver(observerController);
 
     _setupUpdatesStream();
+    ref.listen(nitSocketStateProvider, (previous, next) {
+      if (next.websocketStatus == StreamingConnectionStatus.connected) {
+        _setupUpdatesStream();
+      }
+    });
 
     return ChatStateModel(
       viewState: ChatViewState.loading,
@@ -57,6 +64,7 @@ class ChatState extends _$ChatState {
   }
 
   void _setupUpdatesStream() {
+    nitToolsCaller!.nitChat.resetStream();
     _updatesSubscription =
         nitToolsCaller!.nitChat.updatesStream(chatId: chatId).listen(
       (update) {
@@ -87,7 +95,17 @@ class ChatState extends _$ChatState {
             if (update.isDeleted) {
               return;
             }
-            state = state.copyWith(messages: [...state.messages, update]);
+            final updatedMessages = [...state.messages];
+
+            final insertIndex = lowerBound(
+              updatedMessages,
+              update,
+              compare: (a, b) => a.id!.compareTo(b.id!),
+            );
+
+            updatedMessages.insert(insertIndex, update);
+
+            state = state.copyWith(messages: updatedMessages);
           }
 
           if (state.viewState == ChatViewState.noData) {

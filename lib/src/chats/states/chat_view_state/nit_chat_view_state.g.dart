@@ -6,7 +6,7 @@ part of 'nit_chat_view_state.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chatStateHash() => r'beb04d3c1092c98f5051e7d7296fa7ecb699b1b5';
+String _$chatStateHash() => r'1e6727f36d72164c0c1f5fd877e2ed1b26150bcd';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,8 +29,7 @@ class _SystemHash {
   }
 }
 
-abstract class _$ChatState
-    extends BuildlessAutoDisposeNotifier<ChatStateModel> {
+abstract class _$ChatState extends BuildlessNotifier<ChatStateModel> {
   late final int chatId;
 
   ChatStateModel build(
@@ -82,7 +81,7 @@ class ChatStateFamily extends Family<ChatStateModel> {
 
 /// See also [ChatState].
 class ChatStateProvider
-    extends AutoDisposeNotifierProviderImpl<ChatState, ChatStateModel> {
+    extends NotifierProviderImpl<ChatState, ChatStateModel> {
   /// See also [ChatState].
   ChatStateProvider(
     int chatId,
@@ -137,8 +136,7 @@ class ChatStateProvider
   }
 
   @override
-  AutoDisposeNotifierProviderElement<ChatState, ChatStateModel>
-      createElement() {
+  NotifierProviderElement<ChatState, ChatStateModel> createElement() {
     return _ChatStateProviderElement(this);
   }
 
@@ -158,13 +156,13 @@ class ChatStateProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ChatStateRef on AutoDisposeNotifierProviderRef<ChatStateModel> {
+mixin ChatStateRef on NotifierProviderRef<ChatStateModel> {
   /// The parameter `chatId` of this provider.
   int get chatId;
 }
 
 class _ChatStateProviderElement
-    extends AutoDisposeNotifierProviderElement<ChatState, ChatStateModel>
+    extends NotifierProviderElement<ChatState, ChatStateModel>
     with ChatStateRef {
   _ChatStateProviderElement(super.provider);
 
