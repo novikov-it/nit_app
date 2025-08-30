@@ -5,7 +5,8 @@ import 'package:nit_app/nit_app.dart';
 import 'package:nit_app/src/utils/firebase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/module.dart' as auth;
-import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
+
+import 'nit_session_manager.dart';
 
 part 'nit_session_state.freezed.dart';
 part 'nit_session_state.g.dart';
@@ -13,7 +14,7 @@ part 'nit_session_state.g.dart';
 @freezed
 class NitSessionStateModel with _$NitSessionStateModel {
   const factory NitSessionStateModel({
-    required SessionManager? serverpodSessionManager,
+    required NitSessionManager? serverpodSessionManager,
     required int? signedInUserId,
     required List<String> scopeNames,
   }) = _NitSessionStateModel;
@@ -21,7 +22,7 @@ class NitSessionStateModel with _$NitSessionStateModel {
 
 @Riverpod(keepAlive: true)
 class NitSessionState extends _$NitSessionState {
-  late final SessionManager _sessionManager;
+  late final NitSessionManager _sessionManager;
   late final Future<int?> Function(int? userId)?
       _signedInUserIdPreloadProcessing;
   // Future<void> Function(int? userId)? _preloadActions;
@@ -40,7 +41,7 @@ class NitSessionState extends _$NitSessionState {
     Future<int?> Function(int? userId)? signedInUserIdPreloadProcessing,
   }) async {
     // _preloadActions = preloadActions;
-    _sessionManager = SessionManager(
+    _sessionManager = NitSessionManager(
       caller: authModuleCaller,
     );
     _signedInUserIdPreloadProcessing = signedInUserIdPreloadProcessing;
@@ -60,8 +61,12 @@ class NitSessionState extends _$NitSessionState {
     return true;
   }
 
-  Future<bool> signOut() async {
-    return await _sessionManager.signOut().then((v) {
+  Future<bool> signOut({
+    bool revokeAllTokens = false,
+  }) async {
+    return await _sessionManager
+        .signOut(revokeAllTokens: revokeAllTokens)
+        .then((v) {
       return v;
     });
   }

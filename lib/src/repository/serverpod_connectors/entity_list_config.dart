@@ -1,7 +1,5 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_tools_client/nit_tools_client.dart';
 
-@freezed
 class EntityListConfig<Entity extends SerializableModel> {
   final NitBackendFilter? backendFilter;
   final int? pageSize;

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart';
-import 'package:serverpod_auth_phone_flutter/serverpod_auth_phone_flutter.dart';
+
+import 'phone_auth_controller.dart';
 
 part 'phone_auth_state.freezed.dart';
 part 'phone_auth_state.g.dart';
@@ -22,15 +22,10 @@ class PhoneAuthState extends _$PhoneAuthState {
     );
   }
 
-  String get _phone => toNumericString(
-        state.phoneController.text,
-        allowHyphen: false,
-      );
+  String get _phone =>
+      state.phoneController.text.replaceAll(RegExp(r'[^0-9]'), '');
 
-  String get _otp => toNumericString(
-        state.otpController.text,
-        allowHyphen: false,
-      );
+  String get _otp => state.otpController.text.replaceAll(RegExp(r'[^0-9]'), '');
 
   Future<bool> userExists() async {
     return null !=
@@ -72,6 +67,8 @@ class PhoneAuthState extends _$PhoneAuthState {
     if (userName.isEmpty) {
       userName = null;
     }
+
+    print(_otp);
 
     // TODO: убрать инициализацию контроллера в создание стейта
     final res = await PhoneAuthController(

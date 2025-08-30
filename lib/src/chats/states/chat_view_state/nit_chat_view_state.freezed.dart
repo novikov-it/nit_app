@@ -18,7 +18,8 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$ChatStateModel {
   ChatViewState get viewState => throw _privateConstructorUsedError;
   List<NitChatMessage> get messages => throw _privateConstructorUsedError;
-  int? get lastReadMessageId => throw _privateConstructorUsedError;
+  int? get lastReadMessageId =>
+      throw _privateConstructorUsedError; // последнее прочитанное сообщение в чате
   bool get isTyping => throw _privateConstructorUsedError;
   ScrollController get scrollController => throw _privateConstructorUsedError;
   ListObserverController get observerController =>
@@ -230,6 +231,7 @@ class _$ChatStateModelImpl implements _ChatStateModel {
 
   @override
   final int? lastReadMessageId;
+// последнее прочитанное сообщение в чате
   @override
   @JsonKey()
   final bool isTyping;
@@ -313,7 +315,7 @@ abstract class _ChatStateModel implements ChatStateModel {
   @override
   List<NitChatMessage> get messages;
   @override
-  int? get lastReadMessageId;
+  int? get lastReadMessageId; // последнее прочитанное сообщение в чате
   @override
   bool get isTyping;
   @override
