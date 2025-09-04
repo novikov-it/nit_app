@@ -63,10 +63,10 @@ class NitSessionManager with ChangeNotifier {
     _signedInUser = userInfo;
     var key = '$authenticationKeyId:$authenticationKey';
 
-    await NitAlerts.sendAlert(
-      message:
-          '✅ NitSessionManager: registerSignedInUser: userId=${_signedInUser?.id} with key=$key',
-    );
+    // await NitAlerts.sendAlert(
+    //   message:
+    //       '✅ NitSessionManager: registerSignedInUser: userId=${_signedInUser?.id} with key=$key',
+    // );
 
     // Store in key manager.
     await keyManager.put(
@@ -119,10 +119,10 @@ class NitSessionManager with ChangeNotifier {
   Future<bool> refreshSession() async {
     try {
       _signedInUser = await caller.status.getUserInfo();
-      await NitAlerts.sendAlert(
-        message:
-            'ℹ️ NitSessionManager: refreshSession: userId=${_signedInUser?.id}',
-      );
+      // await NitAlerts.sendAlert(
+      //   message:
+      //       'ℹ️ NitSessionManager: refreshSession: userId=${_signedInUser?.id}',
+      // );
       await _storeSharedPrefs();
       notifyListeners();
       return true;

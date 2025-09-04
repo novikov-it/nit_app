@@ -22,13 +22,13 @@ dependencies:
   serverpod_auth_phone_flutter:
     # path: ../nit_serverpod/modules/serverpod_auth/serverpod_auth_phone_flutter
     git:
-        url: git@github.com:novikov-it/nit_serverpod.git
+        url: https://github.com/novikov-it/nit_serverpod.git
         path: modules/serverpod_auth/serverpod_auth_phone_flutter
 
   nit_tools_client:
     # path: ../nit_tools/nit_tools_client
     git:
-      url: git@github.com:novikov-it/nit_tools.git
+      url: https://github.com/novikov-it/nit_tools.git
       path: nit_tools_client
       # ref: chat
 
