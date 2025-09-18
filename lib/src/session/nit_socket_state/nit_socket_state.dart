@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/nit_app.dart';
@@ -17,25 +19,27 @@ abstract class NitSocketStateModel with _$NitSocketStateModel {
 @Riverpod(keepAlive: true)
 class NitSocketState extends _$NitSocketState {
   StreamingConnectionHandler? _connectionHandler;
+  final Map<String, StreamSubscription<SerializableModel>> _channelSubs = {};
+  StreamSubscription<SerializableModel>? _mainStreamSub;
 
   @override
   NitSocketStateModel build() {
+    ref.onDispose(() {
+      _mainStreamSub?.cancel();
+      unsubscribeAllChannels();
+    });
+
     ref.listen(
       nitSessionStateProvider,
       (previousState, nextState) {
-        if (nextState.signedInUserId != previousState?.signedInUserId
-            //  &&
-            //     _connectionHandler?.status.status ==
-            //         StreamingConnectionStatus.connected
-            ) {
+        if (nextState.signedInUserId != previousState?.signedInUserId) {
           _connectionHandler?.client.closeStreamingConnection();
+          unsubscribeAllChannels();
         }
       },
     );
 
-    // final sessionState = ref.watch(nitSessionStateProvider);
-
-    return NitSocketStateModel(
+    return const NitSocketStateModel(
       websocketStatus: StreamingConnectionStatus.disconnected,
     );
   }
@@ -53,77 +57,93 @@ class NitSocketState extends _$NitSocketState {
     );
 
     _connectionHandler!.connect();
-
     return true;
   }
 
-  _refresh() async {
+  Future<void> _refresh() async {
     if (nitToolsCaller != null &&
         state.websocketStatus != StreamingConnectionStatus.connected &&
         _connectionHandler?.status.status ==
             StreamingConnectionStatus.connected) {
-      _listenToUpdates();
+      await _startMainStream();
     }
-    // if (_sessionManager.signedInUser?.id != state.signedInUserId) {
-    //   // if (nitToolsCaller != null) {
-    //   //   await _openUpdatesStream();
-    //   // }
-    //   // _updateFcm();
-
-    //   if (_sessionManager.signedInUser != null) await _updateRepository();
 
     state = NitSocketStateModel(
       websocketStatus: _connectionHandler?.status.status ??
           StreamingConnectionStatus.disconnected,
     );
-    // }
   }
 
-  // _proccessUpdate(ObjectWrapper update) {
-  //   print("Received ${update.className} with id ${update.modelId}");
-  //   if (update.model is NitAppNotification) {
-  //     ref.notifyUser(update.model as NitAppNotification);
-  //     // for (var enclosedObject
-  //     //     in (update.model as NitAppNotification).updatedEntities ?? []) {
-  //     //   ref.updateFromStream(enclosedObject);
-  //     // }
-  //   }
-
-  //   ref.updateFromStream(update);
-  // }
-
-  Future<void> _listenToUpdates() async {
+  Future<void> _startMainStream() async {
+    _mainStreamSub?.cancel();
     nitToolsCaller!.nitUpdates.resetStream();
 
-    // final t = nitToolsCaller!.nitCrud.stream.listen(onData)
+    _mainStreamSub = nitToolsCaller!.nitUpdates.stream.listen((update) {
+      _processUpdate(update);
+    });
+  }
 
-    await for (var update in nitToolsCaller!.nitUpdates.stream) {
-      if (update is ObjectWrapper) {
-        print("Received ${update.className} with id ${update.modelId}");
-        if (update.model is NitAppNotification) {
-          ref.notifyUser(update.model as NitAppNotification);
-          // for (var enclosedObject
-          //     in (update.model as NitAppNotification).updatedEntities ?? []) {
-          //   ref.updateFromStream(enclosedObject);
-          // }
-        }
-
-        ref.updateFromStream([update]);
-      } else if (update is NitUpdatesTransport) {
-        for (var e in update.updatedEntities) {
-          if (e.model is NitAppNotification) {
-            ref.notifyUser(e.model as NitAppNotification);
-          }
-          ref.updateFromStream(update.updatedEntities);
-        }
+  void _processUpdate(SerializableModel update) {
+    if (update is ObjectWrapper) {
+      debugPrint("Received ${update.className} with id ${update.modelId}");
+      if (update.model is NitAppNotification) {
+        ref.notifyUser(update.model as NitAppNotification);
       }
 
-      // May be useful for debug
-      // ref.notifyUser(
-      //   NitNotification.warning(
-      //     update.toString(),
-      //   ),
-      // );
+      ref.updateFromStream([update]);
+    } else if (update is NitUpdatesTransport) {
+      for (var e in update.updatedEntities) {
+        if (e.model is NitAppNotification) {
+          ref.notifyUser(e.model as NitAppNotification);
+        }
+        ref.updateFromStream(update.updatedEntities);
+      }
     }
+  }
+
+  Future<void> subscribeToChannel(String channel) async {
+    if (_connectionHandler?.status.status !=
+        StreamingConnectionStatus.connected) {
+      debugPrint("⚠️ Cannot subscribe, not connected yet");
+      return;
+    }
+
+    if (_channelSubs.containsKey(channel)) {
+      debugPrint("Already subscribed to $channel");
+      return;
+    }
+
+    final sub =
+        nitToolsCaller!.nitCrud.subscribeOnUpdates(channel: channel).listen(
+      (update) => _processUpdate(update),
+      onDone: () {
+        // поток завершился (разрыв/переподключение) — освободим слот
+        _channelSubs.remove(channel);
+      },
+      onError: (e, st) {
+        debugPrint("Channel $channel error: $e");
+        _channelSubs.remove(channel);
+      },
+      cancelOnError: true,
+    );
+    _channelSubs[channel] = sub;
+
+    debugPrint("✅ Subscribed to $channel");
+  }
+
+  Future<void> unsubscribeFromChannel(String channel) async {
+    if (_channelSubs.containsKey(channel)) {
+      await _channelSubs[channel]!.cancel();
+      _channelSubs.remove(channel);
+      debugPrint("❌ Unsubscribed from $channel");
+    }
+  }
+
+  Future<void> unsubscribeAllChannels() async {
+    for (var sub in _channelSubs.values) {
+      await sub.cancel();
+    }
+    _channelSubs.clear();
+    debugPrint("❌ Unsubscribed from all channels");
   }
 }
