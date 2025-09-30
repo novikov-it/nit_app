@@ -315,9 +315,9 @@ abstract class _ChatBubbleThemeData implements ChatBubbleThemeData {
 
 /// @nodoc
 mixin _$ChatInputThemeData {
-  Color get backgroundColor => throw _privateConstructorUsedError;
-  Color get textColor => throw _privateConstructorUsedError;
-  Color get hintColor => throw _privateConstructorUsedError;
+  Color get backgroundColor =>
+      throw _privateConstructorUsedError; // @Default(Colors.black87) Color textColor, //TODO: удалить
+// @Default(Colors.grey) Color hintColor, //TODO: удалить
   Color get cursorColor => throw _privateConstructorUsedError;
   double get borderRadius => throw _privateConstructorUsedError;
   EdgeInsets get padding => throw _privateConstructorUsedError;
@@ -340,8 +340,6 @@ abstract class $ChatInputThemeDataCopyWith<$Res> {
   @useResult
   $Res call(
       {Color backgroundColor,
-      Color textColor,
-      Color hintColor,
       Color cursorColor,
       double borderRadius,
       EdgeInsets padding,
@@ -366,8 +364,6 @@ class _$ChatInputThemeDataCopyWithImpl<$Res, $Val extends ChatInputThemeData>
   @override
   $Res call({
     Object? backgroundColor = null,
-    Object? textColor = null,
-    Object? hintColor = null,
     Object? cursorColor = null,
     Object? borderRadius = null,
     Object? padding = null,
@@ -379,14 +375,6 @@ class _$ChatInputThemeDataCopyWithImpl<$Res, $Val extends ChatInputThemeData>
       backgroundColor: null == backgroundColor
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
-              as Color,
-      textColor: null == textColor
-          ? _value.textColor
-          : textColor // ignore: cast_nullable_to_non_nullable
-              as Color,
-      hintColor: null == hintColor
-          ? _value.hintColor
-          : hintColor // ignore: cast_nullable_to_non_nullable
               as Color,
       cursorColor: null == cursorColor
           ? _value.cursorColor
@@ -426,8 +414,6 @@ abstract class _$$ChatInputThemeDataImplCopyWith<$Res>
   @useResult
   $Res call(
       {Color backgroundColor,
-      Color textColor,
-      Color hintColor,
       Color cursorColor,
       double borderRadius,
       EdgeInsets padding,
@@ -450,8 +436,6 @@ class __$$ChatInputThemeDataImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? backgroundColor = null,
-    Object? textColor = null,
-    Object? hintColor = null,
     Object? cursorColor = null,
     Object? borderRadius = null,
     Object? padding = null,
@@ -463,14 +447,6 @@ class __$$ChatInputThemeDataImplCopyWithImpl<$Res>
       backgroundColor: null == backgroundColor
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
-              as Color,
-      textColor: null == textColor
-          ? _value.textColor
-          : textColor // ignore: cast_nullable_to_non_nullable
-              as Color,
-      hintColor: null == hintColor
-          ? _value.hintColor
-          : hintColor // ignore: cast_nullable_to_non_nullable
               as Color,
       cursorColor: null == cursorColor
           ? _value.cursorColor
@@ -505,8 +481,6 @@ class __$$ChatInputThemeDataImplCopyWithImpl<$Res>
 class _$ChatInputThemeDataImpl implements _ChatInputThemeData {
   const _$ChatInputThemeDataImpl(
       {this.backgroundColor = Colors.white,
-      this.textColor = Colors.black87,
-      this.hintColor = Colors.grey,
       this.cursorColor = Colors.blue,
       this.borderRadius = 24.0,
       this.padding = const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
@@ -517,12 +491,8 @@ class _$ChatInputThemeDataImpl implements _ChatInputThemeData {
   @override
   @JsonKey()
   final Color backgroundColor;
-  @override
-  @JsonKey()
-  final Color textColor;
-  @override
-  @JsonKey()
-  final Color hintColor;
+// @Default(Colors.black87) Color textColor, //TODO: удалить
+// @Default(Colors.grey) Color hintColor, //TODO: удалить
   @override
   @JsonKey()
   final Color cursorColor;
@@ -541,7 +511,7 @@ class _$ChatInputThemeDataImpl implements _ChatInputThemeData {
 
   @override
   String toString() {
-    return 'ChatInputThemeData(backgroundColor: $backgroundColor, textColor: $textColor, hintColor: $hintColor, cursorColor: $cursorColor, borderRadius: $borderRadius, padding: $padding, border: $border, textStyle: $textStyle, hintStyle: $hintStyle)';
+    return 'ChatInputThemeData(backgroundColor: $backgroundColor, cursorColor: $cursorColor, borderRadius: $borderRadius, padding: $padding, border: $border, textStyle: $textStyle, hintStyle: $hintStyle)';
   }
 
   @override
@@ -551,10 +521,6 @@ class _$ChatInputThemeDataImpl implements _ChatInputThemeData {
             other is _$ChatInputThemeDataImpl &&
             (identical(other.backgroundColor, backgroundColor) ||
                 other.backgroundColor == backgroundColor) &&
-            (identical(other.textColor, textColor) ||
-                other.textColor == textColor) &&
-            (identical(other.hintColor, hintColor) ||
-                other.hintColor == hintColor) &&
             (identical(other.cursorColor, cursorColor) ||
                 other.cursorColor == cursorColor) &&
             (identical(other.borderRadius, borderRadius) ||
@@ -568,17 +534,8 @@ class _$ChatInputThemeDataImpl implements _ChatInputThemeData {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      backgroundColor,
-      textColor,
-      hintColor,
-      cursorColor,
-      borderRadius,
-      padding,
-      border,
-      textStyle,
-      hintStyle);
+  int get hashCode => Object.hash(runtimeType, backgroundColor, cursorColor,
+      borderRadius, padding, border, textStyle, hintStyle);
 
   /// Create a copy of ChatInputThemeData
   /// with the given fields replaced by the non-null parameter values.
@@ -593,8 +550,6 @@ class _$ChatInputThemeDataImpl implements _ChatInputThemeData {
 abstract class _ChatInputThemeData implements ChatInputThemeData {
   const factory _ChatInputThemeData(
       {final Color backgroundColor,
-      final Color textColor,
-      final Color hintColor,
       final Color cursorColor,
       final double borderRadius,
       final EdgeInsets padding,
@@ -603,11 +558,9 @@ abstract class _ChatInputThemeData implements ChatInputThemeData {
       final TextStyle? hintStyle}) = _$ChatInputThemeDataImpl;
 
   @override
-  Color get backgroundColor;
-  @override
-  Color get textColor;
-  @override
-  Color get hintColor;
+  Color
+      get backgroundColor; // @Default(Colors.black87) Color textColor, //TODO: удалить
+// @Default(Colors.grey) Color hintColor, //TODO: удалить
   @override
   Color get cursorColor;
   @override

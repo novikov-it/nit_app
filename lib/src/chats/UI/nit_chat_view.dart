@@ -30,54 +30,64 @@ class NitChatView extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: ChatTheme.of(context).mainTheme.backgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  ChatMessagesList(
-                    chatId: chatId,
-                    customMessageBuilders: customMessageBuilders,
-                  ),
-                  // Should be consumer inside widgets?
-                  if (ChatTheme.of(context).settings.showScrollToBottomButton)
-                    Consumer(
-                      builder:
-                          (BuildContext context, WidgetRef ref, Widget? child) {
-                        return ref.watch(
-                          chatUIStateProvider(chatId).select(
-                            (state) => state.showScrollToBottom,
-                          ),
-                        )
-                            ? Positioned(
-                                bottom: 16,
-                                right: 16,
-                                child: ScrollToBottomButton(chatId: chatId),
-                              )
-                            : const SizedBox.shrink();
-                      },
-                    ),
-                ],
-              ),
-            ),
-            Consumer(
-              builder: (BuildContext context, WidgetRef ref, Widget? child) {
-                return ref.watch(
-                  chatStateProvider(chatId).select((state) => state.isTyping),
-                )
-                    ? const TypingIndicator()
-                    : const SizedBox.shrink();
-              },
-            ),
-            Column(
+      body: Container(
+        color: ChatTheme.of(context).inputTheme.backgroundColor,
+        child: SafeArea(
+          child: Container(
+            color: ChatTheme.of(context).mainTheme.backgroundColor,
+            child: Column(
               children: [
-                EditInputPanel(chatId: chatId),
-                ReplyInputPanel(chatId: chatId),
-                ChatInputWidget(chatId: chatId),
+                Expanded(
+                  child: Stack(
+                    children: [
+                      ChatMessagesList(
+                        chatId: chatId,
+                        customMessageBuilders: customMessageBuilders,
+                      ),
+                      // Should be consumer inside widgets?
+                      if (ChatTheme.of(context)
+                          .settings
+                          .showScrollToBottomButton)
+                        Consumer(
+                          builder: (BuildContext context, WidgetRef ref,
+                              Widget? child) {
+                            return ref.watch(
+                              chatUIStateProvider(chatId).select(
+                                (state) => state.showScrollToBottom,
+                              ),
+                            )
+                                ? Positioned(
+                                    bottom: 16,
+                                    right: 16,
+                                    child: ScrollToBottomButton(chatId: chatId),
+                                  )
+                                : const SizedBox.shrink();
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+                Consumer(
+                  builder:
+                      (BuildContext context, WidgetRef ref, Widget? child) {
+                    return ref.watch(
+                      chatStateProvider(chatId)
+                          .select((state) => state.isTyping),
+                    )
+                        ? const TypingIndicator()
+                        : const SizedBox.shrink();
+                  },
+                ),
+                Column(
+                  children: [
+                    EditInputPanel(chatId: chatId),
+                    ReplyInputPanel(chatId: chatId),
+                    ChatInputWidget(chatId: chatId),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

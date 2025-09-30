@@ -102,22 +102,7 @@ class ChatInputWidget extends HookConsumerWidget {
                 )
               : Container(
                   padding: inputTheme.padding,
-                  decoration: BoxDecoration(
-                    color: inputTheme.backgroundColor,
-                    border: Border(
-                      top: BorderSide(
-                        color: chatTheme.mainTheme.dividerColor,
-                        width: 0.5,
-                      ),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 4,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
-                  ),
+                  color: inputTheme.backgroundColor,
                   child: Column(
                     children: [
                       AttachmentList(),
@@ -126,8 +111,9 @@ class ChatInputWidget extends HookConsumerWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Row(
                           children: [
+                            AddAttachmentButton(),
                             Expanded(
-                              child: Container(
+                              child: DecoratedBox(
                                 decoration: BoxDecoration(
                                   color: inputTheme.backgroundColor,
                                   borderRadius: BorderRadius.circular(
@@ -140,7 +126,6 @@ class ChatInputWidget extends HookConsumerWidget {
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    AddAttachmentButton(),
                                     Expanded(
                                       child: TextField(
                                         controller: controller,
@@ -158,18 +143,21 @@ class ChatInputWidget extends HookConsumerWidget {
                                                     color: isTyping.value
                                                         ? chatTheme.mainTheme
                                                             .primaryColor
-                                                        : inputTheme.hintColor,
+                                                        : inputTheme
+                                                            .hintStyle?.color,
                                                   ) ??
                                                   TextStyle(
                                                     color: isTyping.value
                                                         ? chatTheme.mainTheme
                                                             .primaryColor
-                                                        : inputTheme.hintColor,
+                                                        : inputTheme
+                                                            .hintStyle?.color,
                                                   ),
                                         ),
                                         cursorColor: inputTheme.cursorColor,
                                         onSubmitted: (_) => sendMessage(),
-                                        textInputAction: TextInputAction.send,
+                                        textInputAction:
+                                            TextInputAction.newline,
                                         textCapitalization:
                                             TextCapitalization.sentences,
                                       ),

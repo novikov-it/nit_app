@@ -2,6 +2,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:audio_waveforms/audio_waveforms.dart';
@@ -87,14 +88,25 @@ class VoiceMessageBubbleState extends _$VoiceMessageBubbleState {
             'Failed to download file: Status ${response.statusCode}');
       }
 
-      // Получаем временную директорию
       final tempDir = await getTemporaryDirectory();
-      // Создаем уникальное имя файла на основе URL или текущего времени
-      final fileName = url.split('/').last;
+      String baseName = url
+          .split('/')
+          .last
+          .replaceAll(RegExp(r'[\[\]():\/]'), '_')
+          .replaceAll('..', '.')
+          .replaceAll(':', '_');
+
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}_$baseName';
       final filePath = '${tempDir.path}/$fileName';
-      // Записываем данные в файл
+
       final file = File(filePath);
       await file.writeAsBytes(response.bodyBytes);
+
+      if (!await file.exists()) {
+        throw Exception('File not created');
+      }
+      print('Saved file path: $filePath');
+
       return filePath;
     } catch (e) {
       log('Error downloading file: $e');

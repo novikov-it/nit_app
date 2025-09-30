@@ -17,7 +17,7 @@ class FileUploaderHandler {
   ) defaultUploadNameTemplate = (
     String extension,
   ) =>
-      '${DateFormat('yyyy-MM-dd-hh:mm:ss').format(DateTime.now())}.$extension';
+      '${DateFormat('yyyy-MM-dd-hh:mm:ss').format(DateTime.now())}.${extension.replaceAll('.', '')}';
 
   static Future<String?> pickAndUploadImageUrl({
     ImageSource imageSource = ImageSource.gallery,

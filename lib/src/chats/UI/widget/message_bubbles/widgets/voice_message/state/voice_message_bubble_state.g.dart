@@ -7,7 +7,7 @@ part of 'voice_message_bubble_state.dart';
 // **************************************************************************
 
 String _$voiceMessageBubbleStateHash() =>
-    r'7c5c6aaa5df6984cb242dc0f0cb805e6bd819d39';
+    r'315d94296c1bd4d9ff3e84e269cf835f33318f05';
 
 /// Copied from Dart SDK
 class _SystemHash {
