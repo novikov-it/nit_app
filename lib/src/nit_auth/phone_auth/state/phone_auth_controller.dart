@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:nit_app/src/session/nit_session_state/nit_session_manager.dart';
 import 'package:serverpod_auth_client/serverpod_auth_client.dart';
+import 'package:serverpod_auth_shared_flutter/serverpod_auth_shared_flutter.dart';
 
 /// Controller for phone authentication.
 class PhoneAuthController {
   /// A reference to the session manager as retrieved from the client object.
-  final NitSessionManager sessionManager;
+  final SessionManager sessionManager;
 
   /// Private constructor for the singleton pattern.
   PhoneAuthController._internal(this.sessionManager);
@@ -13,7 +13,7 @@ class PhoneAuthController {
   static PhoneAuthController? _instance;
 
   /// Factory constructor for creating or returning the singleton instance.
-  factory PhoneAuthController(NitSessionManager sessionManager) {
+  factory PhoneAuthController(SessionManager sessionManager) {
     return _instance ??= PhoneAuthController._internal(sessionManager);
   }
 

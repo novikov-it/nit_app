@@ -16,7 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$NitSessionStateModel {
-  NitSessionManager? get serverpodSessionManager =>
+  SessionManager? get serverpodSessionManager =>
       throw _privateConstructorUsedError;
   int? get signedInUserId => throw _privateConstructorUsedError;
   List<String> get scopeNames => throw _privateConstructorUsedError;
@@ -35,7 +35,7 @@ abstract class $NitSessionStateModelCopyWith<$Res> {
       _$NitSessionStateModelCopyWithImpl<$Res, NitSessionStateModel>;
   @useResult
   $Res call(
-      {NitSessionManager? serverpodSessionManager,
+      {SessionManager? serverpodSessionManager,
       int? signedInUserId,
       List<String> scopeNames});
 }
@@ -64,7 +64,7 @@ class _$NitSessionStateModelCopyWithImpl<$Res,
       serverpodSessionManager: freezed == serverpodSessionManager
           ? _value.serverpodSessionManager
           : serverpodSessionManager // ignore: cast_nullable_to_non_nullable
-              as NitSessionManager?,
+              as SessionManager?,
       signedInUserId: freezed == signedInUserId
           ? _value.signedInUserId
           : signedInUserId // ignore: cast_nullable_to_non_nullable
@@ -86,7 +86,7 @@ abstract class _$$NitSessionStateModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {NitSessionManager? serverpodSessionManager,
+      {SessionManager? serverpodSessionManager,
       int? signedInUserId,
       List<String> scopeNames});
 }
@@ -112,7 +112,7 @@ class __$$NitSessionStateModelImplCopyWithImpl<$Res>
       serverpodSessionManager: freezed == serverpodSessionManager
           ? _value.serverpodSessionManager
           : serverpodSessionManager // ignore: cast_nullable_to_non_nullable
-              as NitSessionManager?,
+              as SessionManager?,
       signedInUserId: freezed == signedInUserId
           ? _value.signedInUserId
           : signedInUserId // ignore: cast_nullable_to_non_nullable
@@ -135,7 +135,7 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
       : _scopeNames = scopeNames;
 
   @override
-  final NitSessionManager? serverpodSessionManager;
+  final SessionManager? serverpodSessionManager;
   @override
   final int? signedInUserId;
   final List<String> _scopeNames;
@@ -182,12 +182,12 @@ class _$NitSessionStateModelImpl implements _NitSessionStateModel {
 
 abstract class _NitSessionStateModel implements NitSessionStateModel {
   const factory _NitSessionStateModel(
-      {required final NitSessionManager? serverpodSessionManager,
+      {required final SessionManager? serverpodSessionManager,
       required final int? signedInUserId,
       required final List<String> scopeNames}) = _$NitSessionStateModelImpl;
 
   @override
-  NitSessionManager? get serverpodSessionManager;
+  SessionManager? get serverpodSessionManager;
   @override
   int? get signedInUserId;
   @override
