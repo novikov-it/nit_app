@@ -1,4 +1,3 @@
-export 'package:nit_generic_forms/nit_generic_forms.dart';
 export 'package:nit_tools_client/nit_tools_client.dart';
 
 export 'src/admin_panel/database_config.dart';
@@ -13,7 +12,6 @@ export 'src/nit_alerts/nit_alerts.dart';
 export 'src/nit_app.dart';
 export 'src/nit_auth/nit_auth.dart';
 export 'src/nit_auth/phone_auth/state/phone_auth_state.dart';
-export 'src/nit_generic_forms_adapter/entity_dropdown/nit_serializable_model_dropdown_field_descriptor.dart';
 export 'src/nit_serverpod_tools_flutter.dart';
 export 'src/ref_extension/file_upload_handler.dart';
 export 'src/ref_extension/nit_app_ref_extension.dart';

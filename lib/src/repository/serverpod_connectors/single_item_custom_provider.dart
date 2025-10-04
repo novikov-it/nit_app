@@ -34,6 +34,10 @@ class SingleItemCustomProviderState<T extends SerializableModel>
     // final res = await ref.getAll<T>();
     // NitRepository.ensureDefaultDescriptor<T>();
 
+    NitRepository.addUpdatesListener<T>(
+      _updatesListener,
+    );
+
     return await nitToolsCaller!.nitCrud
         .getOneCustom(
           className: NitRepository.typeName<T>(),
@@ -41,5 +45,21 @@ class SingleItemCustomProviderState<T extends SerializableModel>
         )
         .then((response) => ref.processApiResponse<int>(response))
         .then((res) => res);
+  }
+
+  void _updatesListener(List<ObjectWrapper> wrappedModelUpdates) async {
+    return await future.then(
+      (value) async {
+        state = AsyncValue.data(
+          wrappedModelUpdates
+                  .where((e) =>
+                      !e.isDeleted &&
+                      (arg.backendFilter.filterUpdate(e.jsonSerialization)))
+                  .map((e) => e.modelId!)
+                  .firstOrNull ??
+              value,
+        );
+      },
+    );
   }
 }

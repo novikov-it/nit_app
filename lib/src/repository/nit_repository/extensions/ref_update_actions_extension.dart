@@ -4,8 +4,9 @@ import 'package:nit_app/nit_app.dart';
 import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 
 extension RefUpdateActionsExtension on Ref {
-  Future<int> saveModel<T extends SerializableModel>(T model) async {
-    return saveModels([model]).then(
+  Future<int> saveModel<T extends SerializableModel>(T model,
+      {bool updateListeners = true}) async {
+    return saveModels([model], updateListeners: updateListeners).then(
       (ids) => ids.isNotEmpty
           ? ids[0]
           : throw Exception(
@@ -14,14 +15,18 @@ extension RefUpdateActionsExtension on Ref {
     );
   }
 
-  Future<List<int>> saveModels(List<SerializableModel> models) async {
+  Future<List<int>> saveModels(List<SerializableModel> models,
+      {bool updateListeners = true}) async {
     return await nitToolsCaller!.nitCrud
         .saveModels(
           wrappedModels:
               models.map((model) => ObjectWrapper.wrap(model: model)).toList(),
         )
         .then(
-          (response) => processApiResponse<List<int>>(response) ?? [],
+          (response) =>
+              processApiResponse<List<int>>(response,
+                  updateListeners: updateListeners) ??
+              [],
         );
   }
 

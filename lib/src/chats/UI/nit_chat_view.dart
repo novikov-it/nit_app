@@ -18,9 +18,11 @@ class NitChatView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewState = ref.watch(
-      chatStateProvider(chatId).select((state) => state.viewState),
-    );
+    final viewState = chatId == NitDefaultModelsRepository.mockModelId
+        ? ChatViewState.loading
+        : ref.watch(
+            chatStateProvider(chatId).select((state) => state.viewState),
+          );
 
     if (viewState == ChatViewState.loading) {
       return const Scaffold(

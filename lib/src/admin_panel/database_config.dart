@@ -1,18 +1,18 @@
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
-class DPD {
-  const DPD({
-    required this.pageTitle,
-    required this.entityManagerBlock,
-  });
-  final String pageTitle;
-  final Widget entityManagerBlock;
-}
+// class DPD {
+//   const DPD({
+//     required this.pageTitle,
+//     required this.entityManagerBlock,
+//   });
+//   final String pageTitle;
+//   final Widget entityManagerBlock;
+// }
 
-abstract class DatabasePageDescriptor implements Enum {
-  DatabasePageDescriptor(
-    this.pageDescriptor, // = const DPD(),
-  );
+// abstract class DatabasePageDescriptor implements Enum {
+//   DatabasePageDescriptor(
+//     this.pageDescriptor, // = const DPD(),
+//   );
 
-  final DPD pageDescriptor;
-}
+//   final DPD pageDescriptor;
+// }
