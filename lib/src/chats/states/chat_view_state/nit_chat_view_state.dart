@@ -138,6 +138,8 @@ class ChatState extends _$ChatState {
     if (additionalAtttachment != null) {
       attachment.add(additionalAtttachment);
     }
+
+    // TODO: странно, что мы только через вебсокет собственный стейт обновляем...
     ref.saveModel(
       NitChatMessage(
         text: text,

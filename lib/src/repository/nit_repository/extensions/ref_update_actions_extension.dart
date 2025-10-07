@@ -6,29 +6,44 @@ import 'package:nit_riverpod_notifications/nit_riverpod_notifications.dart';
 extension RefUpdateActionsExtension on Ref {
   Future<int> saveModel<T extends SerializableModel>(T model,
       {bool updateListeners = true}) async {
-    return saveModels([model], updateListeners: updateListeners).then(
-      (ids) => ids.isNotEmpty
-          ? ids[0]
-          : throw Exception(
-              'Failed to save ${NitRepository.typeName<T>()} $model',
-            ),
+    final response = await nitToolsCaller!.nitCrud.saveModel(
+      wrappedModel: ObjectWrapper.wrap(model: model),
     );
+
+    final res =
+        processApiResponse<int>(response, updateListeners: updateListeners);
+
+    if (res == null) {
+      throw Exception(
+        'Failed to save ${NitRepository.typeName<T>()} $model',
+      );
+    }
+
+    return res;
+
+    // return saveModels([model], updateListeners: updateListeners).then(
+    //   (ids) => ids.isNotEmpty
+    //       ? ids[0]
+    //       : throw Exception(
+    //           'Failed to save ${NitRepository.typeName<T>()} $model',
+    //         ),
+    // );
   }
 
-  Future<List<int>> saveModels(List<SerializableModel> models,
-      {bool updateListeners = true}) async {
-    return await nitToolsCaller!.nitCrud
-        .saveModels(
-          wrappedModels:
-              models.map((model) => ObjectWrapper.wrap(model: model)).toList(),
-        )
-        .then(
-          (response) =>
-              processApiResponse<List<int>>(response,
-                  updateListeners: updateListeners) ??
-              [],
-        );
-  }
+  // Future<List<int>> saveModels(List<SerializableModel> models,
+  //     {bool updateListeners = true}) async {
+  //   return await nitToolsCaller!.nitCrud
+  //       .saveModels(
+  //         wrappedModels:
+  //             models.map((model) => ObjectWrapper.wrap(model: model)).toList(),
+  //       )
+  //       .then(
+  //         (response) =>
+  //             processApiResponse<List<int>>(response,
+  //                 updateListeners: updateListeners) ??
+  //             [],
+  //       );
+  // }
 
   Future<bool> deleteModel<T extends SerializableModel>(T model) async {
     // TODO: подумать, как сделать это получше, может апи поменять или засылать objectWrapper.deleted просто
