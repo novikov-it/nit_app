@@ -30,7 +30,7 @@ dependencies:
     git:
       url: https://github.com/novikov-it/nit_tools.git
       path: nit_tools_client
-      # ref: chat
+      ref: master
 
   nit_ui_kit: ^0.1.1
     # path: ../nit_ui_kit
@@ -38,11 +38,11 @@ dependencies:
     #   url: git@github.com:novikov-it/nit_ui_kit.git
     #   ref: master
 
-  nit_riverpod_notifications: ^0.0.1
+  nit_riverpod_notifications: 
   #   # path: ../nit_riverpod_notifications
-  #   git:
-  #     url: git@github.com:novikov-it/nit_riverpod_notifications.git
-  #     ref: master
+    git:
+      url: git@github.com:novikov-it/nit_riverpod_notifications.git
+      ref: master
 
   # nit_generic_forms: ^0.0.1
     # path: ../nit_generic_forms
@@ -107,11 +107,6 @@ dev_dependencies:
   build_runner: ^2.4.11
 
 dependency_overrides:
-  nit_riverpod_notifications:
-    git:
-      url: https://github.com/Strelkovik/nit_riverpod_notifications.git
-      ref: ivan # поменять потом на master
-
   # serverpod_chat_client:
   #   # path: ../nit_serverpod/modules/serverpod_chat/serverpod_chat_client
   #   git:
