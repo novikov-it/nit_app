@@ -43,7 +43,10 @@ class SingleItemCustomProviderState<T extends SerializableModel>
           className: NitRepository.typeName<T>(),
           filter: arg.backendFilter,
         )
-        .then((response) => ref.processApiResponse<int>(response))
+        .then((response) => ref.processApiResponse<int>(
+              response,
+              updateListeners: false,
+            ))
         .then((res) => res);
   }
 

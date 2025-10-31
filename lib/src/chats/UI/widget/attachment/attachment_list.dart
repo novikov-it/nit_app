@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_app/src/chats/UI/widget/attachment/state/attachment_state.dart';
 import 'package:nit_ui_kit/nit_ui_kit.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class AttachmentList extends ConsumerWidget {
   const AttachmentList({super.key});
@@ -53,22 +54,12 @@ class _AttachmentItem extends ConsumerWidget {
               height: 80,
             ),
           ),
-        if (media.isAsset)
+        if (media.isXFile)
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: AssetEntityImage(
-              media.asAsset(),
-              isOriginal: false,
-              thumbnailSize: const ThumbnailSize.square(80),
+            child: Image.file(
+              File(media.asXFile().path),
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Center(
-                  child: Icon(
-                    Icons.error,
-                    color: chatTheme.mainTheme.errorColor,
-                  ),
-                );
-              },
               width: 80,
               height: 80,
             ),

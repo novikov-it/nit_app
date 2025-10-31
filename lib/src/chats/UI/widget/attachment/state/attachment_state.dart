@@ -1,12 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nit_app/nit_app.dart';
 import 'package:nit_ui_kit/nit_ui_kit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 part 'attachment_state.g.dart';
 part 'attachment_state.freezed.dart';
@@ -22,24 +22,8 @@ class AttachmentState extends _$AttachmentState {
   }
 
   Future openMediaPicker(BuildContext context) async {
-    const textDelegate = RussianAssetPickerTextDelegate();
-    final List<AssetEntity>? result = await AssetPicker.pickAssets(
-      context,
-      pickerConfig: AssetPickerConfig(
-        selectedAssets: state.items
-            .where((e) => e.isAsset)
-            .map((e) => e.asAsset())
-            .toList(),
-        maxAssets: mediaLimit,
-        requestType: RequestType.image,
-        gridCount: 3,
-        pageSize: 120,
-        pickerTheme: AssetPicker.themeData(
-          const Color(0xFF0196A2),
-        ),
-        textDelegate: textDelegate,
-      ),
-    );
+    ImagePicker picker = ImagePicker();
+    final result = await picker.pickMultiImage();
     final media = state.items.where((e) => e.isMedia).toList();
 
     if (result != null) {
@@ -51,12 +35,17 @@ class AttachmentState extends _$AttachmentState {
 
   Future<List<NitMedia>> uploadMedia() async {
     state = state.copyWith(isUploading: true);
+    final List<NitMedia> uploadedFiles = [];
 
     try {
-      final assetsToUpload = state.items.where((e) => e.isAsset).toList();
+      final List<XFile> assetsToUpload =
+          state.items.where((e) => e.isXFile).map((e) => e.asXFile()).toList();
 
       for (var item in assetsToUpload) {
-        await _uploadSingleAsset(item);
+        final nitMedia = await _uploadSingleAsset(item);
+        if (nitMedia != null) {
+          uploadedFiles.add(nitMedia);
+        }
       }
     } catch (e) {
       log('Ошибка при загрузке медиа: $e');
@@ -65,31 +54,30 @@ class AttachmentState extends _$AttachmentState {
       state = state.copyWith(isUploading: false);
     }
 
-    return state.items.where((e) => e.isMedia).map((e) => e.asMedia()).toList();
+    return uploadedFiles;
   }
 
-  Future<void> _uploadSingleAsset(MediaOrAssetWrapper item) async {
+  Future<NitMedia?> _uploadSingleAsset(XFile file) async {
     try {
-      final asset = item.asAsset();
-      final file = await asset.file;
-
       final nitMedia = await ref.uploadXFileToServer(
-        xFile: XFile(
-          file!.path,
-          bytes: await file.readAsBytes(),
-          name: asset.title,
-        ),
+        xFile: file,
         path: 'chat/${ref.signedInUserId}',
       );
 
+      // final newList = [
+      //   ...state.items
+      //       .where((e) => !(e.isXFile && e.asXFile().path == file.path)),
+      //   MediaOrAssetWrapper(nitMedia),
+      // ];
+
       state = state.copyWith(
         loadedCount: (state.loadedCount ?? 0) + 1,
-        items: state.items
-            .map((e) => e == item ? MediaOrAssetWrapper(nitMedia) : e)
-            .toList(),
+        // items: newList,
       );
+      return nitMedia;
     } catch (e) {
       log('Ошибка при загрузке ассета: $e');
+      return null;
     }
   }
 
@@ -116,7 +104,7 @@ class AttachmentState extends _$AttachmentState {
     final items = state.items;
     final index = items.indexWhere(
       (e) =>
-          (e.isAsset && e.asAsset().id == item.asAsset().id) ||
+          (e.isXFile && e.asXFile().path == item.asXFile().path) ||
           (e.isMedia && e.asMedia().id == item.asMedia().id),
     );
     if (index == -1 && items.length >= mediaLimit) {
@@ -150,8 +138,8 @@ class MediaOrAssetWrapper {
   MediaOrAssetWrapper(this.item);
 
   bool get isMedia => item is NitMedia;
-  bool get isAsset => item is AssetEntity;
+  bool get isXFile => item is XFile;
 
   NitMedia asMedia() => item as NitMedia;
-  AssetEntity asAsset() => item as AssetEntity;
+  XFile asXFile() => item as XFile;
 }

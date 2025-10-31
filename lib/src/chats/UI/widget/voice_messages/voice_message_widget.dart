@@ -78,7 +78,7 @@ class AudioRecorderWidget extends HookConsumerWidget {
 
     return Container(
       width: MediaQuery.of(context).size.width,
-      color: Colors.white,
+      color: ChatTheme.of(context).mainTheme.backgroundColor,
       padding: const EdgeInsets.only(top: 16, bottom: 10, left: 16, right: 16),
       child: Row(
         children: [
